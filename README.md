@@ -1,7 +1,7 @@
 StreamChatSharp
 ===============
 
-<u><h3>About</h3></u>
+~~####About~~
 
 A C# library designed specifically for use with the [Twitch.tv IRC chat service](http://help.twitch.tv/customer/portal/articles/1302780-twitch-irc). Although any IRC server can be connected to, functionality is not guaranteed. This is because Twitch IRC works differently to standard IRC servers. It only uses a small portion of standard IRC commands. In addition, it is also used to relay Twitch specific information such as subscriber notifications, special user events (staff joined, etc.), and sending user information such as the color the user has selected their username to display as.
 
