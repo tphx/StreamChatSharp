@@ -36,7 +36,7 @@
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>..\..\..\..\..\Desktop\Stuff\Strict.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>CodeAnalysis\StreamChatSharp.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\x86\Debug\Tphx.StreamChatSharp.xml</DocumentationFile>
@@ -69,12 +69,17 @@
     <Compile Include="Connection.cs" />
     <Compile Include="ConnectionData.cs" />
     <Compile Include="DisconnectedEventArgs.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="CodeAnalysis\GlobalSuppressions.cs" />
     <Compile Include="OutgoingMessageQueue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RawMessageEventArgs.cs" />
     <Compile Include="RawMessageParser.cs" />
     <Compile Include="UserEventArgs.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CodeAnalysis\StreamChatSharp.ruleset">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
