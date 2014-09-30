@@ -54,7 +54,8 @@ namespace Tphx.StreamChatSharp
         }
 
         /// <summary>
-        /// Queues an outgoing ChatMessage to be sent to the chat.
+        /// Queues an outgoing ChatMessage to be sent to the chat and starts the send timer unless the queue has been
+        /// stopped manually via the Stop method.
         /// </summary>
         /// <param name="message">The chat message to be queued.</param>
         /// <param name="isHighPriorityMessage">Whether or not the message is a high priority message.</param>
