@@ -69,14 +69,14 @@ namespace Tphx.StreamChatSharp
                             rawMessageParts[(int)RawMessagePart.Command], 
                             GetMessageFromRawMessage(rawMessageParts, (int)RawMessagePart.PrivateMessageStart));
                     case "JOIN":
-                        // :nickname!nickname@nickname.tmi.twitch.tv JOIN #channel
+                        // :mynickname!mynickname@mynickname.tmi.twitch.tv JOIN #channel
                         return CreateChatMessage(GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]),
                             "",
                             rawMessageParts[(int)RawMessagePart.Channel], 
                             rawMessageParts[(int)RawMessagePart.Command], 
                             "");
                     case "PART":
-                        // :nickname!nickname@nickname.tmi.twitch.tv PART #channel
+                        // :mynickname!mynickname@mynickname.tmi.twitch.tv PART #channel
                         return CreateChatMessage(GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]),
                             "",
                             rawMessageParts[(int)RawMessagePart.Channel], 
@@ -92,7 +92,7 @@ namespace Tphx.StreamChatSharp
                     case "353":
                         // Names List.
                         // :nickname!nickname@nickname.tmi.twitch.tv 353 nickname = #channelName :Names
-                        return CreateChatMessage(GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]),
+                        return CreateChatMessage("",
                             "",
                             rawMessageParts[(int)RawMessagePart.NamesListChannelName],
                             "NAMES", 
