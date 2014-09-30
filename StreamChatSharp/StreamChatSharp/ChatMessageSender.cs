@@ -138,9 +138,8 @@ namespace Tphx.StreamChatSharp
                     this.writer.WriteLine(rawMessage);
                     this.connected = true;
                 }
-                catch (ObjectDisposedException)
+                catch (IOException)
                 {
-
                     // We probably lost connection to the server. Wait 5 seconds and try again. If the next try fails,
                     // stop trying and alert that the connection has been lost. If the next try succeeds everything 
                     // will continue on as normal.
@@ -148,17 +147,27 @@ namespace Tphx.StreamChatSharp
                     {
                         this.connected = false;
                         Thread.Sleep(5000);
+                        OnOutgoingMessageReady(sender, e);
                     }
                     else
                     {
-                        Stop();
-
-                        if (ConnectionLost != null)
-                        {
-                            ConnectionLost(this, new EventArgs());
-                        }
+                        AlertConnectionLost();
                     }
                 }
+                catch(ObjectDisposedException)
+                {
+                    AlertConnectionLost();
+                }
+            }
+        }
+
+        private void AlertConnectionLost()
+        {
+            Stop();
+
+            if (this.ConnectionLost != null)
+            {
+                this.ConnectionLost(this, new EventArgs());
             }
         }
     }
