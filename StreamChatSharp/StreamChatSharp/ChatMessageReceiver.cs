@@ -122,7 +122,7 @@ namespace Tphx.StreamChatSharp
                     // If the message is actually null we probably lost connection. Set the connected flag to false 
                     // and wait 5 seconds before trying to read again just to be sure. If the next read fails, notify 
                     // of the lost connection and stop reading from the stream. If the next read succeeds everything 
-                    // will go continue as normal normal.
+                    // will continue as normal.
                     if(this.connected)
                     {
                         this.connected = false;
