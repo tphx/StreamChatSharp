@@ -38,7 +38,7 @@ Message = Invalid Command: BADCOMMANDNAME
 ```
 Source = myusername, <--- Source is not required when sending a JOIN message but is included when receiving it.
 Channel = #channeltojoin,
-Command = "JOIN"
+Command = JOIN
 ```
 * <b>NAMES</b> - Indicates that the Message property contains a list of names of current chat users delimited by spaces. This command is the same as the Twitch 353 command.
 ```
