@@ -137,6 +137,12 @@ namespace Tphx.StreamChatSharp
                 {
                     this.writer.WriteLine(rawMessage);
                     this.connected = true;
+
+                    // If the connection was lost at some point we need to restart it now that we're working again.
+                    if(this.outgoingMessageQueue.StoppedManually)
+                    {
+                        this.outgoingMessageQueue.Start();
+                    }
                 }
                 catch (IOException)
                 {
@@ -145,6 +151,7 @@ namespace Tphx.StreamChatSharp
                     // will continue on as normal.
                     if (this.connected)
                     {
+                        this.outgoingMessageQueue.Stop(); // We don't want any other messages firing while we wait.
                         this.connected = false;
                         Thread.Sleep(5000);
                         OnOutgoingMessageReady(sender, e);

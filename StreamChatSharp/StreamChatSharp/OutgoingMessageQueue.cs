@@ -36,6 +36,8 @@ namespace Tphx.StreamChatSharp
 
         private Timer sendMessageTimer = new Timer(1600); // 1.6 seconds.
 
+        private bool stoppedManually = false;
+
         private bool disposed = false;
 
         public OutgoingMessageQueue()
@@ -67,7 +69,7 @@ namespace Tphx.StreamChatSharp
                 this.normalPriorityMessages.Enqueue(message);
             }
 
-            if (!this.sendMessageTimer.Enabled)
+            if (!this.stoppedManually && !this.sendMessageTimer.Enabled)
             {
                 this.sendMessageTimer.Start();
             }
@@ -86,6 +88,40 @@ namespace Tphx.StreamChatSharp
             set
             {
                 this.sendMessageTimer.Interval = value;
+            }
+        }
+
+        /// <summary>
+        /// Manually starts the outgoing message queue.
+        /// </summary>
+        public void Start()
+        {
+            if (this.highPriorityMessages.Count > 0 || this.normalPriorityMessages.Count > 0)
+            {
+                this.sendMessageTimer.Start();
+            }
+
+            this.stoppedManually = false;
+        }
+
+        /// <summary>
+        /// Manually stops the outgoing message queue. Once the queue has been stopped manually, it can only be 
+        /// restarted manually.
+        /// </summary>
+        public void Stop()
+        {
+            this.sendMessageTimer.Stop();
+            this.stoppedManually = true;
+        }
+
+        /// <summary>
+        /// Whether or not the outgoing message queue was stopped manually.
+        /// </summary>
+        public bool StoppedManually
+        {
+            get
+            {
+                return this.stoppedManually;
             }
         }
 
