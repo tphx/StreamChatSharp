@@ -98,12 +98,12 @@ namespace Tphx.StreamChatSharp
                             "NAMES", 
                             GetMessageFromRawMessage(rawMessageParts, (int)RawMessagePart.NamesStart));
                     case "421": 
-                        // Bad command.
+                        // Invalid command.
                         // :tmi.twitch.tv 421 nickname BADCOMMAND :Unknown command
                         return CreateChatMessage(GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]),
                             "",
                             rawMessageParts[(int)RawMessagePart.Channel],
-                            rawMessageParts[(int)RawMessagePart.Command], 
+                            "INVALID", 
                             string.Format("{0}: {1}", GetMessageFromRawMessage(rawMessageParts, 
                                 (int)RawMessagePart.InvalidCommandMessageStart), 
                                 rawMessageParts[(int)RawMessagePart.InvalidCommand]));
