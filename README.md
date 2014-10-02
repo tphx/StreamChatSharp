@@ -16,6 +16,12 @@ This library was designed with the hope that it would make the creation of chat 
 
 ----------
 
+##How to use
+
+Checkout the  [Examples/SimpleChatBot](http://help.twitch.tv/customer/portal/articles/1302780-twitch-irc) directory to see an example of a simple chat bot created with the StreamChatSharp library for an example on how to use it.
+
+----------
+
 ##ChatMessages
 
 Messages are exchanged with the ChatClient class via ChatMessages. Chat messages can contain a variety of information based on the command that they contain. At a minimum, each ChatMessage should contain a command. When sending messages to the chat it is sometimes necessary to send the message in raw format. To send a raw message to the server, either use the SendRawMessage method in the ChatClient class, or create a ChatMessage and set the Command property to "RAW".
@@ -28,10 +34,10 @@ Messages are exchanged with the ChatClient class via ChatMessages. Chat messages
 * <b>Message</b> - The actual message portion of the ChatMessage. When the ChatMessage is for the MODE command, this property will contain the mode to set on the target (ex. +o). When used with the NAMES command, this message will contain the list of names delimited by spaces.
 
 #####Common ChatMessage Commands:
-* <b>421</b> - An invalid command (identified in the Message property) has been sent to the IRC server.
+* <b>INVALID</b> - An invalid command (identified in the Message property) has been sent to the IRC server. This command is the same as the Twitch 421 command.
 ```
 Source = tmi,
-Command = 421,
+Command = INVALID,
 Message = Invalid Command: BADCOMMANDNAME
 ```
 * <b>JOIN</b> - JOINs the channel specified in the Channel property.
@@ -76,4 +82,4 @@ Message = PRIVMSG #somechannelname :This is how you send a raw private message t
 ----------
  
 *Disclaimer:
-This repository is an independent third party library. It is in no way, officially or unofficially, licensed, supported, endorsed, or even acknowledged to exist by <a href="http://www.twitch.tv/">Twitch.tv</a>. It is meant to interact with the publicly available IRC chat service that Twitch.tv provides.*
+This repository is an independent third party library. It is in no way, officially or unofficially, licensed, supported, endorsed, or even acknowledged to exist by [Twitch.tv](http://www.twitch.tv/). It is meant to interact with the publicly available IRC chat service that Twitch.tv provides.*
