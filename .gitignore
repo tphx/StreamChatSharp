@@ -46,6 +46,9 @@ build/
 *.log
 *.scc
 
+# Allow these pdbs.
+!Tphx.StreamChatSharp.pdb
+
 # Visual C++ cache files
 ipch/
 *.aps
