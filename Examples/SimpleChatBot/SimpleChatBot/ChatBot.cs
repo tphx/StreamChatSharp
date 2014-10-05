@@ -72,7 +72,7 @@ namespace SimpleChatBot
                 // Send the private message to the server. 
                 this.chatClient.SendPrivateMessage(message, chatChannel, true);
 
-                Console.WriteLine(string.Format("> {0} ", message));
+                Console.WriteLine("> {0} ", message);
             }
             else
             {
@@ -173,7 +173,7 @@ namespace SimpleChatBot
             // When we disconnected the reason will tell us what caused the disconnect to occur. The reasons can be
             // the client disconnecting on its own (calling the disconnect method), timing out, or the connection
             // getting disposed somehow. If the connection times out, it will automatically keep trying to reconnect.
-            Console.WriteLine(string.Format("Disconnected: {0}", e.Reason.ToString()));
+            Console.WriteLine("Disconnected: {0}", e.Reason.ToString());
         }
 
         private void CheckMessageForBotCommand(ChatMessage chatMessage)
@@ -197,7 +197,7 @@ namespace SimpleChatBot
                 };
                 this.chatClient.SendChatMessage(replyMessage, false);
                 
-                Console.WriteLine(string.Format("> {0}", reply));
+                Console.WriteLine("> {0}", reply);
             }
             else if(chatMessage.Message.StartsWith("!time"))
             {
@@ -209,7 +209,7 @@ namespace SimpleChatBot
                 // the same effect as the ChatClient.SendPrivateMessage method.
                 this.chatClient.SendRawMessage(string.Format("PRIVMSG {0} :{1}", chatChannel, reply), false);
                 
-                Console.WriteLine(string.Format("> {0}", reply));
+                Console.WriteLine("> {0}", reply);
             }
         }
     }
