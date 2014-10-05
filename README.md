@@ -34,23 +34,29 @@ Messages are exchanged with the ChatClient class via ChatMessages. Chat messages
 * <b>Message</b> - The actual message portion of the ChatMessage. When the ChatMessage is for the MODE command, this property will contain the mode to set on the target (ex. +o). When used with the NAMES command, this message will contain the list of names delimited by spaces.
 
 #####Common ChatMessage Commands:
-* <b>INVALID</b> - An invalid command (identified in the Message property) has been sent to the IRC server. This command is the same as the Twitch 421 command.
+* <b>353</b> - Indicates that the Message property contains a list of names of current chat users delimited by spaces.
+```
+Channel = #channelname,
+Command = 353,
+Message = somename anothername thirdname
+```
+* <b>366</b> - Indicates the list of names for a channel (353 command) has finished listing all users.
+```
+Channel = #channelname,
+Command = 366,
+Message = :End of /NAMES list.
+```
+* <b>421</b> - An invalid command (identified in the Message property) has been sent to the IRC server.
 ```
 Source = tmi,
-Command = INVALID,
+Command = 421,
 Message = Invalid Command: BADCOMMANDNAME
 ```
 * <b>JOIN</b> - JOINs the channel specified in the Channel property.
 ```
-Source = myusername, <--- Source is not required when sending a JOIN message but is included when receiving it.
+Source = username, <--- Source is not required when sending a JOIN message but is included when receiving it.
 Channel = #channeltojoin,
 Command = JOIN
-```
-* <b>NAMES</b> - Indicates that the Message property contains a list of names of current chat users delimited by spaces. This command is the same as the Twitch 353 command.
-```
-Channel = #somechannelname,
-Command = NAMES,
-Message = somename anothername thirdname
 ```
 * <b>PART</b> - PARTs (leaves) the channel specified in the Channel property.
 ```
@@ -69,7 +75,7 @@ Command = PONG
 * <b>PRIVMSG</b> - Indicates the message is a private message. This is how messages are sent to and received from chat channels.
 ```
 Source = messagesendername,
-Channel = #somechannelname,
+Channel = #channelname,
 Command = PRIVMSG,
 Message = This is the private message.
 ```
