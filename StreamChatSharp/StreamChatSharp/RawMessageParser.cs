@@ -28,12 +28,14 @@ namespace Tphx.StreamChatSharp
             PingPong = 0, // PING or PONG IRC command.
             Command = 1, // IRC command contained in the raw message.
             MessageTarget = 2, // The target of the raw message.
+            EndNamesListChannelName = 3, // The channel name for the 366 end of names command.
             MessageStart = 3, // The "default" beginning position of a message.
             InvalidCommand = 3, // The invalid command that was given if there is one.
             Mode = 3, // The mode that is set on the ModeTarget. Only used with MODE irc command.
             ModeTarget = 4, // The target of a MODE IRC command. Only used with MODE irc command.
             InvalidCommandMessageStart = 4, // The start of the message received when a bad command is issued.
             NamesListChannelName = 4, // The channel name in the 353 names list.
+            EndNamesListMessageStart = 4 ,// Where the message for the 366 end of names command starts.
             NamesStart = 5 // The first name in a list of names received from the IRC 353 command.
         }
 
@@ -98,6 +100,13 @@ namespace Tphx.StreamChatSharp
                             rawMessageParts[(int)RawMessagePart.NamesListChannelName],
                             rawMessageParts[(int)RawMessagePart.Command], 
                             GetMessageFromRawMessage(rawMessageParts, (int)RawMessagePart.NamesStart));
+                    case "366":
+                        // :mynickname.tmi.twitch.tv 366 mynickname #channelname :End of /NAMES list
+                        return CreateChatMessage(GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]), 
+                            rawMessageParts[(int)RawMessagePart.MessageTarget],
+                            rawMessageParts[(int)RawMessagePart.EndNamesListChannelName],
+                            rawMessageParts[(int)RawMessagePart.Command],
+                            GetMessageFromRawMessage(rawMessageParts, (int)RawMessagePart.EndNamesListMessageStart));
                     case "421": 
                         // Invalid command.
                         // :tmi.twitch.tv 421 nickname BADCOMMAND :Unknown command
