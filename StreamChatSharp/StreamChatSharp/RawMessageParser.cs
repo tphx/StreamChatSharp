@@ -95,7 +95,7 @@ namespace Tphx.StreamChatSharp
                     case "353":
                         // Names List.
                         // :nickname!nickname@nickname.tmi.twitch.tv 353 nickname = #channelName :Names
-                        return CreateChatMessage("",
+                        return CreateChatMessage(GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]),
                             rawMessageParts[(int)RawMessagePart.NamesListChannelName],
                             rawMessageParts[(int)RawMessagePart.NamesListChannelName],
                             rawMessageParts[(int)RawMessagePart.Command], 
@@ -130,7 +130,7 @@ namespace Tphx.StreamChatSharp
                                 rawMessageParts[(int)RawMessagePart.Command],
                                 GetMessageFromRawMessage(rawMessageParts, (int)RawMessagePart.MessageStart));
                         }
-                        catch(Exception)
+                        catch (Exception)
                         {
                             // The message is unknown but might still be important, send it back in it's raw form so
                             // thats it isn't lost.
