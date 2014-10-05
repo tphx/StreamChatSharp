@@ -96,7 +96,7 @@ namespace Tphx.StreamChatSharp
                         return CreateChatMessage("",
                             "",
                             rawMessageParts[(int)RawMessagePart.NamesListChannelName],
-                            "NAMES", 
+                            rawMessageParts[(int)RawMessagePart.Command], 
                             GetMessageFromRawMessage(rawMessageParts, (int)RawMessagePart.NamesStart));
                     case "421": 
                         // Invalid command.
