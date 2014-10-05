@@ -131,24 +131,26 @@ namespace SimpleChatBot
             switch(e.ChatMessage.Command)
             {
                 case "RAW":
-                    Console.WriteLine(string.Format("RAW - {0}", e.ChatMessage.Message));
+                    Console.WriteLine("RAW - {0}", e.ChatMessage.Message);
                     break;
                 case "PRIVMSG":
-                    Console.WriteLine(string.Format("{0}: {1}", e.ChatMessage.Source, e.ChatMessage.Message));
+                    Console.WriteLine("{0}: {1}", e.ChatMessage.Source, e.ChatMessage.Message);
                     CheckMessageForBotCommand(e.ChatMessage);
                     break;
                 case "JOIN":
-                    Console.WriteLine(string.Format("{0} joined.", e.ChatMessage.Source));
+                    Console.WriteLine("{0} joined.", e.ChatMessage.Source);
                     break;
                 case "PART":
-                    Console.WriteLine(string.Format("{0} left.", e.ChatMessage.Source));
+                    Console.WriteLine("{0} left.", e.ChatMessage.Source);
                     break;
-                case "NAMES":
+                case "353":
                     Console.WriteLine("Names list: {0}.", string.Join(", ", e.ChatMessage.Message.Split(' ')));
                     break;
+                case "366":
+                    Console.WriteLine("End of names for {0}.", e.ChatMessage.Channel);
+                    break;
                 case "MODE":
-                    Console.WriteLine(string.Format("Set mode {0} for {1}", e.ChatMessage.Message, 
-                        e.ChatMessage.Target));
+                    Console.WriteLine("Set mode {0} for {1}", e.ChatMessage.Message, e.ChatMessage.Target);
                     break;
                 case "PING":
                     // The pong reply is automatically sent by the client.
@@ -157,12 +159,11 @@ namespace SimpleChatBot
                 case "PONG":
                     Console.WriteLine("Pong!");
                     break;
-                case "INVALID":
+                case "421":
                     Console.WriteLine(e.ChatMessage.Message);
                     break;
                 default:
-                    Console.WriteLine(string.Format("Unknown command: {0}       Message: {1}", e.ChatMessage.Command,
-                        e.ChatMessage.Message));
+                    Console.WriteLine("{0} --- {1}", e.ChatMessage.Command, e.ChatMessage.Message);
                     break;
             }
         }
