@@ -147,6 +147,18 @@ namespace Tphx.StreamChatSharp
         }
 
         /// <summary>
+        /// Joins multiple chat channels.
+        /// </summary>
+        /// <param name="channelNames">Collection of channel names to join.</param>
+        public void JoinChannel(IList<string> channelNames)
+        {
+            foreach(string currentChannelName in channelNames)
+            {
+                JoinChannel(currentChannelName);
+            }
+        }
+
+        /// <summary>
         /// Leaves a chat channel.
         /// </summary>
         /// <param name="channelName">The name of the channel to leave.</param>
