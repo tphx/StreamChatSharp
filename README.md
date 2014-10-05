@@ -18,7 +18,7 @@ This library was designed with the hope that it would make the creation of chat 
 
 ##How to use
 
-Checkout the  [Examples/SimpleChatBot](http://help.twitch.tv/customer/portal/articles/1302780-twitch-irc) directory to see an example of a simple chat bot created with the StreamChatSharp library for an example on how to use it.
+Checkout the  [Examples/SimpleChatBot](https://github.com/tphx/StreamChatSharp/tree/master/Examples/SimpleChatBot) directory to see an example of a simple chat bot created with the StreamChatSharp library for an example on how to use it.
 
 ----------
 
