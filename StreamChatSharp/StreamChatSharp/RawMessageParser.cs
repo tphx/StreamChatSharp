@@ -102,9 +102,9 @@ namespace Tphx.StreamChatSharp
                         // Invalid command.
                         // :tmi.twitch.tv 421 nickname BADCOMMAND :Unknown command
                         return CreateChatMessage(GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]),
-                            "",
                             rawMessageParts[(int)RawMessagePart.MessageTarget],
-                            "INVALID", 
+                            "",
+                            rawMessageParts[(int)RawMessagePart.Command], 
                             string.Format("{0}: {1}", GetMessageFromRawMessage(rawMessageParts, 
                                 (int)RawMessagePart.InvalidCommandMessageStart), 
                                 rawMessageParts[(int)RawMessagePart.InvalidCommand]));
