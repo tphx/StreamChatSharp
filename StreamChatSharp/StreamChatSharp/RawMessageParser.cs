@@ -65,21 +65,21 @@ namespace Tphx.StreamChatSharp
                     case "PRIVMSG":
                         // :nickname!nickname@nickname.tmi.twitch.tv PRIVMSG #channel :This is the message.
                         return CreateChatMessage(GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]),
-                            "",
+                            rawMessageParts[(int)RawMessagePart.MessageTarget],
                             rawMessageParts[(int)RawMessagePart.MessageTarget],
                             rawMessageParts[(int)RawMessagePart.Command], 
                             GetMessageFromRawMessage(rawMessageParts, (int)RawMessagePart.MessageStart));
                     case "JOIN":
                         // :mynickname!mynickname@mynickname.tmi.twitch.tv JOIN #channel
                         return CreateChatMessage(GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]),
-                            "",
+                            rawMessageParts[(int)RawMessagePart.MessageTarget],
                             rawMessageParts[(int)RawMessagePart.MessageTarget], 
                             rawMessageParts[(int)RawMessagePart.Command], 
                             "");
                     case "PART":
                         // :mynickname!mynickname@mynickname.tmi.twitch.tv PART #channel
                         return CreateChatMessage(GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]),
-                            "",
+                            rawMessageParts[(int)RawMessagePart.MessageTarget],
                             rawMessageParts[(int)RawMessagePart.MessageTarget], 
                             rawMessageParts[(int)RawMessagePart.Command], 
                             "");
@@ -94,7 +94,7 @@ namespace Tphx.StreamChatSharp
                         // Names List.
                         // :nickname!nickname@nickname.tmi.twitch.tv 353 nickname = #channelName :Names
                         return CreateChatMessage("",
-                            "",
+                            rawMessageParts[(int)RawMessagePart.NamesListChannelName],
                             rawMessageParts[(int)RawMessagePart.NamesListChannelName],
                             rawMessageParts[(int)RawMessagePart.Command], 
                             GetMessageFromRawMessage(rawMessageParts, (int)RawMessagePart.NamesStart));
