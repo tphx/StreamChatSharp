@@ -11,7 +11,7 @@
         </member>
         <member name="M:Tphx.StreamChatSharp.ChatClient.Dispose">
             <summary>
-            Disposes of everything.
+            Disposes of everything and disconnects from the chat server.
             </summary>
         </member>
         <member name="M:Tphx.StreamChatSharp.ChatClient.ConnectToChat(Tphx.StreamChatSharp.ConnectionData)">
