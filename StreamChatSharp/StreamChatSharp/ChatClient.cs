@@ -42,7 +42,7 @@ namespace Tphx.StreamChatSharp
         private bool disposed = false;
 
         /// <summary>
-        /// Disposes of everything.
+        /// Disposes of everything and disconnects from the chat server.
         /// </summary>
         public void Dispose()
         {
@@ -65,20 +65,23 @@ namespace Tphx.StreamChatSharp
         /// </summary>
         public void Disconnect()
         {
-            this.connection.RawMessageReceived -= OnRawMessageReceived;
-            this.connection.Disconnected -= OnDisconnected;
-            this.connection.Disconnect();
-            this.connection.Dispose();
-
-            this.chatChannels.Clear();
-
-            if(this.Disconnected != null)
+            if (this.connection.Connected)
             {
-                this.Disconnected(this,
-                    new DisconnectedEventArgs()
-                    {
-                        Reason = DisconnectedEventArgs.DisconnectReason.ClientDisconnected
-                    });
+                this.connection.RawMessageReceived -= OnRawMessageReceived;
+                this.connection.Disconnected -= OnDisconnected;
+                this.connection.Disconnect();
+                this.connection.Dispose();
+
+                this.chatChannels.Clear();
+
+                if (this.Disconnected != null)
+                {
+                    this.Disconnected(this,
+                        new DisconnectedEventArgs()
+                        {
+                            Reason = DisconnectedEventArgs.DisconnectReason.ClientDisconnected
+                        });
+                }
             }
         }
 
@@ -223,10 +226,7 @@ namespace Tphx.StreamChatSharp
             {
                 if(disposing)
                 {
-                    if (this.connection != null)
-                    {
-                        this.connection.Dispose();
-                    }
+                    Disconnect();
                 }
 
                 this.disposed = true;
