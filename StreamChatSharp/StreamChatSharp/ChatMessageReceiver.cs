@@ -99,63 +99,77 @@ namespace Tphx.StreamChatSharp
 
             while(this.running)
             {
-                try
-                {
-                    rawMessage = this.reader.ReadLine();
-                }
-                catch (IOException)
-                {
-                    // The stream has probably been disposed, make the message null and let it timeout.
-                    rawMessage = null;
-                }
+                rawMessage = ReadRawMessage();
 
                 if(!string.IsNullOrWhiteSpace(rawMessage))
                 {
-                    if (this.RawMessageReceived != null)
-                    {
-                        this.RawMessageReceived(this, 
-                            new RawMessageEventArgs()
-                            {
-                                RawMessage = rawMessage
-                            });
-                    }
-
-                    if (this.ChatMessageReceived != null)
-                    {
-                        this.ChatMessageReceived(this,
-                            new ChatMessageEventArgs()
-                            {
-                                ChatMessage = RawMessageParser.ReceivedRawMessageToChatMessage(rawMessage)
-                            });
-                    }
-
-                    this.connected = true;
+                    MessageReceived(rawMessage);
                 }
                 else if (rawMessage == null)
                 {
-                    // If the message is actually null we probably lost connection. Set the connected flag to false 
-                    // and wait 5 seconds before trying to read again just to be sure. If the next read fails, notify 
-                    // of the lost connection and stop reading from the stream. If the next read succeeds everything 
-                    // will continue as normal.
-                    if(this.connected)
-                    {
-                        this.connected = false;
-                        Thread.Sleep(5000);
-                    }
-                    else
-                    {
-                        Stop();
-
-                        if (this.ConnectionLost != null)
-                        {
-                            this.ConnectionLost(this, new EventArgs());
-                        }
-                    }
+                    LostConection();
                 }
                 else
                 {
                     // We read a blank line. The connection still exists but there is nothing going on.
                     this.connected = true;
+                }
+            }
+        }
+
+        private string ReadRawMessage()
+        {
+            try
+            {
+                return this.reader.ReadLine();
+            }
+            catch (IOException)
+            {
+                // The stream has probably been disposed, make the message null and let it timeout.
+                return null;
+            }
+        }
+
+        private void MessageReceived(string rawMessage)
+        {
+            if (this.RawMessageReceived != null)
+            {
+                this.RawMessageReceived(this,
+                    new RawMessageEventArgs()
+                    {
+                        RawMessage = rawMessage
+                    });
+            }
+
+            if (this.ChatMessageReceived != null)
+            {
+                this.ChatMessageReceived(this,
+                    new ChatMessageEventArgs()
+                    {
+                        ChatMessage = RawMessageParser.ReceivedRawMessageToChatMessage(rawMessage)
+                    });
+            }
+
+            this.connected = true;
+        }
+
+        private void LostConection()
+        {
+            // Set the connected flag to false and wait 5 seconds before trying to read again just to be sure the 
+            // conection is actually lost. If the next read fails, the connection is actually lost, otherwise 
+            // everything should continue on as normal.
+            if (this.connected)
+            {
+                this.connected = false;
+                Thread.Sleep(5000);
+            }
+            else
+            {
+                Stop();
+
+                if (this.ConnectionLost != null)
+                {
+                    this.ConnectionLost(this, new EventArgs());
                 }
             }
         }
