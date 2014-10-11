@@ -27,11 +27,11 @@ Checkout the  [Examples/SimpleChatBot](https://github.com/tphx/StreamChatSharp/t
 Messages are exchanged with the ChatClient class via ChatMessages. Chat messages can contain a variety of information based on the command that they contain. At a minimum, each ChatMessage should contain a command. When sending messages to the chat it is sometimes necessary to send the message in raw format. To send a raw message to the server, either use the SendRawMessage method in the ChatClient class, or create a ChatMessage and set the Command property to "RAW".
 
 #####ChatMessage Layout:
-* <b>Source</b> - The nickname of message sender.
-* <b>Target</b> - The target of the message. This is mostly used for mode commands where the target is the user who is having their MODE set.
-* <b>Channel</b> - The name of the chat channel the message pertains to.
+* <b>Source</b> - The nickname of message sender. This property is not used with outgoing ChatMessages.
+* <b>Target</b> - The target of the message. This is mostly used for mode commands where the target is the user who is having their MODE set. This property is not used with outgoing ChatMessages.
+* <b>Channel</b> - The name of the chat channel the message pertains to. This property is optional in outgoing ChatMessages, but is required if the Message property is defined.
 * <b>Command</b> - The command (ex. PRIVMSG) that describes the purpose of the message. This property is the only property that is required to be set for all types of ChatMessages.
-* <b>Message</b> - The actual message portion of the ChatMessage. When the ChatMessage is for the MODE command, this property will contain the mode to set on the target (ex. +o). When used with the NAMES command, this message will contain the list of names delimited by spaces.
+* <b>Message</b> - The actual message portion of the ChatMessage. When the ChatMessage is for the MODE command, this property will contain the mode to set on the target (ex. +o). When used with the NAMES command, this message will contain the list of names delimited by spaces. This property is optional for outgoing ChatMessages. If this property is defined in an outgoing message, the Channel property should also be defined.
 
 #####Common ChatMessage Commands:
 * <b>353</b> - Indicates that the Message property contains a list of names of current chat users delimited by spaces.
