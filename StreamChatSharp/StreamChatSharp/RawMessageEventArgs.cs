@@ -22,7 +22,7 @@ namespace Tphx.StreamChatSharp
     /// <summary>
     /// Provides data for raw message events such as when a raw message is received.
     /// </summary>
-    class RawMessageEventArgs : EventArgs
+    public class RawMessageEventArgs : EventArgs
     {
         /// <summary>
         /// Raw IRC message.

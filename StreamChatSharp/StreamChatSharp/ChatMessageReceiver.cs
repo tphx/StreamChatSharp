@@ -32,6 +32,11 @@ namespace Tphx.StreamChatSharp
         public event EventHandler<RawMessageEventArgs> RawMessageReceived;
 
         /// <summary>
+        /// Triggered whenenver a chat message is received from the server.
+        /// </summary>
+        public event EventHandler<ChatMessageEventArgs> ChatMessageReceived;
+
+        /// <summary>
         /// Triggered whenever messages stop being received from the server. The connection will need to be restarted 
         /// via the Start method.
         /// </summary>
@@ -112,6 +117,15 @@ namespace Tphx.StreamChatSharp
                             new RawMessageEventArgs()
                             {
                                 RawMessage = rawMessage
+                            });
+                    }
+
+                    if (this.ChatMessageReceived != null)
+                    {
+                        this.ChatMessageReceived(this,
+                            new ChatMessageEventArgs()
+                            {
+                                ChatMessage = RawMessageParser.ReceivedRawMessageToChatMessage(rawMessage)
                             });
                     }
 

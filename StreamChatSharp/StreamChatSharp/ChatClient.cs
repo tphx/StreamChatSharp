@@ -27,6 +27,11 @@ namespace Tphx.StreamChatSharp
     public class ChatClient : IDisposable
     {
         /// <summary>
+        /// Triggered whenever a raw message is received.
+        /// </summary>
+        public event EventHandler<RawMessageEventArgs> RawMessageReceived;
+
+        /// <summary>
         /// Triggered whenever a chat message is received.
         /// </summary>
         public event EventHandler<ChatMessageEventArgs> ChatMessageReceived;
@@ -57,6 +62,7 @@ namespace Tphx.StreamChatSharp
         {
             this.connection = new Connection(connectionData);
             this.connection.RawMessageReceived += OnRawMessageReceived;
+            this.connection.ChatMessageReceived += OnChatMessageReceived;
             this.connection.Disconnected += OnDisconnected;
         }
 
@@ -68,6 +74,7 @@ namespace Tphx.StreamChatSharp
             if (this.connection.Connected)
             {
                 this.connection.RawMessageReceived -= OnRawMessageReceived;
+                this.connection.ChatMessageReceived -= OnChatMessageReceived;
                 this.connection.Disconnected -= OnDisconnected;
                 this.connection.Disconnect();
                 this.connection.Dispose();
@@ -235,13 +242,17 @@ namespace Tphx.StreamChatSharp
 
         private void OnRawMessageReceived(object sender, RawMessageEventArgs e)
         {
-            if(this.ChatMessageReceived != null)
+            if(this.RawMessageReceived != null)
             {
-                this.ChatMessageReceived(this,
-                    new ChatMessageEventArgs()
-                    {
-                        ChatMessage = RawMessageParser.ReceivedRawMessageToChatMessage(e.RawMessage)
-                    });
+                this.RawMessageReceived(sender, e);
+            }
+        }
+
+        private void OnChatMessageReceived(object sender, ChatMessageEventArgs e)
+        {
+            if (this.ChatMessageReceived != null)
+            {
+                this.ChatMessageReceived(sender, e);
             }
         }
 

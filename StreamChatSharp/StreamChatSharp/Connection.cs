@@ -32,6 +32,11 @@ namespace Tphx.StreamChatSharp
         public event EventHandler<RawMessageEventArgs> RawMessageReceived;
 
         /// <summary>
+        /// Triggered whenever a chat message is received.
+        /// </summary>
+        public event EventHandler<ChatMessageEventArgs> ChatMessageReceived;
+
+        /// <summary>
         /// Triggered whenever the connection is disconnected.
         /// </summary>
         public event EventHandler<DisconnectedEventArgs> Disconnected;
@@ -65,6 +70,7 @@ namespace Tphx.StreamChatSharp
 
             this.messageReceiver.ConnectionLost += OnConnectionLost;
             this.messageReceiver.RawMessageReceived += OnRawMessageReceived;
+            this.messageReceiver.ChatMessageReceived += OnChatMessageReceived;
 
             this.timeoutTimer.Elapsed += OnTimeoutTimerElapsed;
 
@@ -208,6 +214,7 @@ namespace Tphx.StreamChatSharp
 
             this.messageReceiver.ConnectionLost -= OnConnectionLost;
             this.messageReceiver.RawMessageReceived -= OnRawMessageReceived;
+            this.messageReceiver.ChatMessageReceived -= OnChatMessageReceived;
             this.messageReceiver.Stop();
 
             this.tcpClient.Close();
@@ -224,13 +231,11 @@ namespace Tphx.StreamChatSharp
             }
         }
 
-        private void OnRawMessageReceived(object sender, RawMessageEventArgs e)
+        private void OnChatMessageReceived(object sender, ChatMessageEventArgs e)
         {
-            this.timeoutTimer.Interval = noMessageReceivedTimeoutInterval;
-
-            if(RawMessageParser.ReceivedRawMessageToChatMessage(e.RawMessage).Command == "PING")
+            if(e.ChatMessage.Command == "PING")
             {
-                SendChatMessage( 
+                SendChatMessage(
                     new ChatMessage
                     {
                         Command = "RAW",
@@ -238,10 +243,22 @@ namespace Tphx.StreamChatSharp
                     },
                     true);
             }
+
+            if(this.ChatMessageReceived != null)
+            {
+                this.ChatMessageReceived(sender, e);
+            }
+        }
+
+        private void OnRawMessageReceived(object sender, RawMessageEventArgs e)
+        {
+            // We could also set the interval in OnChatMessageReceived, but it is called at the same time this is so
+            // we only need to set it once here.
+            this.timeoutTimer.Interval = noMessageReceivedTimeoutInterval;
             
             if(this.RawMessageReceived != null)
             {
-                this.RawMessageReceived(this, e);
+                this.RawMessageReceived(sender, e);
             }
         }
 
