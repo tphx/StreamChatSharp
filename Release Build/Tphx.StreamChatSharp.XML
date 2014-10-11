@@ -65,6 +65,11 @@
             </summary>
             <param name="channelName">The name of the channel to leave.</param>
         </member>
+        <member name="E:Tphx.StreamChatSharp.ChatClient.RawMessageReceived">
+            <summary>
+            Triggered whenever a raw message is received.
+            </summary>
+        </member>
         <member name="E:Tphx.StreamChatSharp.ChatClient.ChatMessageReceived">
             <summary>
             Triggered whenever a chat message is received.
@@ -158,6 +163,11 @@
             Triggered whenever a raw message is received from the server.
             </summary>
         </member>
+        <member name="E:Tphx.StreamChatSharp.ChatMessageReceiver.ChatMessageReceived">
+            <summary>
+            Triggered whenenver a chat message is received from the server.
+            </summary>
+        </member>
         <member name="E:Tphx.StreamChatSharp.ChatMessageReceiver.ConnectionLost">
             <summary>
             Triggered whenever messages stop being received from the server. The connection will need to be restarted 
@@ -235,6 +245,11 @@
         <member name="E:Tphx.StreamChatSharp.Connection.RawMessageReceived">
             <summary>
             Triggered whenever a raw IRC message is received from the server.
+            </summary>
+        </member>
+        <member name="E:Tphx.StreamChatSharp.Connection.ChatMessageReceived">
+            <summary>
+            Triggered whenever a chat message is received.
             </summary>
         </member>
         <member name="E:Tphx.StreamChatSharp.Connection.Disconnected">
