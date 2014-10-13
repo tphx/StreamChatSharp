@@ -107,6 +107,12 @@
             Creates a message with null properties.
             </summary>
         </member>
+        <member name="M:Tphx.StreamChatSharp.ChatMessage.#ctor(System.String)">
+            <summary>
+            Creates a message that only contains a command.
+            </summary>
+            <param name="command">Irc command.></param>
+        </member>
         <member name="M:Tphx.StreamChatSharp.ChatMessage.#ctor(System.String,System.String)">
             <summary>
             Creates a message that only contains a command and message.
@@ -121,6 +127,15 @@
             <param name="command">IRC command.</param>
             <param name="channel">Channel the message is meant for.</param>
             <param name="message">Message.</param>
+        </member>
+        <member name="M:Tphx.StreamChatSharp.ChatMessage.#ctor(System.String,System.String,System.String,System.String)">
+            <summary>
+            Creates a new message that defines a command, message, channel, and source.
+            </summary>
+            <param name="command">IRC command.</param>
+            <param name="channel">Channel the message is meant for.</param>
+            <param name="message">Message.</param>
+            <param name="source">Source of the message.</param>
         </member>
         <member name="M:Tphx.StreamChatSharp.ChatMessage.#ctor(System.String,System.String,System.String,System.String,System.String)">
             <summary>
