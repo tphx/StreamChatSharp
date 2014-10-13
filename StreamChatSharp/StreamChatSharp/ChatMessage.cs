@@ -64,6 +64,21 @@ namespace Tphx.StreamChatSharp
         }
 
         /// <summary>
+        /// Creates a new message that defines a command, message, channel, and source.
+        /// </summary>
+        /// <param name="command">IRC command.</param>
+        /// <param name="channel">Channel the message is meant for.</param>
+        /// <param name="message">Message.</param>
+        /// <param name="source">Source of the message.</param>
+        public ChatMessage(string command, string message, string channel, string source)
+        {
+            this.Command = command;
+            this.Message = message;
+            this.Channel = channel;
+            this.Source = source;
+        }
+
+        /// <summary>
         /// Creates a new message that defines all properties.
         /// </summary>
         /// <param name="command">IRC command.</param>
