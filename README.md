@@ -18,7 +18,7 @@ This library was designed with the hope that it would make the creation of chatb
 
 ##How to use
 
-Checkout the  [Examples/SimpleChatBot](https://github.com/tphx/StreamChatSharp/tree/master/Examples/SimpleChatBot) directory to see an example of a simple chat bot created with the StreamChatSharp library for an example on how to use it.
+Checkout the  [Examples/SimpleChatBot](https://github.com/tphx/StreamChatSharp/tree/master/Examples/SimpleChatBot) directory to see an example of a simple chatbot created with the StreamChatSharp library for an example on how to use it.
 
 ----------
 
