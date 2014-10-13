@@ -159,21 +159,9 @@ namespace Tphx.StreamChatSharp
                 this.timeoutTimer.Interval = newConnectionTimeoutInterval;
                 this.timeoutTimer.Start();
 
-                SendChatMessage(
-                    new ChatMessage()
-                    {
-                        Command = "PASS",
-                        Message = this.serverConnectionData.OAuth
-                    },
-                    true);
+                SendChatMessage(new ChatMessage("PASS", this.serverConnectionData.OAuth), true);
 
-                SendChatMessage(
-                    new ChatMessage()
-                    {
-                        Command = "NICK",
-                        Message = this.serverConnectionData.Nick
-                    },
-                    true);
+                SendChatMessage(new ChatMessage("NICK", this.serverConnectionData.Nick), true);
             }
         }
 
@@ -199,13 +187,7 @@ namespace Tphx.StreamChatSharp
 
         private void Disconnect(DisconnectedEventArgs.DisconnectReason reason)
         {
-            SendChatMessage(
-                new ChatMessage()
-                {
-                    Command = "RAW",
-                    Message = "QUIT"
-                },
-                true);
+            SendChatMessage(new ChatMessage("RAW", "QUIT"), true);
 
             this.timeoutTimer.Stop();
 
@@ -223,11 +205,7 @@ namespace Tphx.StreamChatSharp
 
             if (this.Disconnected != null)
             {
-                this.Disconnected(this,
-                    new DisconnectedEventArgs()
-                    {
-                        Reason = reason
-                    });
+                this.Disconnected(this, new DisconnectedEventArgs(reason));
             }
         }
 
@@ -235,13 +213,7 @@ namespace Tphx.StreamChatSharp
         {
             if(e.ChatMessage.Command == "PING")
             {
-                SendChatMessage(
-                    new ChatMessage
-                    {
-                        Command = "RAW",
-                        Message = "PONG"
-                    },
-                    true);
+                SendChatMessage(new ChatMessage("RAW", "PONG"), true);
             }
 
             if(this.ChatMessageReceived != null)
@@ -290,13 +262,7 @@ namespace Tphx.StreamChatSharp
 
         private void Ping()
         {
-            SendChatMessage(
-                new ChatMessage
-                {
-                    Command = "RAW",
-                    Message = "PING"
-                },
-                true);
+            SendChatMessage(new ChatMessage("RAW", "PING"), true);
 
             this.timeoutTimer.Interval = pingTimeoutInterval;
         }

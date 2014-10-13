@@ -159,11 +159,7 @@ namespace Tphx.StreamChatSharp
         {
             if(this.MessageReady != null)
             {
-                this.MessageReady(this,
-                    new ChatMessageEventArgs()
-                    {
-                        ChatMessage = message
-                    });
+                this.MessageReady(this, new ChatMessageEventArgs(message));
             }
         }
     }

@@ -84,10 +84,7 @@ namespace Tphx.StreamChatSharp
                 if (this.Disconnected != null)
                 {
                     this.Disconnected(this,
-                        new DisconnectedEventArgs()
-                        {
-                            Reason = DisconnectedEventArgs.DisconnectReason.ClientDisconnected
-                        });
+                        new DisconnectedEventArgs(DisconnectedEventArgs.DisconnectReason.ClientDisconnected));
                 }
             }
         }
@@ -110,14 +107,7 @@ namespace Tphx.StreamChatSharp
         /// <param name="highPriorityMessage">Whether or not the message is a high priority message.</param>
         public void SendPrivateMessage(string message, string channelName, bool highPriorityMessage)
         {
-            SendChatMessage(
-                new ChatMessage()
-                {
-                    Command = "PRIVMSG",
-                    Channel = channelName,
-                    Message = message
-                },
-                highPriorityMessage);
+            SendChatMessage(new ChatMessage("PRIVMSG", message, channelName), highPriorityMessage);
         }
 
         /// <summary>
@@ -127,13 +117,7 @@ namespace Tphx.StreamChatSharp
         /// <param name="highPriorityMessage">Whether or not the message is a high priority message.</param>
         public void SendRawMessage(string rawMessage, bool highPriorityMessage)
         {
-            SendChatMessage(
-                new ChatMessage()
-                {
-                    Command = "RAW",
-                    Message = rawMessage
-                }, 
-                highPriorityMessage);
+            SendChatMessage(new ChatMessage("RAW", rawMessage), highPriorityMessage);
         }
 
         /// <summary>
@@ -144,13 +128,7 @@ namespace Tphx.StreamChatSharp
         {
             if (!string.IsNullOrWhiteSpace(channelName) && !chatChannels.Contains(channelName))
             {
-                SendChatMessage(
-                    new ChatMessage()
-                    {
-                        Command = "JOIN",
-                        Message = channelName
-                    },
-                    true);
+                SendChatMessage(new ChatMessage("JOIN", channelName), true);
 
                 chatChannels.Add(channelName);
             }
@@ -176,13 +154,7 @@ namespace Tphx.StreamChatSharp
         {
             if (!string.IsNullOrWhiteSpace(channelName) && this.chatChannels.Contains(channelName))
             {
-                SendChatMessage(
-                    new ChatMessage()
-                    {
-                        Command = "PART",
-                        Message = channelName
-                    },
-                    true);
+                SendChatMessage(new ChatMessage("PART", channelName), true);
 
                 this.chatChannels.Remove(channelName);
             }

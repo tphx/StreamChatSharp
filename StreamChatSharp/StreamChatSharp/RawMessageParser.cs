@@ -172,14 +172,7 @@ namespace Tphx.StreamChatSharp
         public static ChatMessage CreateChatMessage(string source, string target, string channel, string command, 
             string message)
         {
-            return new ChatMessage()
-            {
-                Source = source,
-                Target = target,
-                Channel = channel,
-                Command = command,
-                Message = message
-            };
+            return new ChatMessage(command, message, channel, source, target);
         }
 
         private static string GetSourceFromRawMessage(string rawSource)

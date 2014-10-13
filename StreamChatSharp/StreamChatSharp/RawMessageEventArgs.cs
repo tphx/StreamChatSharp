@@ -25,6 +25,15 @@ namespace Tphx.StreamChatSharp
     public class RawMessageEventArgs : EventArgs
     {
         /// <summary>
+        /// Defines the arguments for a raw message event.
+        /// </summary>
+        /// <param name="rawMessage">Raw message.</param>
+        public RawMessageEventArgs(string rawMessage)
+        {
+            this.RawMessage = rawMessage;
+        }
+
+        /// <summary>
         /// Raw IRC message.
         /// </summary>
         public string RawMessage { get; set; }

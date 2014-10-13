@@ -102,6 +102,36 @@
             Contains the information for a chat message.
             </summary>
         </member>
+        <member name="M:Tphx.StreamChatSharp.ChatMessage.#ctor">
+            <summary>
+            Creates a message with null properties.
+            </summary>
+        </member>
+        <member name="M:Tphx.StreamChatSharp.ChatMessage.#ctor(System.String,System.String)">
+            <summary>
+            Creates a message that only contains a command and message.
+            </summary>
+            <param name="command">Irc command.></param>
+            <param name="message">Message.</param>
+        </member>
+        <member name="M:Tphx.StreamChatSharp.ChatMessage.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Creates a message that contains a command, message, and channel.
+            </summary>
+            <param name="command">IRC command.</param>
+            <param name="channel">Channel the message is meant for.</param>
+            <param name="message">Message.</param>
+        </member>
+        <member name="M:Tphx.StreamChatSharp.ChatMessage.#ctor(System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Creates a new message that defines all properties.
+            </summary>
+            <param name="command">IRC command.</param>
+            <param name="channel">Channel the message is meant for.</param>
+            <param name="message">Message.</param>
+            <param name="source">Source of the message.</param>
+            <param name="target">target of the message.</param>
+        </member>
         <member name="P:Tphx.StreamChatSharp.ChatMessage.Source">
             <summary>
             The sender of the message.
@@ -131,6 +161,12 @@
             <summary>
             Provides data for chat message events such as when a chat message is received.
             </summary>
+        </member>
+        <member name="M:Tphx.StreamChatSharp.ChatMessageEventArgs.#ctor(Tphx.StreamChatSharp.ChatMessage)">
+            <summary>
+            Defines the arguments for a chat message event.
+            </summary>
+            <param name="chatMessage">ChatMessage.</param>
         </member>
         <member name="P:Tphx.StreamChatSharp.ChatMessageEventArgs.ChatMessage">
             <summary>
@@ -273,30 +309,45 @@
             Contains the information needed to connect to the Twitch IRC server.
             </summary>
         </member>
+        <member name="M:Tphx.StreamChatSharp.ConnectionData.#ctor(System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Defines the arguments required to connect to a server.
+            </summary>
+            <param name="nick">Nickname to connect with.</param>
+            <param name="oAuth">OAuth to connect with.</param>
+            <param name="hostName">Hostname to connect to.</param>
+            <param name="port">Port to connect on.</param>
+        </member>
         <member name="P:Tphx.StreamChatSharp.ConnectionData.Nick">
             <summary>
-            The nickname to connect with.
+            Nickname to connect with.
             </summary>
         </member>
         <member name="P:Tphx.StreamChatSharp.ConnectionData.OAuth">
             <summary>
-            The OAuth to connect with.
+            OAuth to connect with.
             </summary>
         </member>
         <member name="P:Tphx.StreamChatSharp.ConnectionData.HostName">
             <summary>
-            The hostname to connect to.
+            Hostname to connect to.
             </summary>
         </member>
         <member name="P:Tphx.StreamChatSharp.ConnectionData.Port">
             <summary>
-            The port to connect on.
+            Port to connect on.
             </summary>
         </member>
         <member name="T:Tphx.StreamChatSharp.DisconnectedEventArgs">
             <summary>
             Data for when the the client disconnects from the server.
             </summary>
+        </member>
+        <member name="M:Tphx.StreamChatSharp.DisconnectedEventArgs.#ctor(Tphx.StreamChatSharp.DisconnectedEventArgs.DisconnectReason)">
+            <summary>
+            Defines the arguments for a disconnected event.
+            </summary>
+            <param name="disconnectReason">Reason for the disconnect.</param>
         </member>
         <member name="P:Tphx.StreamChatSharp.DisconnectedEventArgs.Reason">
             <summary>
@@ -373,6 +424,12 @@
             Provides data for raw message events such as when a raw message is received.
             </summary>
         </member>
+        <member name="M:Tphx.StreamChatSharp.RawMessageEventArgs.#ctor(System.String)">
+            <summary>
+            Defines the arguments for a raw message event.
+            </summary>
+            <param name="rawMessage">Raw message.</param>
+        </member>
         <member name="P:Tphx.StreamChatSharp.RawMessageEventArgs.RawMessage">
             <summary>
             Raw IRC message.
@@ -413,9 +470,15 @@
             Provides data for user events such as when a user leaves or joins a channel.
             </summary>
         </member>
+        <member name="M:Tphx.StreamChatSharp.UserEventArgs.#ctor(System.String)">
+            <summary>
+            Defines the arguments for a user event.
+            </summary>
+            <param name="userName">Name of the user.</param>
+        </member>
         <member name="P:Tphx.StreamChatSharp.UserEventArgs.UserName">
             <summary>
-            Gets or sets the name of a chat user.
+            Name of a chat user.
             </summary>
         </member>
     </members>

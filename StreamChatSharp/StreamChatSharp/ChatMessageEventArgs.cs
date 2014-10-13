@@ -25,6 +25,15 @@ namespace Tphx.StreamChatSharp
     public class ChatMessageEventArgs : EventArgs
     {
         /// <summary>
+        /// Defines the arguments for a chat message event.
+        /// </summary>
+        /// <param name="chatMessage">ChatMessage.</param>
+        public ChatMessageEventArgs(ChatMessage chatMessage)
+        {
+            this.ChatMessage = chatMessage;
+        }
+
+        /// <summary>
         /// Chat message.
         /// </summary>
         public ChatMessage ChatMessage { get; set; }

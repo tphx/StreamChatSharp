@@ -25,7 +25,16 @@ namespace Tphx.StreamChatSharp
     public class UserEventArgs : EventArgs
     {
         /// <summary>
-        /// Gets or sets the name of a chat user.
+        /// Defines the arguments for a user event.
+        /// </summary>
+        /// <param name="userName">Name of the user.</param>
+        public UserEventArgs(string userName)
+        {
+            this.UserName = userName;
+        }
+        
+        /// <summary>
+        /// Name of a chat user.
         /// </summary>
         public string UserName { get; set; }
     }

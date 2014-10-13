@@ -37,7 +37,7 @@ namespace SimpleChatBot
                 {
                     input = Console.ReadLine();
 
-                    if(!string.IsNullOrEmpty(input))
+                    if(!string.IsNullOrEmpty(input) && input != "QUIT")
                     {
                         chatBot.SendMessageToChat(input);
                     }

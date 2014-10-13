@@ -134,20 +134,13 @@ namespace Tphx.StreamChatSharp
         {
             if (this.RawMessageReceived != null)
             {
-                this.RawMessageReceived(this,
-                    new RawMessageEventArgs()
-                    {
-                        RawMessage = rawMessage
-                    });
+                this.RawMessageReceived(this, new RawMessageEventArgs(rawMessage));
             }
 
             if (this.ChatMessageReceived != null)
             {
                 this.ChatMessageReceived(this,
-                    new ChatMessageEventArgs()
-                    {
-                        ChatMessage = RawMessageParser.ReceivedRawMessageToChatMessage(rawMessage)
-                    });
+                    new ChatMessageEventArgs(RawMessageParser.ReceivedRawMessageToChatMessage(rawMessage)));
             }
 
             this.connected = true;

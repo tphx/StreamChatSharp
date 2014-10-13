@@ -42,6 +42,15 @@ namespace Tphx.StreamChatSharp
             /// </summary>
             Disposed
         }
+
+        /// <summary>
+        /// Defines the arguments for a disconnected event.
+        /// </summary>
+        /// <param name="disconnectReason">Reason for the disconnect.</param>
+        public DisconnectedEventArgs(DisconnectReason disconnectReason)
+        {
+            this.Reason = disconnectReason;
+        }
         
         /// <summary>
         /// The reason the disconnect occured.

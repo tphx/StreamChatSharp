@@ -106,23 +106,20 @@ namespace SimpleChatBot
             // In order to connect to the chat we need to define the connection data to connect with. This defines
             // the server and port to connect to as well as the credentials (nickname and OAuth) needed to connect to
             // the chat.
-            ConnectionData connectionData = new ConnectionData()
-            {
-                HostName = "irc.twitch.tv",
-                Port = 6667
-            };
+            string nick;
+            string oAuth;
 
             Console.WriteLine("Enter the Nickname to connect with:");
-            connectionData.Nick = Console.ReadLine();
+            nick = Console.ReadLine();
             Console.WriteLine("Enter the OAuth to connect with:");
-            connectionData.OAuth = Console.ReadLine();
+            oAuth = Console.ReadLine();
 
             // Now we can join a chat channel. We could join as many channels as we want to but we only need one for
             // this example.
             Console.WriteLine("Enter the name of the channel to join (ex. #channelname):");
             this.chatChannel = Console.ReadLine();
 
-            return connectionData;
+            return new ConnectionData(nick, oAuth, "irc.twitch.tv", 6667);
         }
 
         private void OnChatMessageReceived(object sender, ChatMessageEventArgs e)
