@@ -31,6 +31,15 @@ namespace Tphx.StreamChatSharp
         }
 
         /// <summary>
+        /// Creates a message that only contains a command.
+        /// </summary>
+        /// <param name="command">Irc command.></param>
+        public ChatMessage(string command)
+        {
+            this.Command = command;
+        }
+
+        /// <summary>
         /// Creates a message that only contains a command and message.
         /// </summary>
         /// <param name="command">Irc command.></param>
