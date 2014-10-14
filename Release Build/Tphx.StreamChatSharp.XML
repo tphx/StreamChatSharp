@@ -469,17 +469,6 @@
             <param name="chatMessage">The chat message to convert to a raw message.</param>
             <returns>Raw message string from ChatMessage.</returns>
         </member>
-        <member name="M:Tphx.StreamChatSharp.RawMessageParser.CreateChatMessage(System.String,System.String,System.String,System.String,System.String)">
-            <summary>
-            Creates an IRC message.
-            </summary>
-            <param name="source">The sender of the message.</param>
-            <param name="target">The target of the messsage.</param>
-            <param name="channel">The chcannel the message is for or from.</param>
-            <param name="command">The IRC command to issue in the message.</param>
-            <param name="message">The message portion of the message.</param>
-            <returns>Chat message.</returns>
-        </member>
         <member name="T:Tphx.StreamChatSharp.UserEventArgs">
             <summary>
             Provides data for user events such as when a user leaves or joins a channel.
