@@ -27,7 +27,7 @@ namespace Tphx.StreamChatSharp
             Source = 0, // Sender of the message.
             PingPong = 0, // PING or PONG IRC command.
             Command = 1, // IRC command contained in the raw message.
-            MessageTarget = 2, // The target of the raw message.
+            MessageChannel = 2, // The target of the raw message.
             EndNamesListChannelName = 3, // The channel name for the 366 end of names command.
             MessageStart = 3, // The "default" beginning position of a message.
             InvalidCommand = 3, // The invalid command that was given if there is one.
@@ -58,7 +58,7 @@ namespace Tphx.StreamChatSharp
             if ((rawMessageParts[(int)RawMessagePart.PingPong] == "PING") ||
                 (rawMessageParts[(int)RawMessagePart.PingPong] == "PONG"))
             {
-                return CreateChatMessage("", "", "", rawMessageParts[(int)RawMessagePart.PingPong], "");
+                return new ChatMessage(rawMessageParts[(int)RawMessagePart.PingPong]);
             }
             else
             {
@@ -66,75 +66,61 @@ namespace Tphx.StreamChatSharp
                 {
                     case "PRIVMSG":
                         // :nickname!nickname@nickname.tmi.twitch.tv PRIVMSG #channel :This is the message.
-                        return CreateChatMessage(GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]),
-                            rawMessageParts[(int)RawMessagePart.MessageTarget],
-                            rawMessageParts[(int)RawMessagePart.MessageTarget],
-                            rawMessageParts[(int)RawMessagePart.Command], 
-                            GetMessageFromRawMessage(rawMessageParts, (int)RawMessagePart.MessageStart));
+                        return new ChatMessage(rawMessageParts[(int)RawMessagePart.Command],
+                            GetMessageFromRawMessage(rawMessageParts, (int)RawMessagePart.MessageStart),
+                            rawMessageParts[(int)RawMessagePart.MessageChannel],
+                            GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]));
                     case "JOIN":
-                        // :mynickname!mynickname@mynickname.tmi.twitch.tv JOIN #channel
-                        return CreateChatMessage(GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]),
-                            rawMessageParts[(int)RawMessagePart.MessageTarget],
-                            rawMessageParts[(int)RawMessagePart.MessageTarget], 
-                            rawMessageParts[(int)RawMessagePart.Command], 
-                            "");
                     case "PART":
+                        // :mynickname!mynickname@mynickname.tmi.twitch.tv JOIN #channel
                         // :mynickname!mynickname@mynickname.tmi.twitch.tv PART #channel
-                        return CreateChatMessage(GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]),
-                            rawMessageParts[(int)RawMessagePart.MessageTarget],
-                            rawMessageParts[(int)RawMessagePart.MessageTarget], 
-                            rawMessageParts[(int)RawMessagePart.Command], 
-                            "");
+                        return new ChatMessage(rawMessageParts[(int)RawMessagePart.Command], "",
+                            rawMessageParts[(int)RawMessagePart.MessageChannel],
+                            GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]));
                     case "MODE":
                         // :jtv MODE #channel +o nickname
-                        return CreateChatMessage(GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]),
-                            rawMessageParts[(int)RawMessagePart.ModeTarget],
-                            rawMessageParts[(int)RawMessagePart.MessageTarget],
-                            rawMessageParts[(int)RawMessagePart.Command], 
-                            rawMessageParts[(int)RawMessagePart.Mode]);
+                        return new ChatMessage(rawMessageParts[(int)RawMessagePart.Command],
+                            rawMessageParts[(int)RawMessagePart.Mode],
+                            rawMessageParts[(int)RawMessagePart.MessageChannel],
+                            GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]),
+                            rawMessageParts[(int)RawMessagePart.ModeTarget]);
                     case "353":
                         // Names List.
                         // :nickname!nickname@nickname.tmi.twitch.tv 353 nickname = #channelName :Names
-                        return CreateChatMessage(GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]),
+                        return new ChatMessage(rawMessageParts[(int)RawMessagePart.Command],
+                            GetMessageFromRawMessage(rawMessageParts, (int)RawMessagePart.NamesStart),
                             rawMessageParts[(int)RawMessagePart.NamesListChannelName],
-                            rawMessageParts[(int)RawMessagePart.NamesListChannelName],
-                            rawMessageParts[(int)RawMessagePart.Command], 
-                            GetMessageFromRawMessage(rawMessageParts, (int)RawMessagePart.NamesStart));
+                            GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]));
                     case "366":
                         // :mynickname.tmi.twitch.tv 366 mynickname #channelname :End of /NAMES list
-                        return CreateChatMessage(GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]), 
-                            rawMessageParts[(int)RawMessagePart.MessageTarget],
-                            rawMessageParts[(int)RawMessagePart.EndNamesListChannelName],
-                            rawMessageParts[(int)RawMessagePart.Command],
-                            GetMessageFromRawMessage(rawMessageParts, (int)RawMessagePart.EndNamesListMessageStart));
+                        return new ChatMessage(rawMessageParts[(int)RawMessagePart.Command],
+                            GetMessageFromRawMessage(rawMessageParts, (int)RawMessagePart.EndNamesListMessageStart),
+                            rawMessageParts[(int)RawMessagePart.MessageChannel],
+                            GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]));
                     case "421": 
                         // Invalid command.
                         // :tmi.twitch.tv 421 nickname BADCOMMAND :Unknown command
-                        return CreateChatMessage(GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]),
-                            rawMessageParts[(int)RawMessagePart.MessageTarget],
-                            "",
-                            rawMessageParts[(int)RawMessagePart.Command], 
-                            string.Format("{0}: {1}", GetMessageFromRawMessage(rawMessageParts, 
-                                (int)RawMessagePart.InvalidCommandMessageStart), 
-                                rawMessageParts[(int)RawMessagePart.InvalidCommand]));
+                        return new ChatMessage(rawMessageParts[(int)RawMessagePart.Command],
+                            string.Format("{0}: {1}", GetMessageFromRawMessage(rawMessageParts,
+                                (int)RawMessagePart.InvalidCommandMessageStart),
+                                rawMessageParts[(int)RawMessagePart.InvalidCommand]),
+                            rawMessageParts[(int)RawMessagePart.MessageChannel],
+                            GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]));
                     default:
                         try
                         {
                             // Try to parse the message in the standard message format
                             // :nickname!nickname@nickname.tmi.twitch.tv PRIVMSG #channel :This is the message.
-                            return CreateChatMessage(
-                                GetSourceFromRawMessage(
-                                rawMessageParts[(int)RawMessagePart.Source]),
-                                rawMessageParts[(int)RawMessagePart.MessageTarget],
-                                "",
-                                rawMessageParts[(int)RawMessagePart.Command],
-                                GetMessageFromRawMessage(rawMessageParts, (int)RawMessagePart.MessageStart));
+                            return new ChatMessage(rawMessageParts[(int)RawMessagePart.Command],
+                                GetMessageFromRawMessage(rawMessageParts, (int)RawMessagePart.MessageStart),
+                                rawMessageParts[(int)RawMessagePart.MessageChannel],
+                                GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]));
                         }
-                        catch (Exception)
+                        catch (IndexOutOfRangeException)
                         {
                             // The message is unknown but might still be important, send it back in it's raw form so
                             // thats it isn't lost.
-                            return CreateChatMessage("", "", "", "RAW", rawMessage);
+                            return new ChatMessage("RAW", rawMessage);
                         }
                 }
             }
@@ -153,26 +139,9 @@ namespace Tphx.StreamChatSharp
             }
             else
             {
-                return string.Format("{0} {1} {2}", chatMessage.Command,
-                    (!string.IsNullOrWhiteSpace(chatMessage.Channel) ? chatMessage.Channel : ""),
-                    (!string.IsNullOrWhiteSpace(chatMessage.Message) ? string.Format(":{0}", chatMessage.Message) :
-                        "")).Trim();
+                return string.Format("{0} {1} {2}", chatMessage.Command, chatMessage.Channel, 
+                    string.Format(":{0}", chatMessage.Message)).Trim();
             }
-        }
-
-        /// <summary>
-        /// Creates an IRC message.
-        /// </summary>
-        /// <param name="source">The sender of the message.</param>
-        /// <param name="target">The target of the messsage.</param>
-        /// <param name="channel">The chcannel the message is for or from.</param>
-        /// <param name="command">The IRC command to issue in the message.</param>
-        /// <param name="message">The message portion of the message.</param>
-        /// <returns>Chat message.</returns>
-        public static ChatMessage CreateChatMessage(string source, string target, string channel, string command, 
-            string message)
-        {
-            return new ChatMessage(command, message, channel, source, target);
         }
 
         private static string GetSourceFromRawMessage(string rawSource)
