@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Tphx.StreamChatSharp
 {
@@ -42,7 +43,7 @@ namespace Tphx.StreamChatSharp
         public event EventHandler<DisconnectedEventArgs> Disconnected;
 
         private Connection connection;
-        private List<string> chatChannels = new List<string>();
+        private List<ChatChannel> channels = new List<ChatChannel>();
 
         private bool disposed = false;
 
@@ -79,7 +80,7 @@ namespace Tphx.StreamChatSharp
                 this.connection.Disconnect();
                 this.connection.Dispose();
 
-                this.chatChannels.Clear();
+                this.channels.Clear();
 
                 if (this.Disconnected != null)
                 {
@@ -126,11 +127,11 @@ namespace Tphx.StreamChatSharp
         /// <param name="channelName">The name of the channel to join.</param>
         public void JoinChannel(string channelName)
         {
-            if (!string.IsNullOrWhiteSpace(channelName) && !chatChannels.Contains(channelName))
+            if (!string.IsNullOrWhiteSpace(channelName) && !IsInChatChannel(channelName))
             {
                 SendChatMessage(new ChatMessage("JOIN", channelName), true);
 
-                chatChannels.Add(channelName);
+                this.channels.Add(new ChatChannel(channelName));
             }
         }
 
@@ -152,11 +153,11 @@ namespace Tphx.StreamChatSharp
         /// <param name="channelName">The name of the channel to leave.</param>
         public void LeaveChannel(string channelName)
         {
-            if (!string.IsNullOrWhiteSpace(channelName) && this.chatChannels.Contains(channelName))
+            if (!string.IsNullOrWhiteSpace(channelName))
             {
                 SendChatMessage(new ChatMessage("PART", channelName), true);
 
-                this.chatChannels.Remove(channelName);
+                this.channels.RemoveAll(c => (c.ChannelName == channelName));
             }
         }
 
@@ -164,11 +165,11 @@ namespace Tphx.StreamChatSharp
         /// Gets a collection of the chat channels the client is currently in.
         /// </summary>
         /// <returns>Collection of current chat channels.</returns>
-        public ReadOnlyCollection<string> ChatChannels
+        public ReadOnlyCollection<ChatChannel> Channels
         {
             get
             {
-                return new ReadOnlyCollection<string>(this.chatChannels);
+                return new ReadOnlyCollection<ChatChannel>(this.channels);
             }
         }
 
@@ -222,6 +223,8 @@ namespace Tphx.StreamChatSharp
 
         private void OnChatMessageReceived(object sender, ChatMessageEventArgs e)
         {
+            ProcessChatMessage(e.ChatMessage);
+
             if (this.ChatMessageReceived != null)
             {
                 this.ChatMessageReceived(sender, e);
@@ -234,6 +237,81 @@ namespace Tphx.StreamChatSharp
             {
                 Disconnected(sender, e);
             }
+        }
+
+        private bool IsInChatChannel(string channelName)
+        {
+            return this.channels.Count(c => (c.ChannelName == channelName)) > 0;
+        }
+
+        private void ProcessChatMessage(ChatMessage chatMessage)
+        {
+            // If the user joined a channel any way other than the Join method the channel may not have been added to
+            // the list. The channel needs to be in the list before the message can be proccessed if the message is
+            // for a channel.
+            if(!IsInChatChannel(chatMessage.Channel))
+            {
+                if (!string.IsNullOrWhiteSpace(chatMessage.Channel))
+                {
+                    this.channels.Add(new ChatChannel(chatMessage.Channel));
+                }
+            } 
+
+            switch(chatMessage.Command)
+            {
+                case "JOIN":
+                    JoinReceived(chatMessage);
+                    break;
+                case "PART":
+                    PartReceived(chatMessage);
+                    break;
+                case "353":
+                    NamesListReceived(chatMessage);
+                    break;
+                case "MODE":
+                    ModeReceived(chatMessage);
+                    break;
+            }
+        }
+
+        private void JoinReceived(ChatMessage chatMessage)
+        {
+            GetChatChannel(chatMessage.Channel).AddChatUser(chatMessage.Source);
+        }
+
+        private void NamesListReceived(ChatMessage chatMessage)
+        {
+            string[] userNames = chatMessage.Message.Split(' ');
+            ChatChannel channel = GetChatChannel(chatMessage.Channel);
+
+            for (int a = 0; a < userNames.Length; a++)
+            {
+                channel.AddChatUser(userNames[a]);
+            }
+        }
+
+        private void PartReceived(ChatMessage chatMessage)
+        {
+            GetChatChannel(chatMessage.Channel).RemoveChatUser(chatMessage.Source);
+        }
+
+        private void ModeReceived(ChatMessage chatMessage)
+        {
+            if(chatMessage.Message == "+o")
+            {
+                GetChatChannel(chatMessage.Channel).ToggleSpecialUserType(chatMessage.Target,
+                    ChatUser.SpecialUserType.Moderator, true);
+            }
+            else if (chatMessage.Message == "-o")
+            {
+                GetChatChannel(chatMessage.Channel).ToggleSpecialUserType(chatMessage.Target,
+                    ChatUser.SpecialUserType.Moderator, false);
+            }
+        }
+
+        private ChatChannel GetChatChannel(string channelName)
+        {
+            return this.channels.First(c => (c.ChannelName == channelName));
         }
     }
 }
