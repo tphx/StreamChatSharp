@@ -4,6 +4,47 @@
         <name>Tphx.StreamChatSharp</name>
     </assembly>
     <members>
+        <member name="T:Tphx.StreamChatSharp.ChatChannel">
+            <summary>
+            Data for a chat channel.
+            </summary>
+        </member>
+        <member name="M:Tphx.StreamChatSharp.ChatChannel.#ctor(System.String)">
+            <summary>
+            Creates a new chat channel.
+            </summary>
+            <param name="channelName">Name of the channel.</param>
+        </member>
+        <member name="M:Tphx.StreamChatSharp.ChatChannel.AddChatUser(System.String)">
+            <summary>
+            Adds a user to the list of users in the channel.
+            </summary>
+            <param name="userName">Name of the user to add.</param>
+        </member>
+        <member name="M:Tphx.StreamChatSharp.ChatChannel.RemoveChatUser(System.String)">
+            <summary>
+            Removes a user from the list of users in the channel.
+            </summary>
+            <param name="userName">Name of the user to remove.</param>
+        </member>
+        <member name="M:Tphx.StreamChatSharp.ChatChannel.ToggleSpecialUserType(System.String,Tphx.StreamChatSharp.ChatUser.SpecialUserType,System.Boolean)">
+            <summary>
+            Toggles the special user type for a user in the channel.
+            </summary>
+            <param name="userName">Name of the user to toggle the special user type for.</param>
+            <param name="specialUserType">Special user type to toggle.</param>
+            <param name="enabled">Whether or not the special user type is enabled.</param>
+        </member>
+        <member name="P:Tphx.StreamChatSharp.ChatChannel.ChannelName">
+            <summary>
+            The name of the channel.
+            </summary>
+        </member>
+        <member name="P:Tphx.StreamChatSharp.ChatChannel.ChatUsers">
+            <summary>
+            Users that are currently in the channel.
+            </summary>
+        </member>
         <member name="T:Tphx.StreamChatSharp.ChatClient">
             <summary>
             A client for connecting and exchanging messages with the Twitch IRC server.
@@ -80,7 +121,7 @@
             Triggered whenever the connection is disconnected.
             </summary>
         </member>
-        <member name="P:Tphx.StreamChatSharp.ChatClient.ChatChannels">
+        <member name="P:Tphx.StreamChatSharp.ChatClient.Channels">
             <summary>
             Gets a collection of the chat channels the client is currently in.
             </summary>
@@ -99,30 +140,30 @@
         </member>
         <member name="T:Tphx.StreamChatSharp.ChatMessage">
             <summary>
-            Contains the information for a chat message.
+            The data for a chat message.
             </summary>
         </member>
         <member name="M:Tphx.StreamChatSharp.ChatMessage.#ctor">
             <summary>
-            Creates a message with null properties.
+            Creates a message.
             </summary>
         </member>
         <member name="M:Tphx.StreamChatSharp.ChatMessage.#ctor(System.String)">
             <summary>
-            Creates a message that only contains a command.
+            Creates a message that defines a command.
             </summary>
             <param name="command">Irc command.></param>
         </member>
         <member name="M:Tphx.StreamChatSharp.ChatMessage.#ctor(System.String,System.String)">
             <summary>
-            Creates a message that only contains a command and message.
+            Creates a message that defines a command and message.
             </summary>
             <param name="command">Irc command.></param>
             <param name="message">Message.</param>
         </member>
         <member name="M:Tphx.StreamChatSharp.ChatMessage.#ctor(System.String,System.String,System.String)">
             <summary>
-            Creates a message that contains a command, message, and channel.
+            Creates a message that defines a command, message, and channel.
             </summary>
             <param name="command">IRC command.</param>
             <param name="channel">Channel the message is meant for.</param>
@@ -263,6 +304,44 @@
             <summary>
             The amount of time (in milliseconds) to wait between sent messages. By default this is set to 1.6 seconds 
             between messages (20 messages in 32 seconds).
+            </summary>
+        </member>
+        <member name="T:Tphx.StreamChatSharp.ChatUser">
+            <summary>
+            Data for a chat user.
+            </summary>
+        </member>
+        <member name="M:Tphx.StreamChatSharp.ChatUser.#ctor(System.String)">
+            <summary>
+            Creates a new chat user with the name specified.
+            </summary>
+            <param name="userName">Name of the user.</param>
+        </member>
+        <member name="M:Tphx.StreamChatSharp.ChatUser.ToggleSpecialUserType(Tphx.StreamChatSharp.ChatUser.SpecialUserType,System.Boolean)">
+            <summary>
+            Toggles the special user type.
+            </summary>
+            <param name="specialUserType">Special user type to toggle.</param>
+            <param name="enabled">Whether or not the special user type is enabled.</param>
+        </member>
+        <member name="P:Tphx.StreamChatSharp.ChatUser.UserName">
+            <summary>
+            Name of the user.
+            </summary>
+        </member>
+        <member name="P:Tphx.StreamChatSharp.ChatUser.IsModerator">
+            <summary>
+            Whether or not the user is a moderator.
+            </summary>
+        </member>
+        <member name="T:Tphx.StreamChatSharp.ChatUser.SpecialUserType">
+            <summary>
+            The various types of special users.
+            </summary>
+        </member>
+        <member name="F:Tphx.StreamChatSharp.ChatUser.SpecialUserType.Moderator">
+            <summary>
+            Chat moderator.
             </summary>
         </member>
         <member name="T:Tphx.StreamChatSharp.Connection">
