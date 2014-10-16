@@ -155,15 +155,10 @@ namespace Tphx.StreamChatSharp
 
         private static string GetMessageFromRawMessage(string[] rawMessage, int messageStartIndex)
         {
-            StringBuilder message = new StringBuilder(string.Format("{0} ",
-                rawMessage[messageStartIndex].Remove(0, 1)));
-
-            for (int a = (messageStartIndex + 1); a < rawMessage.Length; a++)
-            {
-                message.Append(string.Format("{0} ", rawMessage[a]));
-            }
-
-            return message.ToString().Trim();
+            // IRC prefixes messages with ':' to indicate the message may contain spaces. It's not actually part of 
+            // the message and should be removed.
+            return string.Join(" ", rawMessage, messageStartIndex, (rawMessage.Length - messageStartIndex)).Trim()
+                .Remove(0, 1);
         }
     }
 }
