@@ -18,12 +18,12 @@
 namespace Tphx.StreamChatSharp
 {
     /// <summary>
-    /// Contains the information for a chat message.
+    /// The data for a chat message.
     /// </summary>
     public class ChatMessage
     {
         /// <summary>
-        /// Creates a message with null properties.
+        /// Creates a message.
         /// </summary>
         public ChatMessage()
         {
@@ -31,35 +31,35 @@ namespace Tphx.StreamChatSharp
         }
 
         /// <summary>
-        /// Creates a message that only contains a command.
+        /// Creates a message that defines a command.
         /// </summary>
         /// <param name="command">Irc command.></param>
         public ChatMessage(string command)
+            : this()
         {
             this.Command = command;
         }
 
         /// <summary>
-        /// Creates a message that only contains a command and message.
+        /// Creates a message that defines a command and message.
         /// </summary>
         /// <param name="command">Irc command.></param>
         /// <param name="message">Message.</param>
         public ChatMessage(string command, string message)
+            : this(command)
         {
-            this.Command = command;
             this.Message = message;
         }
 
         /// <summary>
-        /// Creates a message that contains a command, message, and channel.
+        /// Creates a message that defines a command, message, and channel.
         /// </summary>
         /// <param name="command">IRC command.</param>
         /// <param name="channel">Channel the message is meant for.</param>
         /// <param name="message">Message.</param>
         public ChatMessage(string command, string message, string channel)
+            : this(command, message)
         {
-            this.Command = command;
-            this.Message = message;
             this.Channel = channel;
         }
 
@@ -71,10 +71,8 @@ namespace Tphx.StreamChatSharp
         /// <param name="message">Message.</param>
         /// <param name="source">Source of the message.</param>
         public ChatMessage(string command, string message, string channel, string source)
+            : this(command, message, channel)
         {
-            this.Command = command;
-            this.Message = message;
-            this.Channel = channel;
             this.Source = source;
         }
 
@@ -87,11 +85,8 @@ namespace Tphx.StreamChatSharp
         /// <param name="source">Source of the message.</param>
         /// <param name="target">target of the message.</param>
         public ChatMessage(string command, string message, string channel, string source, string target)
+            : this(command, message, channel, source)
         {
-            this.Command = command;
-            this.Message = message;
-            this.Channel = channel;
-            this.Source = source;
             this.Target = target;
         }
         
