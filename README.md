@@ -18,7 +18,9 @@ This library was designed with the hope that it would make the creation of chatb
 
 ##How to use
 
-Checkout the  [Examples/SimpleChatBot](https://github.com/tphx/StreamChatSharp/tree/master/Examples/SimpleChatBot) directory to see an example of a simple chatbot created with the StreamChatSharp library for an example on how to use it.
+Checkout the [Examples/SimpleChatBot](https://github.com/tphx/StreamChatSharp/tree/master/Examples/SimpleChatBot) directory to see an example of how to use the [ChatClient](https://github.com/tphx/StreamChatSharp/blob/master/StreamChatSharp/StreamChatSharp/ChatClient.cs) class to connect to a chat room.
+
+Alternatively, if you just want to create a bare bones connection without the extra functionality that the [ChatClient](https://github.com/tphx/StreamChatSharp/blob/master/StreamChatSharp/StreamChatSharp/ChatClient.cs) provides, you can create an instance of the [Connection](https://github.com/tphx/StreamChatSharp/blob/master/StreamChatSharp/StreamChatSharp/Connection.cs) class. 
 
 ----------
 
