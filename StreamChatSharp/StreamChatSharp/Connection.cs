@@ -24,7 +24,7 @@ namespace Tphx.StreamChatSharp
     /// <summary>
     /// Manages a conection to an IRC server.
     /// </summary>
-    class Connection : IDisposable
+    public class Connection : IDisposable
     {        
         /// <summary>
         /// Triggered whenever a raw IRC message is received from the server.
