@@ -39,7 +39,20 @@ namespace SimpleChatBot
 
                     if(!string.IsNullOrEmpty(input) && input != "QUIT")
                     {
-                        chatBot.SendMessageToChat(input);
+                        // Type COUNT <channel name> to see the count of users in the chat.
+                        if (input.StartsWith("COUNT"))
+                        {
+                            chatBot.CountUsers(input.Split(' ')[1]);
+                        }
+                        // Type CHANNELS to see the channels the bot is currently in.
+                        else if (input == "CHANNELS")
+                        {
+                            chatBot.ShowConnectedChannels();
+                        }
+                        else
+                        {
+                            chatBot.SendMessageToChat(input);
+                        }
                     }
                 }
 

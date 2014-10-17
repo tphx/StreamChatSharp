@@ -88,6 +88,31 @@ namespace SimpleChatBot
             this.chatClient.Disconnect();
         }
 
+        /// <summary>
+        /// Displays a count of the users in a channel.
+        /// </summary>
+        /// <param name="channelName">Name of the channel to disply the users for.</param>
+        public void CountUsers(string channelName)
+        {
+            // We can see the users in a channel by checking the Channel property for the channel.
+            ChatChannel channel = this.chatClient.Channels.First(c => (c.ChannelName == channelName));
+
+            Console.WriteLine(string.Format("{0} users in {1}.", channel.ChatUsers.Count, channel.ChannelName));
+            Console.WriteLine(string.Format("{0} are moderators.", channel.ChatUsers.Count(u => u.IsModerator)));
+        }
+
+        /// <summary>
+        /// Displays the chat channels the bot is currently in.
+        /// </summary>
+        public void ShowConnectedChannels()
+        {
+            // We can see information about a channel we are connected to via the Channels property.
+            List<string> channelNames = this.chatClient.Channels.Select(c => c.ChannelName).ToList();
+
+            Console.WriteLine(string.Format("Currently chatting in the following channels: {0}.", 
+                string.Join(", ", channelNames)));
+        }
+
         private void Dispose(bool disposing)
         {
             if(!this.disposed)
