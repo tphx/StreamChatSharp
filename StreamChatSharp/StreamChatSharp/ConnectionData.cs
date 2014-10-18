@@ -31,8 +31,8 @@ namespace Tphx.StreamChatSharp
         /// <param name="port">Port to connect on.</param>
         public ConnectionData(string nick, string oAuth, string hostName, int port)
         {
-            this.Nick = nick;
-            this.OAuth = oAuth;
+            this.Nickname = nick;
+            this.Password = oAuth;
             this.HostName = hostName;
             this.Port = port;
         }
@@ -40,12 +40,12 @@ namespace Tphx.StreamChatSharp
         /// <summary>
         /// Nickname to connect with.
         /// </summary>
-        public string Nick { get; set; }
+        public string Nickname { get; set; }
 
         /// <summary>
-        /// OAuth to connect with.
+        /// Password to connect with.
         /// </summary>
-        public string OAuth { get; set; }
+        public string Password { get; set; }
 
         /// <summary>
         /// Hostname to connect to.

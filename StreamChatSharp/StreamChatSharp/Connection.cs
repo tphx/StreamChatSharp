@@ -159,9 +159,9 @@ namespace Tphx.StreamChatSharp
                 this.timeoutTimer.Interval = newConnectionTimeoutInterval;
                 this.timeoutTimer.Start();
 
-                SendChatMessage(new ChatMessage("PASS", this.serverConnectionData.OAuth), true);
+                SendChatMessage(new ChatMessage("PASS", this.serverConnectionData.Password), true);
 
-                SendChatMessage(new ChatMessage("NICK", this.serverConnectionData.Nick), true);
+                SendChatMessage(new ChatMessage("NICK", this.serverConnectionData.Nickname), true);
             }
         }
 
@@ -172,12 +172,12 @@ namespace Tphx.StreamChatSharp
                 connectionData.HostName = "";
             }
 
-            if (string.IsNullOrWhiteSpace(connectionData.Nick))
+            if (string.IsNullOrWhiteSpace(connectionData.Nickname))
             {
                 connectionData.HostName = "";
             }
 
-            if (string.IsNullOrWhiteSpace(connectionData.OAuth))
+            if (string.IsNullOrWhiteSpace(connectionData.Password))
             {
                 connectionData.HostName = "";
             }
