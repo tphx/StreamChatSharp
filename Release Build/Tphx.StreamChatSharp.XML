@@ -407,8 +407,8 @@
             <summary>
             Defines the arguments required to connect to a server.
             </summary>
-            <param name="nick">Nickname to connect with.</param>
-            <param name="oAuth">OAuth to connect with.</param>
+            <param name="nickname">Nickname to connect with.</param>
+            <param name="password">OAuth to connect with.</param>
             <param name="hostName">Hostname to connect to.</param>
             <param name="port">Port to connect on.</param>
         </member>
