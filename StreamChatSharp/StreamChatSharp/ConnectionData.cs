@@ -26,13 +26,13 @@ namespace Tphx.StreamChatSharp
         /// Defines the arguments required to connect to a server.
         /// </summary>
         /// <param name="nick">Nickname to connect with.</param>
-        /// <param name="nickname">OAuth to connect with.</param>
+        /// <param name="oAuth">OAuth to connect with.</param>
         /// <param name="hostName">Hostname to connect to.</param>
         /// <param name="port">Port to connect on.</param>
-        public ConnectionData(string nick, string nickname, string hostName, int port)
+        public ConnectionData(string nick, string oAuth, string hostName, int port)
         {
             this.Nickname = nick;
-            this.Password = nickname;
+            this.Password = oAuth;
             this.HostName = hostName;
             this.Port = port;
         }
