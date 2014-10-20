@@ -248,8 +248,8 @@ namespace Tphx.StreamChatSharp
         {
             // If the user joined a channel any way other than the Join method the channel may not have been added to
             // the list. The channel needs to be in the list before the message can be proccessed if the message is
-            // for a channel.
-            if(!IsInChatChannel(chatMessage.Channel))
+            // for a channel. Channels start with a #.
+            if(chatMessage.Channel.StartsWith("#") && !IsInChatChannel(chatMessage.Channel))
             {
                 if (!string.IsNullOrWhiteSpace(chatMessage.Channel))
                 {
