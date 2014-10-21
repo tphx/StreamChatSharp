@@ -76,7 +76,6 @@
     <Compile Include="Connection.cs" />
     <Compile Include="ConnectionData.cs" />
     <Compile Include="DisconnectedEventArgs.cs" />
-    <Compile Include="CodeAnalysis\GlobalSuppressions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="OutgoingMessageQueue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

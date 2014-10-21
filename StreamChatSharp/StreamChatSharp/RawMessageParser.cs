@@ -6,14 +6,13 @@
 // documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
 // rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to 
 // permit persons to whom the Software is furnished to do so, subject to the following conditions:
-// The above copyright notice and this permission notice shall be included in all copies or substantial portions of 
-// the Software.
+// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
+// Software.
 //
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
-// THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
-// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
-// SOFTWARE.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+// WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
+// OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Text;
@@ -118,7 +117,7 @@ namespace Tphx.StreamChatSharp
                         }
                         catch (IndexOutOfRangeException)
                         {
-                            // The message is unknown but might still be important, send it back in it's raw form so
+                            // The message is unknown but might still be important, send it back in it's raw form so 
                             // thats it isn't lost.
                             return new ChatMessage("RAW", rawMessage);
                         }
@@ -155,8 +154,8 @@ namespace Tphx.StreamChatSharp
 
         private static string GetMessageFromRawMessage(string[] rawMessage, int messageStartIndex)
         {
-            // IRC prefixes messages with ':' to indicate the message may contain spaces. It's not actually part of 
-            // the message and should be removed.
+            // IRC prefixes messages with ':' to indicate the message may contain spaces. It's not actually part of the
+            // message and should be removed.
             return string.Join(" ", rawMessage, messageStartIndex, (rawMessage.Length - messageStartIndex)).Trim()
                 .Remove(0, 1);
         }

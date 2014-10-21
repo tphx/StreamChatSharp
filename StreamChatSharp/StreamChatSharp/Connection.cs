@@ -205,8 +205,8 @@ namespace Tphx.StreamChatSharp
 
         private void OnRawMessageReceived(object sender, RawMessageEventArgs e)
         {
-            // We could also set the interval in OnChatMessageReceived, but it is called at the same time this is so
-            // we only need to set it once here.
+            // We could also set the interval in OnChatMessageReceived, but it is called at the same time this is so we
+            // only need to set it once here.
             this.timeoutTimer.Interval = noMessageReceivedTimeoutInterval;
             
             if(this.RawMessageReceived != null)
