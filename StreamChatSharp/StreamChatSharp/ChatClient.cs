@@ -71,7 +71,7 @@ namespace Tphx.StreamChatSharp
         /// </summary>
         public void Disconnect()
         {
-            if (this.connection.Connected)
+            if (this.connection != null && this.connection.Connected)
             {
                 this.connection.RawMessageReceived -= OnRawMessageReceived;
                 this.connection.ChatMessageReceived -= OnChatMessageReceived;
