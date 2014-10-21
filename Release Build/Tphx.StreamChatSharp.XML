@@ -409,7 +409,7 @@
             </summary>
             <param name="nickname">Nickname to connect with.</param>
             <param name="password">OAuth to connect with.</param>
-            <param name="hostName">Hostname to connect to.</param>
+            <param name="serverAddress">Server address to connect to.</param>
             <param name="port">Port to connect on.</param>
         </member>
         <member name="P:Tphx.StreamChatSharp.ConnectionData.Nickname">
@@ -422,9 +422,9 @@
             Password to connect with.
             </summary>
         </member>
-        <member name="P:Tphx.StreamChatSharp.ConnectionData.HostName">
+        <member name="P:Tphx.StreamChatSharp.ConnectionData.ServerAddress">
             <summary>
-            Hostname to connect to.
+            Server address to connect to.
             </summary>
         </member>
         <member name="P:Tphx.StreamChatSharp.ConnectionData.Port">
