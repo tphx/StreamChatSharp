@@ -150,7 +150,7 @@ namespace Tphx.StreamChatSharp
         {
             if (this.tcpClient == null || !this.tcpClient.Connected)
             {
-                this.serverConnectionData = ValidateConnectionData(connectionData);
+                this.serverConnectionData = connectionData;
                 this.tcpClient = new TcpClient(this.serverConnectionData.ServerAddress, this.serverConnectionData.Port);
                 this.networkStream = this.tcpClient.GetStream();
                 this.messageSender.Start(networkStream);
@@ -163,26 +163,6 @@ namespace Tphx.StreamChatSharp
 
                 SendChatMessage(new ChatMessage("NICK", this.serverConnectionData.Nickname), true);
             }
-        }
-
-        private static ConnectionData ValidateConnectionData(ConnectionData connectionData)
-        {
-            if (string.IsNullOrWhiteSpace(connectionData.ServerAddress))
-            {
-                connectionData.ServerAddress = "";
-            }
-
-            if (string.IsNullOrWhiteSpace(connectionData.Nickname))
-            {
-                connectionData.ServerAddress = "";
-            }
-
-            if (string.IsNullOrWhiteSpace(connectionData.Password))
-            {
-                connectionData.ServerAddress = "";
-            }
-
-            return connectionData;
         }
 
         private void Disconnect(DisconnectedEventArgs.DisconnectReason reason)
