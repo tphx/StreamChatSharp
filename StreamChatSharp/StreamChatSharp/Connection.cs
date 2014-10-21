@@ -151,7 +151,8 @@ namespace Tphx.StreamChatSharp
             if (this.tcpClient == null || !this.tcpClient.Connected)
             {
                 this.serverConnectionData = connectionData;
-                this.tcpClient = new TcpClient(this.serverConnectionData.ServerAddress, this.serverConnectionData.Port);
+                this.tcpClient = new TcpClient(this.serverConnectionData.ServerAddress, 
+                    this.serverConnectionData.Port);
                 this.networkStream = this.tcpClient.GetStream();
                 this.messageSender.Start(networkStream);
                 this.messageReceiver.Start(networkStream);
