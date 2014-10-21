@@ -151,7 +151,7 @@ namespace Tphx.StreamChatSharp
             if (this.tcpClient == null || !this.tcpClient.Connected)
             {
                 this.serverConnectionData = ValidateConnectionData(connectionData);
-                this.tcpClient = new TcpClient(this.serverConnectionData.HostName, this.serverConnectionData.Port);
+                this.tcpClient = new TcpClient(this.serverConnectionData.ServerAddress, this.serverConnectionData.Port);
                 this.networkStream = this.tcpClient.GetStream();
                 this.messageSender.Start(networkStream);
                 this.messageReceiver.Start(networkStream);
@@ -167,19 +167,19 @@ namespace Tphx.StreamChatSharp
 
         private static ConnectionData ValidateConnectionData(ConnectionData connectionData)
         {
-            if (string.IsNullOrWhiteSpace(connectionData.HostName))
+            if (string.IsNullOrWhiteSpace(connectionData.ServerAddress))
             {
-                connectionData.HostName = "";
+                connectionData.ServerAddress = "";
             }
 
             if (string.IsNullOrWhiteSpace(connectionData.Nickname))
             {
-                connectionData.HostName = "";
+                connectionData.ServerAddress = "";
             }
 
             if (string.IsNullOrWhiteSpace(connectionData.Password))
             {
-                connectionData.HostName = "";
+                connectionData.ServerAddress = "";
             }
 
             return connectionData;
