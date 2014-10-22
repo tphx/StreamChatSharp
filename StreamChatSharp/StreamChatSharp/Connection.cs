@@ -53,7 +53,7 @@ namespace Tphx.StreamChatSharp
 
         private TcpClient tcpClient;
         private NetworkStream networkStream;
-        private ConnectionData serverConnectionData;
+        private ConnectionData connectionData;
         private ChatMessageSender messageSender = new ChatMessageSender();
         private ChatMessageReceiver messageReceiver = new ChatMessageReceiver();
         private System.Timers.Timer timeoutTimer = new System.Timers.Timer();
@@ -63,8 +63,8 @@ namespace Tphx.StreamChatSharp
         /// <summary>
         /// Connects to an IRC server.
         /// </summary>
-        /// <param name="connectionData">The data to use for connecting to the server.</param>
-        public Connection(ConnectionData connectionData)
+        /// <param name="serverConnectionData">The data to use for connecting to the server.</param>
+        public Connection(ConnectionData serverConnectionData)
         {
             this.messageSender.ConnectionLost += OnConnectionLost;
 
@@ -74,7 +74,7 @@ namespace Tphx.StreamChatSharp
 
             this.timeoutTimer.Elapsed += OnTimeoutTimerElapsed;
 
-            ConnectToServer(connectionData);
+            ConnectToServer(serverConnectionData);
         }
 
         /// <summary>
@@ -130,6 +130,17 @@ namespace Tphx.StreamChatSharp
             }
         }
 
+        /// <summary>
+        /// Server connection data.
+        /// </summary>
+        public ConnectionData ConnectionData
+        {
+            get
+            {
+                return connectionData;
+            }
+        }
+
         private void Dispose(bool disposing)
         {
             if(!this.disposed)
@@ -146,13 +157,13 @@ namespace Tphx.StreamChatSharp
             }
         }
 
-        private void ConnectToServer(ConnectionData connectionData)
+        private void ConnectToServer(ConnectionData serverConnectionData)
         {
             if (this.tcpClient == null || !this.tcpClient.Connected)
             {
-                this.serverConnectionData = connectionData;
-                this.tcpClient = new TcpClient(this.serverConnectionData.ServerAddress, 
-                    this.serverConnectionData.Port);
+                this.connectionData = serverConnectionData;
+                this.tcpClient = new TcpClient(this.connectionData.ServerAddress, 
+                    this.connectionData.Port);
                 this.networkStream = this.tcpClient.GetStream();
                 this.messageSender.Start(networkStream);
                 this.messageReceiver.Start(networkStream);
@@ -160,9 +171,9 @@ namespace Tphx.StreamChatSharp
                 this.timeoutTimer.Interval = newConnectionTimeoutInterval;
                 this.timeoutTimer.Start();
 
-                SendChatMessage(new ChatMessage("PASS", this.serverConnectionData.Password), true);
+                SendChatMessage(new ChatMessage("PASS", this.connectionData.Password), true);
 
-                SendChatMessage(new ChatMessage("NICK", this.serverConnectionData.Nickname), true);
+                SendChatMessage(new ChatMessage("NICK", this.connectionData.Nickname), true);
             }
         }
 
@@ -238,7 +249,7 @@ namespace Tphx.StreamChatSharp
         private void ConnectionTimedOut()
         {
             Disconnect(DisconnectedEventArgs.DisconnectReason.TimedOut);
-            ConnectToServer(this.serverConnectionData);
+            ConnectToServer(this.connectionData);
         }
 
         private void Ping()

@@ -209,6 +209,17 @@ namespace Tphx.StreamChatSharp
             return this.channels.Count(c => (c.ChannelName == channelName)) > 0;
         }
 
+        /// <summary>
+        /// Server connection data.
+        /// </summary>
+        public ConnectionData ConnectionData
+        {
+            get
+            {
+                return connection.ConnectionData;
+            }
+        }
+
         private void Dispose(bool disposing)
         {
             if(!this.disposed)
