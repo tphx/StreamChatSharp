@@ -199,6 +199,16 @@ namespace Tphx.StreamChatSharp
             }
         }
 
+        /// <summary>
+        /// Returns whether or not the client is in a chat channel.
+        /// </summary>
+        /// <param name="channelName">Name of the channel to check.</param>
+        /// <returns>Whether or not the client is in a chat channel.</returns>
+        public bool IsInChatChannel(string channelName)
+        {
+            return this.channels.Count(c => (c.ChannelName == channelName)) > 0;
+        }
+
         private void Dispose(bool disposing)
         {
             if(!this.disposed)
@@ -236,11 +246,6 @@ namespace Tphx.StreamChatSharp
             {
                 Disconnected(sender, e);
             }
-        }
-
-        private bool IsInChatChannel(string channelName)
-        {
-            return this.channels.Count(c => (c.ChannelName == channelName)) > 0;
         }
 
         private void ProcessChatMessage(ChatMessage chatMessage)
