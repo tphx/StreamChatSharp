@@ -175,18 +175,18 @@
         </member>
         <member name="M:Tphx.StreamChatSharp.ChatMessage.#ctor(System.String,System.String,System.String)">
             <summary>
-            Creates a message that defines a command, message, and channel.
+            Creates a message that defines a command, message, and channel name.
             </summary>
             <param name="command">IRC command.</param>
-            <param name="channel">Channel the message is meant for.</param>
+            <param name="channelName">Name of the channel the message is meant for.</param>
             <param name="message">Message.</param>
         </member>
         <member name="M:Tphx.StreamChatSharp.ChatMessage.#ctor(System.String,System.String,System.String,System.String)">
             <summary>
-            Creates a new message that defines a command, message, channel, and source.
+            Creates a new message that defines a command, message, channel name, and source.
             </summary>
             <param name="command">IRC command.</param>
-            <param name="channel">Channel the message is meant for.</param>
+            <param name="channelName">Name of the channel the message is meant for.</param>
             <param name="message">Message.</param>
             <param name="source">Source of the message.</param>
         </member>
@@ -195,7 +195,7 @@
             Creates a new message that defines all properties.
             </summary>
             <param name="command">IRC command.</param>
-            <param name="channel">Channel the message is meant for.</param>
+            <param name="channelName">Name of the channel the message is meant for.</param>
             <param name="message">Message.</param>
             <param name="source">Source of the message.</param>
             <param name="target">target of the message.</param>
@@ -210,9 +210,9 @@
             The target of a command.
             </summary>
         </member>
-        <member name="P:Tphx.StreamChatSharp.ChatMessage.Channel">
+        <member name="P:Tphx.StreamChatSharp.ChatMessage.ChannelName">
             <summary>
-            The channel the message is being sent to or received from.
+            The name of channel the message is for.
             </summary>
         </member>
         <member name="P:Tphx.StreamChatSharp.ChatMessage.Command">
