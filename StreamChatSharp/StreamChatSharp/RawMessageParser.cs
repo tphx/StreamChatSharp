@@ -138,7 +138,7 @@ namespace Tphx.StreamChatSharp
             }
             else
             {
-                return string.Format("{0} {1} {2}", chatMessage.Command, chatMessage.Channel, 
+                return string.Format("{0} {1} {2}", chatMessage.Command, chatMessage.ChannelName, 
                     string.Format(":{0}", chatMessage.Message)).Trim();
             }
         }

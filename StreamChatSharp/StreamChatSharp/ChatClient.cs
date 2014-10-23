@@ -264,10 +264,10 @@ namespace Tphx.StreamChatSharp
             // If the user joined a channel any way other than the Join method the channel may not have been added to
             // the list. The channel needs to be in the list before the message can be proccessed if the message is
             // for a channel. Channels start with a #.
-            if(!string.IsNullOrWhiteSpace(chatMessage.Channel) && chatMessage.Channel.StartsWith("#") && 
-                !IsInChatChannel(chatMessage.Channel))
+            if(!string.IsNullOrWhiteSpace(chatMessage.ChannelName) && chatMessage.ChannelName.StartsWith("#") && 
+                !IsInChatChannel(chatMessage.ChannelName))
             {
-                this.channels.Add(new ChatChannel(chatMessage.Channel));
+                this.channels.Add(new ChatChannel(chatMessage.ChannelName));
             } 
 
             switch(chatMessage.Command)
@@ -289,13 +289,13 @@ namespace Tphx.StreamChatSharp
 
         private void JoinReceived(ChatMessage chatMessage)
         {
-            GetChatChannel(chatMessage.Channel).AddChatUser(chatMessage.Source);
+            GetChatChannel(chatMessage.ChannelName).AddChatUser(chatMessage.Source);
         }
 
         private void NamesListReceived(ChatMessage chatMessage)
         {
             string[] userNames = chatMessage.Message.Split(' ');
-            ChatChannel channel = GetChatChannel(chatMessage.Channel);
+            ChatChannel channel = GetChatChannel(chatMessage.ChannelName);
 
             for (int a = 0; a < userNames.Length; a++)
             {
@@ -305,19 +305,19 @@ namespace Tphx.StreamChatSharp
 
         private void PartReceived(ChatMessage chatMessage)
         {
-            GetChatChannel(chatMessage.Channel).RemoveChatUser(chatMessage.Source);
+            GetChatChannel(chatMessage.ChannelName).RemoveChatUser(chatMessage.Source);
         }
 
         private void ModeReceived(ChatMessage chatMessage)
         {
             if(chatMessage.Message == "+o")
             {
-                GetChatChannel(chatMessage.Channel).ToggleSpecialUserType(chatMessage.Target,
+                GetChatChannel(chatMessage.ChannelName).ToggleSpecialUserType(chatMessage.Target,
                     ChatUser.SpecialUserType.Moderator, true);
             }
             else if (chatMessage.Message == "-o")
             {
-                GetChatChannel(chatMessage.Channel).ToggleSpecialUserType(chatMessage.Target,
+                GetChatChannel(chatMessage.ChannelName).ToggleSpecialUserType(chatMessage.Target,
                     ChatUser.SpecialUserType.Moderator, false);
             }
         }

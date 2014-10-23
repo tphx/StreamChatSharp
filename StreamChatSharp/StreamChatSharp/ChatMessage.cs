@@ -51,26 +51,26 @@ namespace Tphx.StreamChatSharp
         }
 
         /// <summary>
-        /// Creates a message that defines a command, message, and channel.
+        /// Creates a message that defines a command, message, and channel name.
         /// </summary>
         /// <param name="command">IRC command.</param>
-        /// <param name="channel">Channel the message is meant for.</param>
+        /// <param name="channelName">Name of the channel the message is meant for.</param>
         /// <param name="message">Message.</param>
-        public ChatMessage(string command, string message, string channel)
+        public ChatMessage(string command, string message, string channelName)
             : this(command, message)
         {
-            this.Channel = channel;
+            this.ChannelName = channelName;
         }
 
         /// <summary>
-        /// Creates a new message that defines a command, message, channel, and source.
+        /// Creates a new message that defines a command, message, channel name, and source.
         /// </summary>
         /// <param name="command">IRC command.</param>
-        /// <param name="channel">Channel the message is meant for.</param>
+        /// <param name="channelName">Name of the channel the message is meant for.</param>
         /// <param name="message">Message.</param>
         /// <param name="source">Source of the message.</param>
-        public ChatMessage(string command, string message, string channel, string source)
-            : this(command, message, channel)
+        public ChatMessage(string command, string message, string channelName, string source)
+            : this(command, message, channelName)
         {
             this.Source = source;
         }
@@ -79,12 +79,12 @@ namespace Tphx.StreamChatSharp
         /// Creates a new message that defines all properties.
         /// </summary>
         /// <param name="command">IRC command.</param>
-        /// <param name="channel">Channel the message is meant for.</param>
+        /// <param name="channelName">Name of the channel the message is meant for.</param>
         /// <param name="message">Message.</param>
         /// <param name="source">Source of the message.</param>
         /// <param name="target">target of the message.</param>
-        public ChatMessage(string command, string message, string channel, string source, string target)
-            : this(command, message, channel, source)
+        public ChatMessage(string command, string message, string channelName, string source, string target)
+            : this(command, message, channelName, source)
         {
             this.Target = target;
         }
@@ -100,9 +100,9 @@ namespace Tphx.StreamChatSharp
         public string Target { get; set; }
 
         /// <summary>
-        /// The channel the message is being sent to or received from.
+        /// The name of channel the message is for.
         /// </summary>
-        public string Channel { get; set; }
+        public string ChannelName { get; set; }
 
         /// <summary>
         /// The IRC command being issued.
