@@ -41,6 +41,11 @@ namespace Tphx.StreamChatSharp
         /// </summary>
         public event EventHandler<DisconnectedEventArgs> Disconnected;
 
+        /// <summary>
+        /// Triggered when the connection has successfully registered with the server.
+        /// </summary>
+        public event EventHandler RegisteredWithServer;
+
         // Amount of time to wait before the connection is timed out when first connecting to the server.
         private const double newConnectionTimeoutInterval = 60000.00; // 1 minute.
 
@@ -57,7 +62,7 @@ namespace Tphx.StreamChatSharp
         private ChatMessageSender messageSender = new ChatMessageSender();
         private ChatMessageReceiver messageReceiver = new ChatMessageReceiver();
         private System.Timers.Timer timeoutTimer = new System.Timers.Timer();
-
+        private bool connectionRegistered;
         private bool disposed = false;
 
         /// <summary>
@@ -141,6 +146,17 @@ namespace Tphx.StreamChatSharp
             }
         }
 
+        /// <summary>
+        /// Whether or not the connection has been registered with the server.
+        /// </summary>
+        public bool ConnectionRegistered
+        {
+            get
+            {
+                return this.connectionRegistered;
+            }
+        }
+
         private void Dispose(bool disposing)
         {
             if(!this.disposed)
@@ -167,12 +183,12 @@ namespace Tphx.StreamChatSharp
                 this.networkStream = this.tcpClient.GetStream();
                 this.messageSender.Start(networkStream);
                 this.messageReceiver.Start(networkStream);
+                this.connectionRegistered = false;
 
                 this.timeoutTimer.Interval = newConnectionTimeoutInterval;
                 this.timeoutTimer.Start();
 
                 SendChatMessage(new ChatMessage("PASS", this.connectionData.Password), true);
-
                 SendChatMessage(new ChatMessage("NICK", this.connectionData.Nickname), true);
             }
         }
@@ -190,10 +206,10 @@ namespace Tphx.StreamChatSharp
             this.messageReceiver.RawMessageReceived -= OnRawMessageReceived;
             this.messageReceiver.ChatMessageReceived -= OnChatMessageReceived;
             this.messageReceiver.Stop();
+            this.connectionRegistered = false;
 
             this.tcpClient.Close();
             this.networkStream.Dispose();
-
 
             if (this.Disconnected != null)
             {
@@ -206,6 +222,11 @@ namespace Tphx.StreamChatSharp
             if(e.ChatMessage.Command == "PING")
             {
                 SendChatMessage(new ChatMessage("RAW", "PONG"), true);
+            }
+            // 001 is the first command Twitch sends on a successful connection.
+            if(e.ChatMessage.Command == "001")
+            {
+                RegistrationMessageReceived();
             }
 
             if(this.ChatMessageReceived != null)
@@ -257,6 +278,16 @@ namespace Tphx.StreamChatSharp
             SendChatMessage(new ChatMessage("RAW", "PING"), true);
 
             this.timeoutTimer.Interval = pingTimeoutInterval;
+        }
+
+        private void RegistrationMessageReceived()
+        {
+            this.connectionRegistered = true;
+
+            if(RegisteredWithServer != null)
+            {
+                RegisteredWithServer(this, new EventArgs());
+            }
         }
     }
 }

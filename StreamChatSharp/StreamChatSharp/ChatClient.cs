@@ -41,6 +41,11 @@ namespace Tphx.StreamChatSharp
         /// </summary>
         public event EventHandler<DisconnectedEventArgs> Disconnected;
 
+        /// <summary>
+        /// Triggered when the connection has successfully registered with the server.
+        /// </summary>
+        public event EventHandler RegisteredWithServer;
+
         private Connection connection;
         private List<ChatChannel> channels = new List<ChatChannel>();
 
@@ -64,6 +69,7 @@ namespace Tphx.StreamChatSharp
             this.connection.RawMessageReceived += OnRawMessageReceived;
             this.connection.ChatMessageReceived += OnChatMessageReceived;
             this.connection.Disconnected += OnDisconnected;
+            this.connection.RegisteredWithServer += OnRegisteredWithServer;
         }
 
         /// <summary>
@@ -220,6 +226,17 @@ namespace Tphx.StreamChatSharp
             }
         }
 
+        /// <summary>
+        /// Whether or not the connection has been registered with the server.
+        /// </summary>
+        public bool ConnectionRegistered
+        {
+            get
+            {
+                return this.connection.ConnectionRegistered;
+            }
+        }
+
         private void Dispose(bool disposing)
         {
             if(!this.disposed)
@@ -256,6 +273,14 @@ namespace Tphx.StreamChatSharp
             if(this.Disconnected != null)
             {
                 Disconnected(sender, e);
+            }
+        }
+
+        private void OnRegisteredWithServer(object sender, EventArgs e)
+        {
+            if(this.RegisteredWithServer != null)
+            {
+                this.RegisteredWithServer(sender, e);
             }
         }
 
