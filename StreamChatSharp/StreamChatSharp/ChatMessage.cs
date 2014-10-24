@@ -21,6 +21,13 @@ namespace Tphx.StreamChatSharp
     /// </summary>
     public class ChatMessage
     {
+
+        private string source;
+        private string target;
+        private string channelName;
+        private string command;
+        private string message;
+
         /// <summary>
         /// Creates a message.
         /// </summary>
@@ -36,7 +43,7 @@ namespace Tphx.StreamChatSharp
         public ChatMessage(string command)
             : this()
         {
-            this.Command = command;
+            this.command = command;
         }
 
         /// <summary>
@@ -47,7 +54,7 @@ namespace Tphx.StreamChatSharp
         public ChatMessage(string command, string message)
             : this(command)
         {
-            this.Message = message;
+            this.message = message;
         }
 
         /// <summary>
@@ -59,7 +66,7 @@ namespace Tphx.StreamChatSharp
         public ChatMessage(string command, string message, string channelName)
             : this(command, message)
         {
-            this.ChannelName = channelName;
+            this.channelName = channelName;
         }
 
         /// <summary>
@@ -72,7 +79,7 @@ namespace Tphx.StreamChatSharp
         public ChatMessage(string command, string message, string channelName, string source)
             : this(command, message, channelName)
         {
-            this.Source = source;
+            this.source = source;
         }
 
         /// <summary>
@@ -86,32 +93,87 @@ namespace Tphx.StreamChatSharp
         public ChatMessage(string command, string message, string channelName, string source, string target)
             : this(command, message, channelName, source)
         {
-            this.Target = target;
+            this.target = target;
         }
         
         /// <summary>
         /// The sender of the message.
         /// </summary>
-        public string Source { get; set; }
+        public string Source 
+        {
+            get
+            {
+                return this.source ?? "";
+
+            }
+            set
+            {
+                this.source = value;
+            }
+        }
 
         /// <summary>
         /// The target of a command.
         /// </summary>
-        public string Target { get; set; }
+        public string Target
+        {
+            get
+            {
+                return this.target ?? "";
+
+            }
+            set
+            {
+                this.target = value;
+            }
+        }
 
         /// <summary>
         /// The name of channel the message is for.
         /// </summary>
-        public string ChannelName { get; set; }
+        public string ChannelName
+        {
+            get
+            {
+                return this.channelName ?? "";
+
+            }
+            set
+            {
+                this.channelName = value;
+            }
+        }
 
         /// <summary>
         /// The IRC command being issued.
         /// </summary>
-        public string Command { get; set; }
+        public string Command
+        {
+            get
+            {
+                return this.command ?? "";
+
+            }
+            set
+            {
+                this.command = value;
+            }
+        }
 
         /// <summary>
         /// The message that was sent.
         /// </summary>
-        public string Message { get; set; }
+        public string Message
+        {
+            get
+            {
+                return this.message ?? "";
+
+            }
+            set
+            {
+                this.message = value;
+            }
+        }
     }
 }
