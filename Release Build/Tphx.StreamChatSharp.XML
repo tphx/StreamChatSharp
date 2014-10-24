@@ -128,6 +128,11 @@
             Triggered whenever the connection is disconnected.
             </summary>
         </member>
+        <member name="E:Tphx.StreamChatSharp.ChatClient.RegisteredWithServer">
+            <summary>
+            Triggered when the connection has successfully registered with the server.
+            </summary>
+        </member>
         <member name="P:Tphx.StreamChatSharp.ChatClient.Channels">
             <summary>
             Gets a collection of the chat channels the client is currently in.
@@ -148,6 +153,11 @@
         <member name="P:Tphx.StreamChatSharp.ChatClient.ConnectionData">
             <summary>
             Server connection data.
+            </summary>
+        </member>
+        <member name="P:Tphx.StreamChatSharp.ChatClient.ConnectionRegistered">
+            <summary>
+            Whether or not the connection has been registered with the server.
             </summary>
         </member>
         <member name="T:Tphx.StreamChatSharp.ChatMessage">
@@ -399,6 +409,11 @@
             Triggered whenever the connection is disconnected.
             </summary>
         </member>
+        <member name="E:Tphx.StreamChatSharp.Connection.RegisteredWithServer">
+            <summary>
+            Triggered when the connection has successfully registered with the server.
+            </summary>
+        </member>
         <member name="P:Tphx.StreamChatSharp.Connection.Connected">
             <summary>
             Whether or not the client is currently connected to the IRC server.
@@ -413,6 +428,11 @@
         <member name="P:Tphx.StreamChatSharp.Connection.ConnectionData">
             <summary>
             Server connection data.
+            </summary>
+        </member>
+        <member name="P:Tphx.StreamChatSharp.Connection.ConnectionRegistered">
+            <summary>
+            Whether or not the connection has been registered with the server.
             </summary>
         </member>
         <member name="T:Tphx.StreamChatSharp.ConnectionData">
