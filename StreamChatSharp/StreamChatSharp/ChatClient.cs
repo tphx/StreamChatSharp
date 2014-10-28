@@ -320,11 +320,17 @@ namespace Tphx.StreamChatSharp
         private void NamesListReceived(ChatMessage chatMessage)
         {
             string[] userNames = chatMessage.Message.Split(' ');
-            ChatChannel channel = GetChatChannel(chatMessage.ChannelName);
 
+            // Names list is basically a compact list of JOINs for people who are already in the channel when we join.
             for (int a = 0; a < userNames.Length; a++)
             {
-                channel.AddChatUser(userNames[a]);
+                JoinReceived(
+                    new ChatMessage()
+                    {
+                        Command = "JOIN",
+                        ChannelName = chatMessage.ChannelName,
+                        Source = userNames[a]
+                    });
             }
         }
 
