@@ -290,25 +290,28 @@ namespace Tphx.StreamChatSharp
             // the list. The channel needs to be in the list before the message can be proccessed if the message is
             // for a channel. Channels start with a #.
             if(!string.IsNullOrWhiteSpace(chatMessage.ChannelName) && chatMessage.ChannelName.StartsWith("#") && 
-                !IsInChatChannel(chatMessage.ChannelName))
+                !IsInChatChannel(chatMessage.ChannelName) && chatMessage.Command != "PART")
             {
                 this.channels.Add(new ChatChannel(chatMessage.ChannelName));
-            } 
+            }
 
-            switch(chatMessage.Command)
+            if (IsInChatChannel(chatMessage.ChannelName))
             {
-                case "JOIN":
-                    JoinReceived(chatMessage);
-                    break;
-                case "PART":
-                    PartReceived(chatMessage);
-                    break;
-                case "353":
-                    NamesListReceived(chatMessage);
-                    break;
-                case "MODE":
-                    ModeReceived(chatMessage);
-                    break;
+                switch (chatMessage.Command)
+                {
+                    case "JOIN":
+                        JoinReceived(chatMessage);
+                        break;
+                    case "PART":
+                        PartReceived(chatMessage);
+                        break;
+                    case "353":
+                        NamesListReceived(chatMessage);
+                        break;
+                    case "MODE":
+                        ModeReceived(chatMessage);
+                        break;
+                }
             }
         }
 
