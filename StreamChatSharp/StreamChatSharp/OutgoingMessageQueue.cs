@@ -60,18 +60,23 @@ namespace Tphx.StreamChatSharp
         /// <param name="isHighPriorityMessage">Whether or not the message is a high priority message.</param>
         public void AddMessage(ChatMessage message, bool isHighPriorityMessage)
         {
-            if (isHighPriorityMessage)
+            // If the send message timer isn't running (no message has been sent in since the last interval) we can 
+            // send the message instantly.
+            if (!this.sendMessageTimer.Enabled)
             {
-                this.highPriorityMessages.Enqueue(message);
+                SendMessage(message);
+                this.sendMessageTimer.Start();
             }
             else
             {
-                this.normalPriorityMessages.Enqueue(message);
-            }
-
-            if (!this.stoppedManually && !this.sendMessageTimer.Enabled)
-            {
-                this.sendMessageTimer.Start();
+                if (isHighPriorityMessage)
+                {
+                    this.highPriorityMessages.Enqueue(message);
+                }
+                else
+                {
+                    this.normalPriorityMessages.Enqueue(message);
+                }
             }
         }
 
