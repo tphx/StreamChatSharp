@@ -24,6 +24,7 @@ namespace Tphx.StreamChatSharp
     /// <summary>
     /// Manages a conection to an IRC server.
     /// </summary>
+    [System.Runtime.InteropServices.GuidAttribute("F23F4306-DABE-41E5-B02E-267908C228B0")]
     public class Connection : IDisposable
     {        
         /// <summary>
