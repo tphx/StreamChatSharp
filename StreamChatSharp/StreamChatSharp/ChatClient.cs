@@ -48,7 +48,7 @@ namespace Tphx.StreamChatSharp
 
         private Connection connection;
         private List<ChatChannel> channels = new List<ChatChannel>();
-
+        private bool connectionTimedOut = false;
         private bool disposed = false;
 
         /// <summary>
@@ -270,6 +270,11 @@ namespace Tphx.StreamChatSharp
 
         private void OnDisconnected(object sender, DisconnectedEventArgs e)
         {
+            if(e.Reason == DisconnectedEventArgs.DisconnectReason.TimedOut)
+            {
+                this.connectionTimedOut = true;
+            }
+
             if(this.Disconnected != null)
             {
                 Disconnected(sender, e);
@@ -278,6 +283,17 @@ namespace Tphx.StreamChatSharp
 
         private void OnRegisteredWithServer(object sender, EventArgs e)
         {
+            // If we are connecting after a timeout we need to rejoin all of the channels we are supposed to be in.
+            if(connectionTimedOut)
+            {
+                connectionTimedOut = false;
+
+                foreach(ChatChannel channel in this.channels)
+                {
+                    SendChatMessage(new ChatMessage("JOIN", channel.ChannelName), true);
+                }
+            }
+
             if(this.RegisteredWithServer != null)
             {
                 this.RegisteredWithServer(sender, e);
