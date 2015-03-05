@@ -90,7 +90,7 @@ namespace Tphx.StreamChatSharp
                 if (this.Disconnected != null)
                 {
                     this.Disconnected(this,
-                        new DisconnectedEventArgs(DisconnectedEventArgs.DisconnectReason.ClientDisconnected));
+                        new DisconnectedEventArgs(DisconnectedEventArgs.DisconnectReason.ClientDisconnected, false));
                 }
             }
         }
