@@ -77,6 +77,7 @@ namespace Tphx.StreamChatSharp
             };
 
             this.thread = new Thread(Run);
+            this.thread.IsBackground = true;
             this.thread.Start();
 
             this.running = true;
