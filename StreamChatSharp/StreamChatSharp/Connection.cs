@@ -96,7 +96,7 @@ namespace Tphx.StreamChatSharp
         /// </summary>
         public void Disconnect()
         {
-            Disconnect(DisconnectedEventArgs.DisconnectReason.ClientDisconnected);
+            Disconnect(DisconnectedEventArgs.DisconnectReason.ClientDisconnected, false);
         }
 
         /// <summary>
@@ -164,7 +164,7 @@ namespace Tphx.StreamChatSharp
             {
                 if(disposing)
                 {
-                    this.Disconnect(DisconnectedEventArgs.DisconnectReason.Disposed);
+                    this.Disconnect(DisconnectedEventArgs.DisconnectReason.Disposed, false);
                     this.messageSender.Dispose();
                     this.messageReceiver.Dispose();
                     this.timeoutTimer.Dispose();
@@ -194,7 +194,7 @@ namespace Tphx.StreamChatSharp
             }
         }
 
-        private void Disconnect(DisconnectedEventArgs.DisconnectReason reason)
+        private void Disconnect(DisconnectedEventArgs.DisconnectReason reason, bool attemptingAutoReconnect)
         {
             SendChatMessage(new ChatMessage("RAW", "QUIT"), true);
 
@@ -214,7 +214,7 @@ namespace Tphx.StreamChatSharp
 
             if (this.Disconnected != null)
             {
-                this.Disconnected(this, new DisconnectedEventArgs(reason));
+                this.Disconnected(this, new DisconnectedEventArgs(reason, attemptingAutoReconnect));
             }
         }
 
@@ -270,7 +270,7 @@ namespace Tphx.StreamChatSharp
 
         private void ConnectionTimedOut()
         {
-            Disconnect(DisconnectedEventArgs.DisconnectReason.TimedOut);
+            Disconnect(DisconnectedEventArgs.DisconnectReason.TimedOut, true);
             ConnectToServer(this.connectionData);
         }
 

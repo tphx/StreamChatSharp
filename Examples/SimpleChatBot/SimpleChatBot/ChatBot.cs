@@ -214,7 +214,7 @@ namespace SimpleChatBot
                 ChatMessage replyMessage = new ChatMessage()
                 {
                     Command = "PRIVMSG",
-                    Channel = chatChannel,
+                    ChannelName = chatChannel,
                     Message = reply
                 };
                 this.chatClient.SendChatMessage(replyMessage, false);

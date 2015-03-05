@@ -480,9 +480,22 @@
             </summary>
             <param name="disconnectReason">Reason for the disconnect.</param>
         </member>
+        <member name="M:Tphx.StreamChatSharp.DisconnectedEventArgs.#ctor(Tphx.StreamChatSharp.DisconnectedEventArgs.DisconnectReason,System.Boolean)">
+            <summary>
+            Defines the arguments for a disconnected event.
+            </summary>
+            <param name="disconnectReason">Reason for the disconnect</param>
+            <param name="attemptingAutoReconnect">Whether or not the connection is going to try to automatically
+            reconnect.</param>
+        </member>
         <member name="P:Tphx.StreamChatSharp.DisconnectedEventArgs.Reason">
             <summary>
             The reason the disconnect occured.
+            </summary>
+        </member>
+        <member name="P:Tphx.StreamChatSharp.DisconnectedEventArgs.AttemptingAutoReconnect">
+            <summary>
+            Whether or not the connection is going to try to automatically reconnect to the server.
             </summary>
         </member>
         <member name="T:Tphx.StreamChatSharp.DisconnectedEventArgs.DisconnectReason">

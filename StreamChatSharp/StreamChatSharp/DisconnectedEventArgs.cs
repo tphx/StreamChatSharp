@@ -50,10 +50,27 @@ namespace Tphx.StreamChatSharp
         {
             this.Reason = disconnectReason;
         }
+
+        /// <summary>
+        /// Defines the arguments for a disconnected event.
+        /// </summary>
+        /// <param name="disconnectReason">Reason for the disconnect</param>
+        /// <param name="attemptingAutoReconnect">Whether or not the connection is going to try to automatically
+        /// reconnect.</param>
+        public DisconnectedEventArgs(DisconnectReason disconnectReason, bool attemptingAutoReconnect)
+            : this(disconnectReason)
+        {
+            this.AttemptingAutoReconnect = attemptingAutoReconnect;
+        }
         
         /// <summary>
         /// The reason the disconnect occured.
         /// </summary>
         public DisconnectReason Reason { get; set; }
+
+        /// <summary>
+        /// Whether or not the connection is going to try to automatically reconnect to the server.
+        /// </summary>
+        public bool AttemptingAutoReconnect { get; set; }
     }
 }
