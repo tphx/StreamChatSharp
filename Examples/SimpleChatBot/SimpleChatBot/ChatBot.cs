@@ -169,7 +169,7 @@ namespace SimpleChatBot
                     Console.WriteLine("Names list: {0}.", string.Join(", ", e.ChatMessage.Message.Split(' ')));
                     break;
                 case "366":
-                    Console.WriteLine("End of names for {0}.", e.ChatMessage.Channel);
+                    Console.WriteLine("End of names for {0}.", e.ChatMessage.ChannelName);
                     break;
                 case "MODE":
                     Console.WriteLine("Set mode {0} for {1}", e.ChatMessage.Message, e.ChatMessage.Target);
@@ -214,7 +214,7 @@ namespace SimpleChatBot
                 ChatMessage replyMessage = new ChatMessage()
                 {
                     Command = "PRIVMSG",
-                    Channel = chatChannel,
+                    ChannelName = chatChannel,
                     Message = reply
                 };
                 this.chatClient.SendChatMessage(replyMessage, false);
