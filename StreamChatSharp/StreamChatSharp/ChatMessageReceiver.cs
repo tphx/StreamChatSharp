@@ -66,6 +66,7 @@ namespace Tphx.StreamChatSharp
             this.reader = new StreamReader(networkStream);
 
             this.thread = new Thread(Run);
+            this.thread.IsBackground = true;
             this.thread.Start();
             this.running = true;
         }
