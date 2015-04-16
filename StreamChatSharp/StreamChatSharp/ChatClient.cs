@@ -82,6 +82,7 @@ namespace Tphx.StreamChatSharp
                 this.connection.RawMessageReceived -= OnRawMessageReceived;
                 this.connection.ChatMessageReceived -= OnChatMessageReceived;
                 this.connection.Disconnected -= OnDisconnected;
+                this.connection.RegisteredWithServer -= OnRegisteredWithServer;
                 this.connection.Disconnect();
                 this.connection.Dispose();
 
