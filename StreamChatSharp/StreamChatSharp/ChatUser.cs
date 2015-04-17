@@ -35,7 +35,23 @@ namespace Tphx.StreamChatSharp
             /// <summary>
             /// Chat moderator.
             /// </summary>
-            Moderator
+            Moderator,
+            /// <summary>
+            /// Channel subscriber.
+            /// </summary>
+            Subscriber,
+            /// <summary>
+            /// Twitch Turbo user.
+            /// </summary>
+            Turbo,
+            /// <summary>
+            /// Twitch global moderator.
+            /// </summary>
+            GlobalModerator,
+            /// <summary>
+            /// Twitch staff.
+            /// </summary>
+            Staff
         }
 
         /// <summary>
@@ -58,6 +74,26 @@ namespace Tphx.StreamChatSharp
         public bool IsModerator { get; set; }
 
         /// <summary>
+        /// Whether or not the user a subscriber.
+        /// </summary>
+        public bool IsSubscriber { get; set; }
+
+        /// <summary>
+        /// Whether or not the user is a Twitch Turbo user.
+        /// </summary>
+        public bool IsTurbo { get; set; }
+
+        /// <summary>
+        /// Whether or not the user is a Twitch global moderator.
+        /// </summary>
+        public bool IsGlobalModerator { get; set; }
+
+        /// <summary>
+        /// Whether or not the user is a member of Twitch staff.
+        /// </summary>
+        public bool IsStaff { get; set; }
+
+        /// <summary>
         /// Toggles the special user type.
         /// </summary>
         /// <param name="specialUserType">Special user type to toggle.</param>
@@ -68,6 +104,18 @@ namespace Tphx.StreamChatSharp
             {
                 case SpecialUserType.Moderator:
                     this.IsModerator = enabled;
+                    break;
+                case SpecialUserType.Subscriber:
+                    this.IsSubscriber = enabled;
+                    break;
+                case SpecialUserType.Turbo:
+                    this.IsTurbo = enabled;
+                    break;
+                case SpecialUserType.GlobalModerator:
+                    this.IsGlobalModerator = enabled;
+                    break;
+                case SpecialUserType.Staff:
+                    this.IsStaff = enabled;
                     break;
             }
         }
