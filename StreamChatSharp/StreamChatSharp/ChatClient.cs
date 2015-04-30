@@ -228,7 +228,7 @@ namespace Tphx.StreamChatSharp
         {
             get
             {
-                return new ReadOnlyCollection<ChatChannel>(this.channels);
+                return new ReadOnlyCollection<ChatChannel>(this.channels.ToList());
             }
         }
 
@@ -277,7 +277,7 @@ namespace Tphx.StreamChatSharp
         /// <returns>Whether or not the client is in a chat channel.</returns>
         public bool IsInChatChannel(string channelName)
         {
-            return this.channels.Count(c => (c.ChannelName == channelName)) > 0;
+            return this.channels.ToList().Count(c => (c.ChannelName == channelName)) > 0;
         }
 
         /// <summary>
@@ -364,7 +364,7 @@ namespace Tphx.StreamChatSharp
             {
                 connectionTimedOut = false;
 
-                foreach (ChatChannel channel in this.channels)
+                foreach (ChatChannel channel in this.channels.ToList())
                 {
                     SendChatMessage(new ChatMessage("JOIN", channel.ChannelName), true);
                 }
@@ -451,7 +451,7 @@ namespace Tphx.StreamChatSharp
 
         private ChatChannel GetChatChannel(string channelName)
         {
-            return this.channels.First(c => (c.ChannelName == channelName));
+            return this.channels.ToList().First(c => (c.ChannelName == channelName));
         }
 
         private void OnClientRawMessageReceived(object sender, RawMessageEventArgs e)

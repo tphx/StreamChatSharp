@@ -51,7 +51,7 @@ namespace Tphx.StreamChatSharp
         {
             get
             {
-                return new ReadOnlyCollection<ChatUser>(users);
+                return new ReadOnlyCollection<ChatUser>(users.ToList());
             }
         }
 
@@ -86,13 +86,13 @@ namespace Tphx.StreamChatSharp
         {
             if(IsUserInChannel(userName))
             {
-                users.First(u => (u.UserName == userName)).ToggleSpecialUserType(specialUserType, enabled);
+                users.ToList().First(u => (u.UserName == userName)).ToggleSpecialUserType(specialUserType, enabled);
             }
         }
 
         private bool IsUserInChannel(string userName)
         {
-            return users.Count(u => (u.UserName == userName)) > 0;
+            return users.ToList().Count(u => (u.UserName == userName)) > 0;
         }
     }
 }
