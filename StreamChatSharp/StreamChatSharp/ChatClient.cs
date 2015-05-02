@@ -15,6 +15,7 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -63,7 +64,7 @@ namespace Tphx.StreamChatSharp
 
         private Connection chatConnection; // Connection for chatting.
         private Connection clientConnection; // TWITCHCLIENT connection.
-        private List<ChatChannel> channels = new List<ChatChannel>();
+        private ConcurrentDictionary<string, ChatChannel> channels = new ConcurrentDictionary<string, ChatChannel>();
         private bool connectionTimedOut = false;
         private bool disposed = false;
 
@@ -190,7 +191,7 @@ namespace Tphx.StreamChatSharp
             {
                 SendChatMessage(new ChatMessage("JOIN", channelName), true);
                 this.clientConnection.SendChatMessage(new ChatMessage("JOIN", channelName), true);
-                this.channels.Add(new ChatChannel(channelName));
+                this.channels.AddOrUpdate(channelName, new ChatChannel(channelName), ((key, oldValue) => oldValue));
             }
         }
 
@@ -216,7 +217,8 @@ namespace Tphx.StreamChatSharp
             {
                 SendChatMessage(new ChatMessage("PART", channelName), true);
                 this.clientConnection.SendChatMessage(new ChatMessage("PART", channelName), true);
-                this.channels.RemoveAll(c => (c.ChannelName == channelName));
+                ChatChannel channelToRemove;
+                this.channels.TryRemove(channelName, out channelToRemove);
             }
         }
 
@@ -228,7 +230,7 @@ namespace Tphx.StreamChatSharp
         {
             get
             {
-                return new ReadOnlyCollection<ChatChannel>(this.channels.ToList());
+                return new ReadOnlyCollection<ChatChannel>(this.channels.Values.ToList());
             }
         }
 
@@ -277,7 +279,7 @@ namespace Tphx.StreamChatSharp
         /// <returns>Whether or not the client is in a chat channel.</returns>
         public bool IsInChatChannel(string channelName)
         {
-            return this.channels.ToList().Count(c => (c.ChannelName == channelName)) > 0;
+            return this.channels.ContainsKey(channelName);
         }
 
         /// <summary>
@@ -364,9 +366,9 @@ namespace Tphx.StreamChatSharp
             {
                 connectionTimedOut = false;
 
-                foreach (ChatChannel channel in this.channels.ToList())
+                foreach (KeyValuePair<string, ChatChannel> channel in this.channels)
                 {
-                    SendChatMessage(new ChatMessage("JOIN", channel.ChannelName), true);
+                    SendChatMessage(new ChatMessage("JOIN", channel.Key), true);
                 }
             }
 
@@ -385,7 +387,8 @@ namespace Tphx.StreamChatSharp
                 !IsInChatChannel(chatMessage.ChannelName) && chatMessage.Command != "PART")
             {
                 this.clientConnection.SendChatMessage(new ChatMessage("JOIN", chatMessage.ChannelName), true);
-                this.channels.Add(new ChatChannel(chatMessage.ChannelName));
+                this.channels.AddOrUpdate(chatMessage.ChannelName, new ChatChannel(chatMessage.ChannelName), 
+                    ((key, oldValue) => oldValue));
             }
 
             if (IsInChatChannel(chatMessage.ChannelName))
@@ -410,7 +413,7 @@ namespace Tphx.StreamChatSharp
 
         private void JoinReceived(ChatMessage chatMessage)
         {
-            GetChatChannel(chatMessage.ChannelName).AddChatUser(chatMessage.Source);
+            this.channels[chatMessage.ChannelName].AddChatUser(chatMessage.Source);
         }
 
         private void NamesListReceived(ChatMessage chatMessage)
@@ -432,36 +435,29 @@ namespace Tphx.StreamChatSharp
 
         private void PartReceived(ChatMessage chatMessage)
         {
-            GetChatChannel(chatMessage.ChannelName).RemoveChatUser(chatMessage.Source);
+            this.channels[chatMessage.ChannelName].RemoveChatUser(chatMessage.Source);
         }
 
         private void ModeReceived(ChatMessage chatMessage)
         {
             if (chatMessage.Message == "+o")
             {
-                GetChatChannel(chatMessage.ChannelName).ToggleSpecialUserType(chatMessage.Target,
+                this.channels[chatMessage.ChannelName].ToggleSpecialUserType(chatMessage.Target,
                     ChatUser.SpecialUserType.Moderator, true);
             }
             else if (chatMessage.Message == "-o")
             {
-                GetChatChannel(chatMessage.ChannelName).ToggleSpecialUserType(chatMessage.Target,
+                this.channels[chatMessage.ChannelName].ToggleSpecialUserType(chatMessage.Target,
                     ChatUser.SpecialUserType.Moderator, false);
             }
         }
 
-        private ChatChannel GetChatChannel(string channelName)
-        {
-            return this.channels.ToList().First(c => (c.ChannelName == channelName));
-        }
-
         private void OnClientRawMessageReceived(object sender, RawMessageEventArgs e)
         {
-            // Do things?
         }
 
         private void OnClientChatMessageReceived(object sender, ChatMessageEventArgs e)
         {
-            // Do things!
             if (this.IsInChatChannel(e.ChatMessage.ChannelName))
             {
                 if(e.ChatMessage.Source.Equals("jtv", StringComparison.OrdinalIgnoreCase))
@@ -476,19 +472,19 @@ namespace Tphx.StreamChatSharp
                         switch(messageParts[2].ToLower())
                         {
                             case "subscriber":
-                                GetChatChannel(e.ChatMessage.ChannelName).ToggleSpecialUserType(messageParts[1],
+                                this.channels[e.ChatMessage.ChannelName].ToggleSpecialUserType(messageParts[1], 
                                     ChatUser.SpecialUserType.Subscriber, true);
                                 break;
                             case "turbo":
-                                GetChatChannel(e.ChatMessage.ChannelName).ToggleSpecialUserType(messageParts[1],
+                                this.channels[e.ChatMessage.ChannelName].ToggleSpecialUserType(messageParts[1],
                                     ChatUser.SpecialUserType.Turbo, true);
                                 break;
                             case "global_moderator":
-                                GetChatChannel(e.ChatMessage.ChannelName).ToggleSpecialUserType(messageParts[1],
+                                this.channels[e.ChatMessage.ChannelName].ToggleSpecialUserType(messageParts[1],
                                     ChatUser.SpecialUserType.GlobalModerator, true);
                                 break;
                             case "staff":
-                                GetChatChannel(e.ChatMessage.ChannelName).ToggleSpecialUserType(messageParts[1],
+                                this.channels[e.ChatMessage.ChannelName].ToggleSpecialUserType(messageParts[1],
                                     ChatUser.SpecialUserType.Staff, true);
                                 break;
                         }
