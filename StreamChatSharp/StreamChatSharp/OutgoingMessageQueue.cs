@@ -15,6 +15,7 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Timers;
 
@@ -30,8 +31,8 @@ namespace Tphx.StreamChatSharp
         /// </summary>
         public event EventHandler<ChatMessageEventArgs> MessageReady;
 
-        private Queue<ChatMessage> highPriorityMessages = new Queue<ChatMessage>();
-        private Queue<ChatMessage> normalPriorityMessages = new Queue<ChatMessage>();
+        private ConcurrentQueue<ChatMessage> highPriorityMessages = new ConcurrentQueue<ChatMessage>();
+        private ConcurrentQueue<ChatMessage> normalPriorityMessages = new ConcurrentQueue<ChatMessage>();
 
         private Timer sendMessageTimer = new Timer(1600); // 1.6 seconds.
 
@@ -147,11 +148,15 @@ namespace Tphx.StreamChatSharp
         {
             if(this.highPriorityMessages.Count > 0)
             {
-                SendMessage(this.highPriorityMessages.Dequeue());
+                ChatMessage message;
+                this.highPriorityMessages.TryDequeue(out message);
+                SendMessage(message);
             }
             else if(this.normalPriorityMessages.Count > 0)
             {
-                SendMessage(this.normalPriorityMessages.Dequeue());
+                ChatMessage message;
+                this.highPriorityMessages.TryDequeue(out message);
+                SendMessage(message);
             }
             else
             {

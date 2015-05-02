@@ -15,6 +15,7 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace Tphx.StreamChatSharp
    /// </summary>
     public class ChatChannel
     {
-        private List<ChatUser> users = new List<ChatUser>();
+        private ConcurrentDictionary<string, ChatUser> users = new ConcurrentDictionary<string, ChatUser>();
 
         /// <summary>
         /// Creates a new chat channel.
@@ -51,7 +52,7 @@ namespace Tphx.StreamChatSharp
         {
             get
             {
-                return new ReadOnlyCollection<ChatUser>(users);
+                return new ReadOnlyCollection<ChatUser>(this.users.Values.ToList());
             }
         }
 
@@ -61,10 +62,7 @@ namespace Tphx.StreamChatSharp
         /// <param name="userName">Name of the user to add.</param>
         public void AddChatUser(string userName)
         {
-            if(!IsUserInChannel(userName))
-            {
-                users.Add(new ChatUser(userName));
-            }
+            this.users.AddOrUpdate(userName, new ChatUser(userName), ((key, oldValue) => oldValue));
         }
 
         /// <summary>
@@ -73,7 +71,8 @@ namespace Tphx.StreamChatSharp
         /// <param name="userName">Name of the user to remove.</param>
         public void RemoveChatUser(string userName)
         {
-            users.RemoveAll(u => (u.UserName == userName));
+            ChatUser userToRemove;
+            this.users.TryRemove(userName, out userToRemove);
         }
 
         /// <summary>
@@ -84,15 +83,10 @@ namespace Tphx.StreamChatSharp
         /// <param name="enabled">Whether or not the special user type is enabled.</param>
         public void ToggleSpecialUserType(string userName, ChatUser.SpecialUserType specialUserType, bool enabled)
         {
-            if(IsUserInChannel(userName))
+            if(this.users.ContainsKey(userName))
             {
-                users.First(u => (u.UserName == userName)).ToggleSpecialUserType(specialUserType, enabled);
+                this.users[userName].ToggleSpecialUserType(specialUserType, enabled);
             }
-        }
-
-        private bool IsUserInChannel(string userName)
-        {
-            return users.Count(u => (u.UserName == userName)) > 0;
         }
     }
 }
