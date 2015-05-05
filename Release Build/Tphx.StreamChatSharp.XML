@@ -410,6 +410,16 @@
             Whether or not the user is a member of Twitch staff.
             </summary>
         </member>
+        <member name="P:Tphx.StreamChatSharp.ChatUser.IsAdmin">
+            <summary>
+            Whether or not the user is a Twitch administrator.
+            </summary>
+        </member>
+        <member name="P:Tphx.StreamChatSharp.ChatUser.IsChannelOwner">
+            <summary>
+            Whether or not the user is a the owner of the channel.
+            </summary>
+        </member>
         <member name="T:Tphx.StreamChatSharp.ChatUser.SpecialUserType">
             <summary>
             The various types of special users.
@@ -438,6 +448,16 @@
         <member name="F:Tphx.StreamChatSharp.ChatUser.SpecialUserType.Staff">
             <summary>
             Twitch staff.
+            </summary>
+        </member>
+        <member name="F:Tphx.StreamChatSharp.ChatUser.SpecialUserType.Admin">
+            <summary>
+            Twitch administrator.
+            </summary>
+        </member>
+        <member name="F:Tphx.StreamChatSharp.ChatUser.SpecialUserType.ChannelOwner">
+            <summary>
+            Owner of the channel.
             </summary>
         </member>
         <member name="T:Tphx.StreamChatSharp.Connection">
