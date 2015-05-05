@@ -487,6 +487,10 @@ namespace Tphx.StreamChatSharp
                                 this.channels[e.ChatMessage.ChannelName].ToggleSpecialUserType(messageParts[1],
                                     ChatUser.SpecialUserType.Staff, true);
                                 break;
+                            case "admin":
+                                this.channels[e.ChatMessage.ChannelName].ToggleSpecialUserType(messageParts[1],
+                                    ChatUser.SpecialUserType.Admin, true);
+                                break;
                         }
                     }
                 }
