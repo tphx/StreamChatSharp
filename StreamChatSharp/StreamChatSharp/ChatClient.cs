@@ -190,7 +190,12 @@ namespace Tphx.StreamChatSharp
             if (!string.IsNullOrWhiteSpace(channelName) && !IsInChatChannel(channelName))
             {
                 SendChatMessage(new ChatMessage("JOIN", channelName), true);
-                this.clientConnection.SendChatMessage(new ChatMessage("JOIN", channelName), true);
+
+                if (this.clientConnection != null)
+                {
+                    this.clientConnection.SendChatMessage(new ChatMessage("JOIN", channelName), true);
+                }
+
                 this.channels.AddOrUpdate(channelName, new ChatChannel(channelName), ((key, oldValue) => oldValue));
             }
         }
@@ -216,7 +221,12 @@ namespace Tphx.StreamChatSharp
             if (!string.IsNullOrWhiteSpace(channelName))
             {
                 SendChatMessage(new ChatMessage("PART", channelName), true);
-                this.clientConnection.SendChatMessage(new ChatMessage("PART", channelName), true);
+
+                if (this.clientConnection != null)
+                {
+                    this.clientConnection.SendChatMessage(new ChatMessage("PART", channelName), true);
+                }
+
                 ChatChannel channelToRemove;
                 this.channels.TryRemove(channelName, out channelToRemove);
             }
@@ -252,7 +262,7 @@ namespace Tphx.StreamChatSharp
         {
             get
             {
-                return this.clientConnection.Connected;
+                return this.clientConnection != null ? this.clientConnection.Connected : false;
             }
         }
 
@@ -311,7 +321,7 @@ namespace Tphx.StreamChatSharp
         {
             get
             {
-                return this.clientConnection.ConnectionRegistered; ;
+                return this.clientConnection != null ? this.clientConnection.ConnectionRegistered : false;
             }
         }
 
@@ -386,8 +396,12 @@ namespace Tphx.StreamChatSharp
             if (!string.IsNullOrWhiteSpace(chatMessage.ChannelName) && chatMessage.ChannelName.StartsWith("#") &&
                 !IsInChatChannel(chatMessage.ChannelName) && chatMessage.Command != "PART")
             {
-                this.clientConnection.SendChatMessage(new ChatMessage("JOIN", chatMessage.ChannelName), true);
-                this.channels.AddOrUpdate(chatMessage.ChannelName, new ChatChannel(chatMessage.ChannelName), 
+                if (this.clientConnection != null)
+                {
+                    this.clientConnection.SendChatMessage(new ChatMessage("JOIN", chatMessage.ChannelName), true);
+                }
+
+                this.channels.AddOrUpdate(chatMessage.ChannelName, new ChatChannel(chatMessage.ChannelName),
                     ((key, oldValue) => oldValue));
             }
 
@@ -460,19 +474,19 @@ namespace Tphx.StreamChatSharp
         {
             if (this.IsInChatChannel(e.ChatMessage.ChannelName))
             {
-                if(e.ChatMessage.Source.Equals("jtv", StringComparison.OrdinalIgnoreCase))
+                if (e.ChatMessage.Source.Equals("jtv", StringComparison.OrdinalIgnoreCase))
                 {
-                    if(e.ChatMessage.Message.StartsWith("SPECIALUSER", StringComparison.OrdinalIgnoreCase))
+                    if (e.ChatMessage.Message.StartsWith("SPECIALUSER", StringComparison.OrdinalIgnoreCase))
                     {
                         // Message should be in the following format:
                         // SPECIALUSER [username] [level]
-                        string[] messageParts = e.ChatMessage.Message.Split(new char[] { ' ' }, 
+                        string[] messageParts = e.ChatMessage.Message.Split(new char[] { ' ' },
                             StringSplitOptions.RemoveEmptyEntries);
 
-                        switch(messageParts[2].ToLower())
+                        switch (messageParts[2].ToLower())
                         {
                             case "subscriber":
-                                this.channels[e.ChatMessage.ChannelName].ToggleSpecialUserType(messageParts[1], 
+                                this.channels[e.ChatMessage.ChannelName].ToggleSpecialUserType(messageParts[1],
                                     ChatUser.SpecialUserType.Subscriber, true);
                                 break;
                             case "turbo":
@@ -494,7 +508,7 @@ namespace Tphx.StreamChatSharp
                         }
                     }
                 }
-                if(TwitchClientChatMessageReceived != null)
+                if (TwitchClientChatMessageReceived != null)
                 {
                     this.TwitchClientChatMessageReceived(sender, e);
                 }
@@ -509,7 +523,7 @@ namespace Tphx.StreamChatSharp
         {
             this.clientConnection.SendChatMessage(new ChatMessage("RAW", "TWITCHCLIENT 3"), true);
 
-            if(this.TwitchClientRegisteredWithServer != null)
+            if (this.TwitchClientRegisteredWithServer != null)
             {
                 this.TwitchClientRegisteredWithServer(this, new EventArgs());
             }
