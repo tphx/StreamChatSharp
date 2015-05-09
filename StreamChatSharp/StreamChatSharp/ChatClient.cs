@@ -479,13 +479,17 @@ namespace Tphx.StreamChatSharp
                                 this.channels[e.ChatMessage.ChannelName].ToggleSpecialUserType(messageParts[1],
                                     ChatUser.SpecialUserType.Turbo, true);
                                 break;
-                            case "global_moderator":
+                            case "global_mod":
                                 this.channels[e.ChatMessage.ChannelName].ToggleSpecialUserType(messageParts[1],
                                     ChatUser.SpecialUserType.GlobalModerator, true);
                                 break;
                             case "staff":
                                 this.channels[e.ChatMessage.ChannelName].ToggleSpecialUserType(messageParts[1],
                                     ChatUser.SpecialUserType.Staff, true);
+                                break;
+                            case "admin":
+                                this.channels[e.ChatMessage.ChannelName].ToggleSpecialUserType(messageParts[1],
+                                    ChatUser.SpecialUserType.Admin, true);
                                 break;
                         }
                     }

@@ -63,6 +63,13 @@ namespace Tphx.StreamChatSharp
         public void AddChatUser(string userName)
         {
             this.users.AddOrUpdate(userName, new ChatUser(userName), ((key, oldValue) => oldValue));
+
+            // The '#' needs to be removed from the beginning of the channel name before checking to see if it's the
+            // same as the username.
+            if(string.Equals(userName, this.ChannelName.Remove(0, 1), StringComparison.OrdinalIgnoreCase))
+            {
+                this.users[userName].IsChannelOwner = true;
+            }
         }
 
         /// <summary>

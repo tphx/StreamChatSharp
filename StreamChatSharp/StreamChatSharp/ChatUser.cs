@@ -51,7 +51,15 @@ namespace Tphx.StreamChatSharp
             /// <summary>
             /// Twitch staff.
             /// </summary>
-            Staff
+            Staff,
+            /// <summary>
+            /// Twitch administrator.
+            /// </summary>
+            Admin,
+            /// <summary>
+            /// Owner of the channel.
+            /// </summary>
+            ChannelOwner
         }
 
         /// <summary>
@@ -94,6 +102,16 @@ namespace Tphx.StreamChatSharp
         public bool IsStaff { get; set; }
 
         /// <summary>
+        /// Whether or not the user is a Twitch administrator.
+        /// </summary>
+        public bool IsAdmin { get; set; }
+
+        /// <summary>
+        /// Whether or not the user is a the owner of the channel.
+        /// </summary>
+        public bool IsChannelOwner { get; set; }
+
+        /// <summary>
         /// Toggles the special user type.
         /// </summary>
         /// <param name="specialUserType">Special user type to toggle.</param>
@@ -116,6 +134,12 @@ namespace Tphx.StreamChatSharp
                     break;
                 case SpecialUserType.Staff:
                     this.IsStaff = enabled;
+                    break;
+                case SpecialUserType.Admin:
+                    this.IsAdmin = enabled;
+                    break;
+                case SpecialUserType.ChannelOwner:
+                    this.IsChannelOwner = enabled;
                     break;
             }
         }
