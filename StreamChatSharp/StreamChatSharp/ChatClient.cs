@@ -190,12 +190,7 @@ namespace Tphx.StreamChatSharp
             if (!string.IsNullOrWhiteSpace(channelName) && !IsInChatChannel(channelName))
             {
                 SendChatMessage(new ChatMessage("JOIN", channelName), true);
-
-                if (this.clientConnection != null)
-                {
-                    this.clientConnection.SendChatMessage(new ChatMessage("JOIN", channelName), true);
-                }
-
+                this.clientConnection.SendChatMessage(new ChatMessage("JOIN", channelName), true);
                 this.channels.AddOrUpdate(channelName, new ChatChannel(channelName), ((key, oldValue) => oldValue));
             }
         }
@@ -221,12 +216,7 @@ namespace Tphx.StreamChatSharp
             if (!string.IsNullOrWhiteSpace(channelName))
             {
                 SendChatMessage(new ChatMessage("PART", channelName), true);
-
-                if (this.clientConnection != null)
-                {
-                    this.clientConnection.SendChatMessage(new ChatMessage("PART", channelName), true);
-                }
-
+                this.clientConnection.SendChatMessage(new ChatMessage("PART", channelName), true);
                 ChatChannel channelToRemove;
                 this.channels.TryRemove(channelName, out channelToRemove);
             }
@@ -262,7 +252,7 @@ namespace Tphx.StreamChatSharp
         {
             get
             {
-                return this.clientConnection != null ? this.clientConnection.Connected : false;
+                return this.clientConnection.Connected;
             }
         }
 
@@ -321,7 +311,7 @@ namespace Tphx.StreamChatSharp
         {
             get
             {
-                return this.clientConnection != null ? this.clientConnection.ConnectionRegistered : false;
+                return this.clientConnection.ConnectionRegistered; ;
             }
         }
 
@@ -396,11 +386,7 @@ namespace Tphx.StreamChatSharp
             if (!string.IsNullOrWhiteSpace(chatMessage.ChannelName) && chatMessage.ChannelName.StartsWith("#") &&
                 !IsInChatChannel(chatMessage.ChannelName) && chatMessage.Command != "PART")
             {
-                if (this.clientConnection != null)
-                {
-                    this.clientConnection.SendChatMessage(new ChatMessage("JOIN", chatMessage.ChannelName), true);
-                }
-
+                this.clientConnection.SendChatMessage(new ChatMessage("JOIN", chatMessage.ChannelName), true);
                 this.channels.AddOrUpdate(chatMessage.ChannelName, new ChatChannel(chatMessage.ChannelName), 
                     ((key, oldValue) => oldValue));
             }
