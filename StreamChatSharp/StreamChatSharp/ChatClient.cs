@@ -66,6 +66,7 @@ namespace Tphx.StreamChatSharp
         private Connection clientConnection; // TWITCHCLIENT connection.
         private ConcurrentDictionary<string, ChatChannel> channels = new ConcurrentDictionary<string, ChatChannel>();
         private bool connectionTimedOut = false;
+        private bool clientConnectionTimedOut = false;
         private bool disposed = false;
 
         /// <summary>
@@ -517,11 +518,31 @@ namespace Tphx.StreamChatSharp
 
         private void OnClientDisconnected(object sender, DisconnectedEventArgs e)
         {
+            if (e.Reason == DisconnectedEventArgs.DisconnectReason.TimedOut)
+            {
+                this.clientConnectionTimedOut = true;
+            }
+
+            if(this.TwitchClientDisconnected != null)
+            {
+                this.TwitchClientDisconnected(sender, e);
+            }
         }
 
         private void OnClientRegisteredWithServer(object sender, EventArgs e)
         {
             this.clientConnection.SendChatMessage(new ChatMessage("RAW", "TWITCHCLIENT 3"), true);
+
+            // If we are connecting after a timeout we need to rejoin all of the channels we are supposed to be in.
+            if (this.clientConnectionTimedOut)
+            {
+                clientConnectionTimedOut = false;
+
+                foreach (KeyValuePair<string, ChatChannel> channel in this.channels)
+                {
+                    SendChatMessage(new ChatMessage("JOIN", channel.Key), true);
+                }
+            }
 
             if (this.TwitchClientRegisteredWithServer != null)
             {
