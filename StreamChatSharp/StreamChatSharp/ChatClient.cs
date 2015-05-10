@@ -58,6 +58,11 @@ namespace Tphx.StreamChatSharp
         public event EventHandler<ChatMessageEventArgs> TwitchClientChatMessageReceived;
 
         /// <summary>
+        /// Triggered whenever a TWITCHCLIENT raw message is received.
+        /// </summary>
+        public event EventHandler<RawMessageEventArgs> TwitchClientRawMessageReceived;
+
+        /// <summary>
         /// Triggered when the connection has successfully registered with the server.
         /// </summary>
         public event EventHandler TwitchClientRegisteredWithServer;
@@ -469,6 +474,10 @@ namespace Tphx.StreamChatSharp
 
         private void OnClientRawMessageReceived(object sender, RawMessageEventArgs e)
         {
+            if(this.TwitchClientRawMessageReceived != null)
+            {
+                this.TwitchClientRawMessageReceived(sender, e);
+            }
         }
 
         private void OnClientChatMessageReceived(object sender, ChatMessageEventArgs e)
