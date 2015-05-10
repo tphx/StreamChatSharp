@@ -152,6 +152,11 @@
             Triggered whenever a TWITCHCLIENT chat message is received.
             </summary>
         </member>
+        <member name="E:Tphx.StreamChatSharp.ChatClient.TwitchClientRawMessageReceived">
+            <summary>
+            Triggered whenever a TWITCHCLIENT raw message is received.
+            </summary>
+        </member>
         <member name="E:Tphx.StreamChatSharp.ChatClient.TwitchClientRegisteredWithServer">
             <summary>
             Triggered when the connection has successfully registered with the server.
