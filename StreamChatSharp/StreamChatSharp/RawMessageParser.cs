@@ -135,16 +135,6 @@ namespace Tphx.StreamChatSharp
                             chatMessage.ChannelName = rawMessageParts[(int)RawMessagePart.MessageChannel];
                             chatMessage.Source = GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]);
                             break;
-                        case "CLEARCHAT":
-                            // :tmi.twitch.tv CLEARCHAT #channelname :issuerusername
-                            chatMessage.Command = rawMessageParts[(int)RawMessagePart.Command];
-                            // When a user is timed out their name will be contained in the message, when the entire 
-                            // chat has be cleared no name will be included.
-                            chatMessage.Message = (((int)RawMessagePart.MessageStart < rawMessageParts.Count) ?
-                                GetMessageFromRawMessage(rawMessageParts, (int)RawMessagePart.MessageStart) : "");
-                            chatMessage.ChannelName = rawMessageParts[(int)RawMessagePart.MessageChannel];
-                            chatMessage.Source = GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]);
-                            break;
                         case "CAP":
                             // :tmi.twitch.tv CAP * ACK :twitch.tv/tags
                             chatMessage.Command = rawMessageParts[(int)RawMessagePart.Command];
@@ -159,7 +149,9 @@ namespace Tphx.StreamChatSharp
                         case "NOTICE":
                             // :tmi.twitch.tv NOTICE #channelname :This room is now in r9k mode.
                         case "HOSTTARGET":
-                        // :tmi.twitch.tv HOSTTARGET #channelname :username 1 
+                        // :tmi.twitch.tv HOSTTARGET #channelname :username 1
+                        case "CLEARCHAT":
+                            // :tmi.twitch.tv CLEARCHAT #channelname :issuerusername
                         default:
                             // Try to parse the message in the standard message format
                             // :nickname!nickname@nickname.tmi.twitch.tv PRIVMSG #channel :This is the message.
@@ -214,8 +206,8 @@ namespace Tphx.StreamChatSharp
         {
             // IRC prefixes most messages with ':' to indicate the message may contain spaces. It's not actually part of
             // the message and should be removed.
-            return string.Join(" ", rawMessage.ToArray(), messageStartIndex, (rawMessage.Count - messageStartIndex))
-                .Trim().Remove(0, 1);
+            return (messageStartIndex < rawMessage.Count) ? string.Join(" ", rawMessage.ToArray(), messageStartIndex, 
+                (rawMessage.Count - messageStartIndex)).Trim().Remove(0, 1) : "";
         }
     }
 }
