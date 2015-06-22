@@ -57,7 +57,6 @@ namespace Tphx.StreamChatSharp
         {
             List<string> rawMessageParts = rawMessage.Split(' ').ToList();
             ChatMessage chatMessage = new ChatMessage();
-
             try 
             {
                 // Message tags are prepended to the begining of the raw message and are identified by the prefix '@'.
@@ -141,8 +140,8 @@ namespace Tphx.StreamChatSharp
                             chatMessage.Command = rawMessageParts[(int)RawMessagePart.Command];
                             // When a user is timed out their name will be contained in the message, when the entire 
                             // chat has be cleared no name will be included.
-                            chatMessage.Message = (((int)RawMessagePart.MessageStart > rawMessageParts.Count) ? "" :
-                                GetMessageFromRawMessage(rawMessageParts, (int)RawMessagePart.MessageStart));
+                            chatMessage.Message = (((int)RawMessagePart.MessageStart < rawMessageParts.Count) ?
+                                GetMessageFromRawMessage(rawMessageParts, (int)RawMessagePart.MessageStart) : "");
                             chatMessage.ChannelName = rawMessageParts[(int)RawMessagePart.MessageChannel];
                             chatMessage.Source = GetSourceFromRawMessage(rawMessageParts[(int)RawMessagePart.Source]);
                             break;
