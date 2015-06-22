@@ -47,31 +47,9 @@ namespace Tphx.StreamChatSharp
         /// </summary>
         public event EventHandler RegisteredWithServer;
 
-        /// <summary>
-        /// Triggered whenever the TWITCHCLIENT connection is disconnected.
-        /// </summary>
-        public event EventHandler<DisconnectedEventArgs> TwitchClientDisconnected;
-
-        /// <summary>
-        /// Triggered whenever a TWITCHCLIENT chat message is received.
-        /// </summary>
-        public event EventHandler<ChatMessageEventArgs> TwitchClientChatMessageReceived;
-
-        /// <summary>
-        /// Triggered whenever a TWITCHCLIENT raw message is received.
-        /// </summary>
-        public event EventHandler<RawMessageEventArgs> TwitchClientRawMessageReceived;
-
-        /// <summary>
-        /// Triggered when the connection has successfully registered with the server.
-        /// </summary>
-        public event EventHandler TwitchClientRegisteredWithServer;
-
-        private Connection chatConnection; // Connection for chatting.
-        private Connection clientConnection; // TWITCHCLIENT connection.
+        private Connection chatConnection;
         private ConcurrentDictionary<string, ChatChannel> channels = new ConcurrentDictionary<string, ChatChannel>();
         private bool connectionTimedOut = false;
-        private bool clientConnectionTimedOut = false;
         private bool disposed = false;
 
         /// <summary>
@@ -96,27 +74,6 @@ namespace Tphx.StreamChatSharp
         }
 
         /// <summary>
-        /// Connects to the Twitch IRC server using the connection data with the option to create a second connection
-        /// for receiving TWITCHCLIENT messages.
-        /// </summary>
-        /// <param name="connectionData">Data to connect with.</param>
-        /// <param name="useTwitchClient">Whether or not to register a second connection for processiong TWITCHCLIENT 
-        /// messages. Current version: IrcV3 (TWITCHCLIENT 3)</param>
-        public void ConnectToChat(ConnectionData connectionData, bool useTwitchClient)
-        {
-            ConnectToChat(connectionData);
-
-            if (useTwitchClient)
-            {
-                this.clientConnection = new Connection(connectionData);
-                this.clientConnection.RawMessageReceived += OnClientRawMessageReceived;
-                this.clientConnection.ChatMessageReceived += OnClientChatMessageReceived;
-                this.clientConnection.Disconnected += OnClientDisconnected;
-                this.clientConnection.RegisteredWithServer += OnClientRegisteredWithServer;
-            }
-        }
-
-        /// <summary>
         /// Disconnects from the Twitch IRC server.
         /// </summary>
         public void Disconnect()
@@ -135,22 +92,6 @@ namespace Tphx.StreamChatSharp
                 if (this.Disconnected != null)
                 {
                     this.Disconnected(this,
-                        new DisconnectedEventArgs(DisconnectedEventArgs.DisconnectReason.ClientDisconnected, false));
-                }
-            }
-
-            if (this.clientConnection != null && this.clientConnection.Connected)
-            {
-                this.clientConnection.RawMessageReceived -= OnClientRawMessageReceived;
-                this.clientConnection.ChatMessageReceived -= OnClientChatMessageReceived;
-                this.clientConnection.Disconnected -= OnClientDisconnected;
-                this.clientConnection.RegisteredWithServer -= OnClientRegisteredWithServer;
-                this.clientConnection.Disconnect();
-                this.clientConnection.Dispose();
-
-                if (this.TwitchClientDisconnected != null)
-                {
-                    this.TwitchClientDisconnected(this,
                         new DisconnectedEventArgs(DisconnectedEventArgs.DisconnectReason.ClientDisconnected, false));
                 }
             }
@@ -196,12 +137,6 @@ namespace Tphx.StreamChatSharp
             if (!string.IsNullOrWhiteSpace(channelName) && !IsInChatChannel(channelName))
             {
                 SendChatMessage(new ChatMessage("JOIN", channelName), true);
-
-                if (this.clientConnection != null)
-                {
-                    this.clientConnection.SendChatMessage(new ChatMessage("JOIN", channelName), true);
-                }
-
                 this.channels.AddOrUpdate(channelName, new ChatChannel(channelName), ((key, oldValue) => oldValue));
             }
         }
@@ -227,12 +162,6 @@ namespace Tphx.StreamChatSharp
             if (!string.IsNullOrWhiteSpace(channelName))
             {
                 SendChatMessage(new ChatMessage("PART", channelName), true);
-
-                if (this.clientConnection != null)
-                {
-                    this.clientConnection.SendChatMessage(new ChatMessage("PART", channelName), true);
-                }
-
                 ChatChannel channelToRemove;
                 this.channels.TryRemove(channelName, out channelToRemove);
             }
@@ -258,17 +187,6 @@ namespace Tphx.StreamChatSharp
             get
             {
                 return this.chatConnection.Connected;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not the TWITCHCLIENT is connected to the IRC server.
-        /// </summary>
-        public bool TwitchClientConnected
-        {
-            get
-            {
-                return this.clientConnection != null ? this.clientConnection.Connected : false;
             }
         }
 
@@ -317,17 +235,6 @@ namespace Tphx.StreamChatSharp
             get
             {
                 return this.chatConnection.ConnectionRegistered;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not the TWITCHCLIENT connection has been registered.
-        /// </summary>
-        public bool TwitchClientConnectionRegistered
-        {
-            get
-            {
-                return this.clientConnection != null ? this.clientConnection.ConnectionRegistered : false;
             }
         }
 
@@ -402,11 +309,6 @@ namespace Tphx.StreamChatSharp
             if (!string.IsNullOrWhiteSpace(chatMessage.ChannelName) && chatMessage.ChannelName.StartsWith("#") &&
                 !IsInChatChannel(chatMessage.ChannelName) && chatMessage.Command != "PART")
             {
-                if (this.clientConnection != null)
-                {
-                    this.clientConnection.SendChatMessage(new ChatMessage("JOIN", chatMessage.ChannelName), true);
-                }
-
                 this.channels.AddOrUpdate(chatMessage.ChannelName, new ChatChannel(chatMessage.ChannelName),
                     ((key, oldValue) => oldValue));
             }
@@ -469,93 +371,6 @@ namespace Tphx.StreamChatSharp
             {
                 this.channels[chatMessage.ChannelName].ToggleSpecialUserType(chatMessage.Target,
                     ChatUser.SpecialUserType.Moderator, false);
-            }
-        }
-
-        private void OnClientRawMessageReceived(object sender, RawMessageEventArgs e)
-        {
-            if(this.TwitchClientRawMessageReceived != null)
-            {
-                this.TwitchClientRawMessageReceived(sender, e);
-            }
-        }
-
-        private void OnClientChatMessageReceived(object sender, ChatMessageEventArgs e)
-        {
-            if (this.IsInChatChannel(e.ChatMessage.ChannelName))
-            {
-                if (e.ChatMessage.Source.Equals("jtv", StringComparison.OrdinalIgnoreCase))
-                {
-                    if (e.ChatMessage.Message.StartsWith("SPECIALUSER", StringComparison.OrdinalIgnoreCase))
-                    {
-                        // Message should be in the following format:
-                        // SPECIALUSER [username] [level]
-                        string[] messageParts = e.ChatMessage.Message.Split(new char[] { ' ' },
-                            StringSplitOptions.RemoveEmptyEntries);
-
-                        switch (messageParts[2].ToLower())
-                        {
-                            case "subscriber":
-                                this.channels[e.ChatMessage.ChannelName].ToggleSpecialUserType(messageParts[1],
-                                    ChatUser.SpecialUserType.Subscriber, true);
-                                break;
-                            case "turbo":
-                                this.channels[e.ChatMessage.ChannelName].ToggleSpecialUserType(messageParts[1],
-                                    ChatUser.SpecialUserType.Turbo, true);
-                                break;
-                            case "global_mod":
-                                this.channels[e.ChatMessage.ChannelName].ToggleSpecialUserType(messageParts[1],
-                                    ChatUser.SpecialUserType.GlobalModerator, true);
-                                break;
-                            case "staff":
-                                this.channels[e.ChatMessage.ChannelName].ToggleSpecialUserType(messageParts[1],
-                                    ChatUser.SpecialUserType.Staff, true);
-                                break;
-                            case "admin":
-                                this.channels[e.ChatMessage.ChannelName].ToggleSpecialUserType(messageParts[1],
-                                    ChatUser.SpecialUserType.Admin, true);
-                                break;
-                        }
-                    }
-                }
-                if (TwitchClientChatMessageReceived != null)
-                {
-                    this.TwitchClientChatMessageReceived(sender, e);
-                }
-            }
-        }
-
-        private void OnClientDisconnected(object sender, DisconnectedEventArgs e)
-        {
-            if (e.Reason == DisconnectedEventArgs.DisconnectReason.TimedOut)
-            {
-                this.clientConnectionTimedOut = true;
-            }
-
-            if(this.TwitchClientDisconnected != null)
-            {
-                this.TwitchClientDisconnected(sender, e);
-            }
-        }
-
-        private void OnClientRegisteredWithServer(object sender, EventArgs e)
-        {
-            this.clientConnection.SendChatMessage(new ChatMessage("RAW", "TWITCHCLIENT 3"), true);
-
-            // If we are connecting after a timeout we need to rejoin all of the channels we are supposed to be in.
-            if (this.clientConnectionTimedOut)
-            {
-                clientConnectionTimedOut = false;
-
-                foreach (KeyValuePair<string, ChatChannel> channel in this.channels)
-                {
-                    SendChatMessage(new ChatMessage("JOIN", channel.Key), true);
-                }
-            }
-
-            if (this.TwitchClientRegisteredWithServer != null)
-            {
-                this.TwitchClientRegisteredWithServer(this, new EventArgs());
             }
         }
     }
