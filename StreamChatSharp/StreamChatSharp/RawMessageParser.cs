@@ -175,11 +175,6 @@ namespace Tphx.StreamChatSharp
             }
             // The message is unknown or malformed but might still be important, send it back in it's raw form 
             // so thats it isn't lost.
-            catch (IndexOutOfRangeException)
-            {
-                chatMessage.Command = "RAW";
-                chatMessage.Message = rawMessage;
-            }
             catch (ArgumentOutOfRangeException)
             {
                 chatMessage.Command = "RAW";
