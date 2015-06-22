@@ -27,6 +27,7 @@ namespace Tphx.StreamChatSharp
         private string channelName;
         private string command;
         private string message;
+        private string tags;
 
         /// <summary>
         /// Creates a message.
@@ -173,6 +174,21 @@ namespace Tphx.StreamChatSharp
             set
             {
                 this.message = value;
+            }
+        }
+
+        /// <summary>
+        /// IRC message tags that are included when the tags capability has been requested from the IRC server.
+        /// </summary>
+        public string Tags
+        {
+            get
+            {
+                return this.tags ?? "";
+            }
+            set
+            {
+                this.tags = value;
             }
         }
     }

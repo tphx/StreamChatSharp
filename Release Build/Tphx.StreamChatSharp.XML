@@ -61,15 +61,6 @@
             </summary>
             <param name="connectionData">Data to connect with.</param>
         </member>
-        <member name="M:Tphx.StreamChatSharp.ChatClient.ConnectToChat(Tphx.StreamChatSharp.ConnectionData,System.Boolean)">
-            <summary>
-            Connects to the Twitch IRC server using the connection data with the option to create a second connection
-            for receiving TWITCHCLIENT messages.
-            </summary>
-            <param name="connectionData">Data to connect with.</param>
-            <param name="useTwitchClient">Whether or not to register a second connection for processiong TWITCHCLIENT 
-            messages. Current version: IrcV3 (TWITCHCLIENT 3)</param>
-        </member>
         <member name="M:Tphx.StreamChatSharp.ChatClient.Disconnect">
             <summary>
             Disconnects from the Twitch IRC server.
@@ -142,26 +133,6 @@
             Triggered when the connection has successfully registered with the server.
             </summary>
         </member>
-        <member name="E:Tphx.StreamChatSharp.ChatClient.TwitchClientDisconnected">
-            <summary>
-            Triggered whenever the TWITCHCLIENT connection is disconnected.
-            </summary>
-        </member>
-        <member name="E:Tphx.StreamChatSharp.ChatClient.TwitchClientChatMessageReceived">
-            <summary>
-            Triggered whenever a TWITCHCLIENT chat message is received.
-            </summary>
-        </member>
-        <member name="E:Tphx.StreamChatSharp.ChatClient.TwitchClientRawMessageReceived">
-            <summary>
-            Triggered whenever a TWITCHCLIENT raw message is received.
-            </summary>
-        </member>
-        <member name="E:Tphx.StreamChatSharp.ChatClient.TwitchClientRegisteredWithServer">
-            <summary>
-            Triggered when the connection has successfully registered with the server.
-            </summary>
-        </member>
         <member name="P:Tphx.StreamChatSharp.ChatClient.Channels">
             <summary>
             Gets a collection of the chat channels the client is currently in.
@@ -171,11 +142,6 @@
         <member name="P:Tphx.StreamChatSharp.ChatClient.Connected">
             <summary>
             Whether or not the client is connected to the IRC server.
-            </summary>
-        </member>
-        <member name="P:Tphx.StreamChatSharp.ChatClient.TwitchClientConnected">
-            <summary>
-            Whether or not the TWITCHCLIENT is connected to the IRC server.
             </summary>
         </member>
         <member name="P:Tphx.StreamChatSharp.ChatClient.MessageSendInterval">
@@ -192,11 +158,6 @@
         <member name="P:Tphx.StreamChatSharp.ChatClient.ConnectionRegistered">
             <summary>
             Whether or not the connection has been registered with the server.
-            </summary>
-        </member>
-        <member name="P:Tphx.StreamChatSharp.ChatClient.TwitchClientConnectionRegistered">
-            <summary>
-            Whether or not the TWITCHCLIENT connection has been registered.
             </summary>
         </member>
         <member name="T:Tphx.StreamChatSharp.ChatMessage">
@@ -272,6 +233,11 @@
         <member name="P:Tphx.StreamChatSharp.ChatMessage.Message">
             <summary>
             The message that was sent.
+            </summary>
+        </member>
+        <member name="P:Tphx.StreamChatSharp.ChatMessage.Tags">
+            <summary>
+            IRC message tags that are included when the tags capability has been requested from the IRC server.
             </summary>
         </member>
         <member name="T:Tphx.StreamChatSharp.ChatMessageEventArgs">
