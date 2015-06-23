@@ -112,11 +112,11 @@ namespace Tphx.StreamChatSharp
         public bool IsChannelOwner { get; set; }
 
         /// <summary>
-        /// Toggles the special user type.
+        /// Sets the special user type.
         /// </summary>
         /// <param name="specialUserType">Special user type to toggle.</param>
         /// <param name="enabled">Whether or not the special user type is enabled.</param>
-        public void ToggleSpecialUserType(SpecialUserType specialUserType, bool enabled)
+        public void SetSpecialUserType(SpecialUserType specialUserType, bool enabled)
         {
             switch (specialUserType)
             {

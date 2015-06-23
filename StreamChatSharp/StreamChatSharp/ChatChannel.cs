@@ -83,16 +83,16 @@ namespace Tphx.StreamChatSharp
         }
 
         /// <summary>
-        /// Toggles the special user type for a user in the channel.
+        /// Sets the special user type for a user in the channel.
         /// </summary>
         /// <param name="userName">Name of the user to toggle the special user type for.</param>
         /// <param name="specialUserType">Special user type to toggle.</param>
         /// <param name="enabled">Whether or not the special user type is enabled.</param>
-        public void ToggleSpecialUserType(string userName, ChatUser.SpecialUserType specialUserType, bool enabled)
+        public void SetSpecialUserType(string userName, ChatUser.SpecialUserType specialUserType, bool enabled)
         {
             if(this.users.ContainsKey(userName))
             {
-                this.users[userName].ToggleSpecialUserType(specialUserType, enabled);
+                this.users[userName].SetSpecialUserType(specialUserType, enabled);
             }
         }
     }
