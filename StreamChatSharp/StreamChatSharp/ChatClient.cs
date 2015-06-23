@@ -66,11 +66,14 @@ namespace Tphx.StreamChatSharp
         /// <param name="connectionData">Data to connect with.</param>
         public void ConnectToChat(ConnectionData connectionData)
         {
-            this.chatConnection = new Connection(connectionData);
-            this.chatConnection.RawMessageReceived += OnRawMessageReceived;
-            this.chatConnection.ChatMessageReceived += OnChatMessageReceived;
-            this.chatConnection.Disconnected += OnDisconnected;
-            this.chatConnection.RegisteredWithServer += OnRegisteredWithServer;
+            if (!this.Connected)
+            {
+                this.chatConnection = new Connection(connectionData);
+                this.chatConnection.RawMessageReceived += OnRawMessageReceived;
+                this.chatConnection.ChatMessageReceived += OnChatMessageReceived;
+                this.chatConnection.Disconnected += OnDisconnected;
+                this.chatConnection.RegisteredWithServer += OnRegisteredWithServer;
+            }
         }
 
         /// <summary>
@@ -186,7 +189,7 @@ namespace Tphx.StreamChatSharp
         {
             get
             {
-                return this.chatConnection.Connected;
+                return (this.chatConnection != null && this.chatConnection.Connected);
             }
         }
 
