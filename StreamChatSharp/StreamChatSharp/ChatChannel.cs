@@ -30,6 +30,7 @@ namespace Tphx.StreamChatSharp
     public class ChatChannel
     {
         private ConcurrentDictionary<string, ChatUser> users = new ConcurrentDictionary<string, ChatUser>();
+        private string broadcasterLanguage;
 
         /// <summary>
         /// Creates a new chat channel.
@@ -94,6 +95,78 @@ namespace Tphx.StreamChatSharp
             {
                 this.users[userName].SetSpecialUserType(specialUserType, enabled);
             }
+        }
+
+        /// <summary>
+        /// Whether or not the channel is in subscribers only mode.
+        /// </summary>
+        public bool SubscribersOnlyModeEnabled { get; private set; }
+
+        /// <summary>
+        /// Whether or not slow mode is enabled on the channel.
+        /// </summary>
+        public bool SlowModeEnabled 
+        { 
+            get
+            {
+                return (this.SlowModeInterval > 0);
+            }
+        }
+
+        /// <summary>
+        /// Interval (seconds) a user must wait beteen sending messages.
+        /// </summary>
+        public int SlowModeInterval { get; private set; }
+
+        /// <summary>
+        /// Whether or not R9K mode is enabled in the channel.
+        /// </summary>
+        public bool R9KModeEnabled { get; private set; }
+
+        /// <summary>
+        /// Language spoken by the broadcaster.
+        /// </summary>
+        public string BroadcasterLanguage
+        {
+            get
+            {
+                return this.broadcasterLanguage ?? "English";
+            }
+        }
+
+        /// <summary>
+        /// Sets the room states for the channel.
+        /// </summary>
+        /// <param name="roomStateMessage"></param>
+        internal void SetRoomState(ChatMessage roomStateMessage)
+        {
+                // The rooms state can contain one state or various states delimited by semicolons.
+                // broadcaster-lang=;r9k=0;slow=0;subs-only=0 
+                string[] states = roomStateMessage.Tags.Split(';');
+
+                for(int a = 0; a < states.Length; a++)
+                {
+                    string[] state = states[a].Split('=');
+
+                    switch(state[0])
+                    {
+                        case "broadcaster-lang":
+                            // If it's english, the language will be blank.
+                            this.broadcasterLanguage = string.IsNullOrEmpty(state[1]) ? "English" : 
+                                state[1];
+                            break;
+                        case "r9k":
+                            this.R9KModeEnabled = Convert.ToBoolean(Convert.ToInt32(state[1]));
+                            break;
+                        case "slow":
+                            this.SlowModeInterval = Convert.ToInt32(state[1].ToString());
+                            break;
+                        case "subs-only":
+                            this.SubscribersOnlyModeEnabled = Convert.ToBoolean(Convert.ToInt32(state[1]));
+                            break;
+                    }
+                }
+            
         }
     }
 }

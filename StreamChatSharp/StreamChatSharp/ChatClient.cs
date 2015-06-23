@@ -367,6 +367,9 @@ namespace Tphx.StreamChatSharp
                     case "MODE":
                         ModeReceived(chatMessage);
                         break;
+                    case "ROOMSTATE":
+                        this.channels[chatMessage.ChannelName].SetRoomState(chatMessage);
+                        break;
                 }
             }
         }
@@ -402,12 +405,12 @@ namespace Tphx.StreamChatSharp
         {
             if (chatMessage.Message == "+o")
             {
-                this.channels[chatMessage.ChannelName].ToggleSpecialUserType(chatMessage.Target,
+                this.channels[chatMessage.ChannelName].SetSpecialUserType(chatMessage.Target,
                     ChatUser.SpecialUserType.Moderator, true);
             }
             else if (chatMessage.Message == "-o")
             {
-                this.channels[chatMessage.ChannelName].ToggleSpecialUserType(chatMessage.Target,
+                this.channels[chatMessage.ChannelName].SetSpecialUserType(chatMessage.Target,
                     ChatUser.SpecialUserType.Moderator, false);
             }
         }
