@@ -59,7 +59,7 @@ namespace Tphx.StreamChatSharp
         /// /// <param name="highPriorityMessage">Whether or not the message is a high priority message.</param>
         public void SendMessage(ChatMessage chatMessage, bool highPriorityMessage)
         {
-            if (!string.IsNullOrWhiteSpace(chatMessage.Command))
+            if (this.running && !string.IsNullOrWhiteSpace(chatMessage.Command))
             {
                 this.outgoingMessageQueue.AddMessage(chatMessage, highPriorityMessage);
             }
@@ -88,6 +88,7 @@ namespace Tphx.StreamChatSharp
         /// </summary>
         public void Stop()
         {
+            this.outgoingMessageQueue.ClearMessages();
             this.writer.Dispose();
             this.running = false;
         }
