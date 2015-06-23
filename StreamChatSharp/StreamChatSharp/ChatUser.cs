@@ -114,7 +114,7 @@ namespace Tphx.StreamChatSharp
         /// <summary>
         /// Sets the special user type.
         /// </summary>
-        /// <param name="specialUserType">Special user type to toggle.</param>
+        /// <param name="specialUserType">Special user type to set.</param>
         /// <param name="enabled">Whether or not the special user type is enabled.</param>
         public void SetSpecialUserType(SpecialUserType specialUserType, bool enabled)
         {
