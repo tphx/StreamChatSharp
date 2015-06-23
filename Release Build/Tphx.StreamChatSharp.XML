@@ -61,6 +61,15 @@
             </summary>
             <param name="connectionData">Data to connect with.</param>
         </member>
+        <member name="M:Tphx.StreamChatSharp.ChatClient.ConnectToChat(Tphx.StreamChatSharp.ConnectionData,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Connects to the Twitch IRC server using the connection data and enables IRCv3 capabilities.
+            </summary>
+            <param name="connectionData">Data to connect with.</param>
+            <param name="enableTagsCap">Whether or not to enable the tags capability.</param>
+            <param name="enableMembershipCap">Whether or not to enable the membership capability.</param>
+            <param name="enableCommandsCap">Whether or not to enable the commands capability.</param>
+        </member>
         <member name="M:Tphx.StreamChatSharp.ChatClient.Disconnect">
             <summary>
             Disconnects from the Twitch IRC server.
@@ -436,11 +445,10 @@
             Manages a conection to an IRC server.
             </summary>
         </member>
-        <member name="M:Tphx.StreamChatSharp.Connection.#ctor(Tphx.StreamChatSharp.ConnectionData)">
+        <member name="M:Tphx.StreamChatSharp.Connection.#ctor">
             <summary>
             Connects to an IRC server.
             </summary>
-            <param name="serverConnectionData">The data to use for connecting to the server.</param>
         </member>
         <member name="M:Tphx.StreamChatSharp.Connection.Dispose">
             <summary>
@@ -458,6 +466,12 @@
             </summary>
             <param name="chatMessage">The raw message to send to the server.</param>
             /// <param name="highPriorityMessage">Whether or not the message is a high priority message.</param>
+        </member>
+        <member name="M:Tphx.StreamChatSharp.Connection.ConnectToServer(Tphx.StreamChatSharp.ConnectionData)">
+            <summary>
+            Connects to an IRC server.
+            </summary>
+            <param name="serverConnectionData">Data to connect with.</param>
         </member>
         <member name="E:Tphx.StreamChatSharp.Connection.RawMessageReceived">
             <summary>
@@ -581,6 +595,11 @@
         <member name="F:Tphx.StreamChatSharp.DisconnectedEventArgs.DisconnectReason.Disposed">
             <summary>
             The connection has been disposed.
+            </summary>
+        </member>
+        <member name="F:Tphx.StreamChatSharp.DisconnectedEventArgs.DisconnectReason.HostNotFound">
+            <summary>
+            The host being connected to could not be found.
             </summary>
         </member>
         <member name="T:Tphx.StreamChatSharp.OutgoingMessageQueue">
