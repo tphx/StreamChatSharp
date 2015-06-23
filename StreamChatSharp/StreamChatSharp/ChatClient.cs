@@ -51,6 +51,9 @@ namespace Tphx.StreamChatSharp
         private ConcurrentDictionary<string, ChatChannel> channels = new ConcurrentDictionary<string, ChatChannel>();
         private bool connectionTimedOut = false;
         private bool disposed = false;
+        private bool tagsCapEnabled = false;
+        private bool membershipCapEnabled = false;
+        private bool commandsCapEnabled = false;
 
         /// <summary>
         /// Disposes of everything and disconnects from the chat server.
@@ -75,6 +78,22 @@ namespace Tphx.StreamChatSharp
                 this.chatConnection.RegisteredWithServer += OnRegisteredWithServer;
                 this.chatConnection.ConnectToServer(connectionData);
             }
+        }
+
+        /// <summary>
+        /// Connects to the Twitch IRC server using the connection data and enables IRCv3 capabilities.
+        /// </summary>
+        /// <param name="connectionData">Data to connect with.</param>
+        /// <param name="enableTagsCap">Whether or not to enable the tags capability.</param>
+        /// <param name="enableMembershipCap">Whether or not to enable the membership capability.</param>
+        /// <param name="enableCommandsCap">Whether or not to enable the commands capability.</param>
+        public void ConnectToChat(ConnectionData connectionData, bool enableTagsCap, bool enableMembershipCap,
+            bool enableCommandsCap)
+        {
+            ConnectToChat(connectionData);
+            this.tagsCapEnabled = enableTagsCap;
+            this.membershipCapEnabled = enableMembershipCap;
+            this.commandsCapEnabled = enableCommandsCap;
         }
 
         /// <summary>
@@ -288,6 +307,21 @@ namespace Tphx.StreamChatSharp
 
         private void OnRegisteredWithServer(object sender, EventArgs e)
         {
+            if(this.tagsCapEnabled)
+            {
+                SendRawMessage("CAP REQ :twitch.tv/tags", true);
+            }
+
+            if(this.membershipCapEnabled)
+            {
+                SendRawMessage("CAP REQ :twitch.tv/membership", true);
+            }
+
+            if(this.commandsCapEnabled)
+            {
+                SendRawMessage("CAP REQ :twitch.tv/commands", true);
+            }
+
             // If we are connecting after a timeout we need to rejoin all of the channels we are supposed to be in.
             if (connectionTimedOut)
             {
