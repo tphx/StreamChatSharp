@@ -356,10 +356,14 @@ namespace Tphx.StreamChatSharp
                 switch (chatMessage.Command)
                 {
                     case "JOIN":
-                        JoinReceived(chatMessage);
-                        break;
                     case "PART":
-                        PartReceived(chatMessage);
+                    case "PRIVMSG":
+                        this.channels[chatMessage.ChannelName].SetUserState(chatMessage);
+                        break;
+                    case "USERSTATE":
+                        // The source of USERSTATE is tmi but it describes us so we need to change it.
+                        chatMessage.Source = this.ConnectionData.Nickname;
+                        this.channels[chatMessage.ChannelName].SetUserState(chatMessage);
                         break;
                     case "353":
                         NamesListReceived(chatMessage);
@@ -374,11 +378,6 @@ namespace Tphx.StreamChatSharp
             }
         }
 
-        private void JoinReceived(ChatMessage chatMessage)
-        {
-            this.channels[chatMessage.ChannelName].AddChatUser(chatMessage.Source);
-        }
-
         private void NamesListReceived(ChatMessage chatMessage)
         {
             string[] userNames = chatMessage.Message.Split(' ');
@@ -386,32 +385,36 @@ namespace Tphx.StreamChatSharp
             // Names list is basically a compact list of JOINs for people who are already in the channel when we join.
             for (int a = 0; a < userNames.Length; a++)
             {
-                JoinReceived(
+                this.channels[chatMessage.ChannelName].SetUserState(
                     new ChatMessage()
                     {
                         Command = "JOIN",
-                        ChannelName = chatMessage.ChannelName,
                         Source = userNames[a]
                     });
             }
         }
 
-        private void PartReceived(ChatMessage chatMessage)
-        {
-            this.channels[chatMessage.ChannelName].RemoveChatUser(chatMessage.Source);
-        }
-
         private void ModeReceived(ChatMessage chatMessage)
         {
-            if (chatMessage.Message == "+o")
+            if(string.Equals(chatMessage.Message, "+o"))
             {
-                this.channels[chatMessage.ChannelName].SetSpecialUserType(chatMessage.Target,
-                    ChatUser.SpecialUserType.Moderator, true);
+                this.channels[chatMessage.ChannelName].SetUserState(
+                    new ChatMessage()
+                    {
+                        Command = "MODE",
+                        Source = chatMessage.Target,
+                        Tags = "user-type=mod"
+                    });
             }
-            else if (chatMessage.Message == "-o")
+            else if(string.Equals(chatMessage.Message, "-o"))
             {
-                this.channels[chatMessage.ChannelName].SetSpecialUserType(chatMessage.Target,
-                    ChatUser.SpecialUserType.Moderator, false);
+                this.channels[chatMessage.ChannelName].SetUserState(
+                    new ChatMessage()
+                    {
+                        Command = "MODE",
+                        Source = chatMessage.Target,
+                        Tags = "user-type="
+                    });
             }
         }
     }
