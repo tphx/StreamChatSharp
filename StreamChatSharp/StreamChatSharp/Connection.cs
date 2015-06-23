@@ -199,16 +199,9 @@ namespace Tphx.StreamChatSharp
             SendChatMessage(new ChatMessage("RAW", "QUIT"), true);
 
             this.timeoutTimer.Stop();
-
-            this.messageSender.ConnectionLost -= OnConnectionLost;
-            this.messageSender.Stop();
-
-            this.messageReceiver.ConnectionLost -= OnConnectionLost;
-            this.messageReceiver.RawMessageReceived -= OnRawMessageReceived;
-            this.messageReceiver.ChatMessageReceived -= OnChatMessageReceived;
             this.messageReceiver.Stop();
+            this.messageSender.Stop();
             this.connectionRegistered = false;
-
             this.tcpClient.Close();
             this.networkStream.Dispose();
 
