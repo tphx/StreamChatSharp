@@ -612,6 +612,11 @@
             restarted manually.
             </summary>
         </member>
+        <member name="M:Tphx.StreamChatSharp.OutgoingMessageQueue.ClearMessages">
+            <summary>
+            Clears all of the messages in queue.
+            </summary>
+        </member>
         <member name="E:Tphx.StreamChatSharp.OutgoingMessageQueue.MessageReady">
             <summary>
             Triggered whenever a message is ready to be sent to the chat.
