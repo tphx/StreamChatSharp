@@ -76,7 +76,11 @@ namespace Tphx.StreamChatSharp
         /// </summary>
         public void Stop()
         {
-            this.reader.Dispose();
+            if (this.reader != null)
+            {
+                this.reader.Dispose();
+            }
+
             this.running = false;
         }
 

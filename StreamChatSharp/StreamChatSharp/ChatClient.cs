@@ -68,11 +68,12 @@ namespace Tphx.StreamChatSharp
         {
             if (!this.Connected)
             {
-                this.chatConnection = new Connection(connectionData);
+                this.chatConnection = new Connection();
                 this.chatConnection.RawMessageReceived += OnRawMessageReceived;
                 this.chatConnection.ChatMessageReceived += OnChatMessageReceived;
                 this.chatConnection.Disconnected += OnDisconnected;
                 this.chatConnection.RegisteredWithServer += OnRegisteredWithServer;
+                this.chatConnection.ConnectToServer(connectionData);
             }
         }
 

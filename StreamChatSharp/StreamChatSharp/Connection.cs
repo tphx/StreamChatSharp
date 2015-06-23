@@ -69,8 +69,7 @@ namespace Tphx.StreamChatSharp
         /// <summary>
         /// Connects to an IRC server.
         /// </summary>
-        /// <param name="serverConnectionData">The data to use for connecting to the server.</param>
-        public Connection(ConnectionData serverConnectionData)
+        public Connection()
         {
             this.messageSender.ConnectionLost += OnConnectionLost;
 
@@ -79,8 +78,6 @@ namespace Tphx.StreamChatSharp
             this.messageReceiver.ChatMessageReceived += OnChatMessageReceived;
 
             this.timeoutTimer.Elapsed += OnTimeoutTimerElapsed;
-
-            ConnectToServer(serverConnectionData);
         }
 
         /// <summary>
@@ -106,7 +103,7 @@ namespace Tphx.StreamChatSharp
         {
             get
             {
-                return this.tcpClient.Connected;
+                return  (this.tcpClient != null && this.tcpClient.Connected);
             }
         }
 
@@ -158,6 +155,45 @@ namespace Tphx.StreamChatSharp
             }
         }
 
+        /// <summary>
+        /// Connects to an IRC server.
+        /// </summary>
+        /// <param name="serverConnectionData">Data to connect with.</param>
+        public void ConnectToServer(ConnectionData serverConnectionData)
+        {
+            if(serverConnectionData == null)
+            {
+                throw new ArgumentNullException("serverConnectionData");
+            }
+
+            if (this.tcpClient == null || !this.tcpClient.Connected)
+            {
+                this.connectionData = serverConnectionData;
+
+                try
+                {
+                    this.tcpClient = new TcpClient(this.connectionData.ServerAddress,
+                        this.connectionData.Port);
+                }
+                catch (SocketException)
+                {
+                    Disconnect(DisconnectedEventArgs.DisconnectReason.HostNotFound, false);
+                    return;
+                }
+
+                this.networkStream = this.tcpClient.GetStream();
+                this.messageSender.Start(networkStream);
+                this.messageReceiver.Start(networkStream);
+                this.connectionRegistered = false;
+
+                this.timeoutTimer.Interval = newConnectionTimeoutInterval;
+                this.timeoutTimer.Start();
+
+                SendChatMessage(new ChatMessage("PASS", this.connectionData.Password), true);
+                SendChatMessage(new ChatMessage("NICK", this.connectionData.Nickname), true);
+            }
+        }
+        
         private void Dispose(bool disposing)
         {
             if(!this.disposed)
@@ -174,26 +210,6 @@ namespace Tphx.StreamChatSharp
             }
         }
 
-        private void ConnectToServer(ConnectionData serverConnectionData)
-        {
-            if (this.tcpClient == null || !this.tcpClient.Connected)
-            {
-                this.connectionData = serverConnectionData;
-                this.tcpClient = new TcpClient(this.connectionData.ServerAddress, 
-                    this.connectionData.Port);
-                this.networkStream = this.tcpClient.GetStream();
-                this.messageSender.Start(networkStream);
-                this.messageReceiver.Start(networkStream);
-                this.connectionRegistered = false;
-
-                this.timeoutTimer.Interval = newConnectionTimeoutInterval;
-                this.timeoutTimer.Start();
-
-                SendChatMessage(new ChatMessage("PASS", this.connectionData.Password), true);
-                SendChatMessage(new ChatMessage("NICK", this.connectionData.Nickname), true);
-            }
-        }
-
         private void Disconnect(DisconnectedEventArgs.DisconnectReason reason, bool attemptingAutoReconnect)
         {
             SendChatMessage(new ChatMessage("RAW", "QUIT"), true);
@@ -202,8 +218,16 @@ namespace Tphx.StreamChatSharp
             this.messageReceiver.Stop();
             this.messageSender.Stop();
             this.connectionRegistered = false;
-            this.tcpClient.Close();
-            this.networkStream.Dispose();
+
+            if (tcpClient != null)
+            {
+                this.tcpClient.Close();
+            }
+
+            if (networkStream != null)
+            {
+                this.networkStream.Dispose();
+            }
 
             if (this.Disconnected != null)
             {

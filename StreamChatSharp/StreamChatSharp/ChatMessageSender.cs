@@ -89,7 +89,12 @@ namespace Tphx.StreamChatSharp
         public void Stop()
         {
             this.outgoingMessageQueue.ClearMessages();
-            this.writer.Dispose();
+
+            if (this.writer != null)
+            {
+                this.writer.Dispose();
+            }
+
             this.running = false;
         }
 

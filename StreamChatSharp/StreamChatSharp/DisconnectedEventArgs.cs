@@ -39,7 +39,11 @@ namespace Tphx.StreamChatSharp
             /// <summary>
             /// The connection has been disposed.
             /// </summary>
-            Disposed
+            Disposed,
+            /// <summary>
+            /// The host being connected to could not be found.
+            /// </summary>
+            HostNotFound
         }
 
         /// <summary>
