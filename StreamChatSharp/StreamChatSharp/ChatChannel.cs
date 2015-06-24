@@ -29,7 +29,8 @@ namespace Tphx.StreamChatSharp
    /// </summary>
     public class ChatChannel
     {
-        private ConcurrentDictionary<string, ChatUser> users = new ConcurrentDictionary<string, ChatUser>();
+        private ConcurrentDictionary<string, ChatUser> chatUsers = new ConcurrentDictionary<string, ChatUser>();
+        private string broadcasterLanguage;
 
         /// <summary>
         /// Creates a new chat channel.
@@ -52,7 +53,7 @@ namespace Tphx.StreamChatSharp
         {
             get
             {
-                return new ReadOnlyCollection<ChatUser>(this.users.Values.ToList());
+                return new ReadOnlyCollection<ChatUser>(this.chatUsers.Values.ToList());
             }
         }
 
@@ -62,13 +63,13 @@ namespace Tphx.StreamChatSharp
         /// <param name="userName">Name of the user to add.</param>
         public void AddChatUser(string userName)
         {
-            this.users.AddOrUpdate(userName, new ChatUser(userName), ((key, oldValue) => oldValue));
+            this.chatUsers.AddOrUpdate(userName, new ChatUser(userName), ((key, oldValue) => oldValue));
 
             // The '#' needs to be removed from the beginning of the channel name before checking to see if it's the
             // same as the username.
             if(string.Equals(userName, this.ChannelName.Remove(0, 1), StringComparison.OrdinalIgnoreCase))
             {
-                this.users[userName].IsChannelOwner = true;
+                this.chatUsers[userName].PromoteToOwner();
             }
         }
 
@@ -79,20 +80,108 @@ namespace Tphx.StreamChatSharp
         public void RemoveChatUser(string userName)
         {
             ChatUser userToRemove;
-            this.users.TryRemove(userName, out userToRemove);
+            this.chatUsers.TryRemove(userName, out userToRemove);
         }
 
         /// <summary>
-        /// Toggles the special user type for a user in the channel.
+        /// Language spoken by the broadcaster.
         /// </summary>
-        /// <param name="userName">Name of the user to toggle the special user type for.</param>
-        /// <param name="specialUserType">Special user type to toggle.</param>
-        /// <param name="enabled">Whether or not the special user type is enabled.</param>
-        public void ToggleSpecialUserType(string userName, ChatUser.SpecialUserType specialUserType, bool enabled)
+        public string BroadcasterLanguage
         {
-            if(this.users.ContainsKey(userName))
+            get
             {
-                this.users[userName].ToggleSpecialUserType(specialUserType, enabled);
+                return this.broadcasterLanguage ?? "English";
+            }
+
+            private set
+            {
+                this.broadcasterLanguage = value;
+            }
+        }
+
+        /// <summary>
+        /// Whether or not R9K mode is enabled in the channel.
+        /// </summary>
+        public bool R9KModeEnabled { get; private set; }
+
+        /// <summary>
+        /// Whether or not slow mode is enabled on the channel.
+        /// </summary>
+        public bool SlowModeEnabled
+        {
+            get
+            {
+                return (this.SlowModeInterval > 0);
+            }
+        }
+
+        /// <summary>
+        /// Interval (seconds) a user must wait beteen sending messages.
+        /// </summary>
+        public int SlowModeInterval { get; private set; }
+
+        /// <summary>
+        /// Whether or not the channel is in subscribers only mode.
+        /// </summary>
+        public bool SubscribersOnlyModeEnabled { get; private set; }
+
+        /// <summary>
+        /// Sets the user state based on the chat message.
+        /// </summary>
+        /// <param name="userStateMessage">Message containing the user states. </param>
+        internal void SetUserState(ChatMessage userStateMessage)
+        {
+            if (string.Equals(userStateMessage.Command, "PART"))
+            {
+                RemoveChatUser(userStateMessage.Source);
+                return;
+            }
+            // MODE is sent after the user has already parted so we need to check to see if the user is still in the
+            // channel before changing their user state.
+            else if (userStateMessage.Command == "MODE" && this.chatUsers.ContainsKey(userStateMessage.Source))
+            {
+                this.chatUsers[userStateMessage.Source].SetUserState(userStateMessage);
+                return;
+            }
+            else if (!this.chatUsers.ContainsKey(userStateMessage.Source))
+            {
+                AddChatUser(userStateMessage.Source);
+            }
+
+            this.chatUsers[userStateMessage.Source].SetUserState(userStateMessage);
+        }
+
+        /// <summary>
+        /// Sets the room states for the channel.
+        /// </summary>
+        /// <param name="roomStateMessage">Message containing the room states.</param>
+        internal void SetRoomState(ChatMessage roomStateMessage)
+        {
+            // The room state can contain one state or various states delimited by semicolons.
+            // broadcaster-lang=;r9k=0;slow=0;subs-only=0 
+            string[] states = roomStateMessage.Tags.Split(';');
+
+            for(int a = 0; a < states.Length; a++)
+            {
+                string[] state = states[a].Split('=');
+
+                switch(state[0])
+                {
+                    case "broadcaster-lang":
+                        // If it's english, the language will be blank.
+                        this.BroadcasterLanguage = string.IsNullOrEmpty(state[1]) ? "English" : 
+                            state[1];
+                        break;
+                    case "r9k":
+                        this.R9KModeEnabled = Convert.ToBoolean(Convert.ToInt32(state[1]));
+                        break;
+                    case "slow":
+                        this.SlowModeInterval = Convert.ToInt32(state[1].ToString());
+                        break;
+                    case "subs-only":
+                        this.SubscribersOnlyModeEnabled = Convert.ToBoolean(Convert.ToInt32(state[1]));
+                        break;
+                }
             }
         }
     }

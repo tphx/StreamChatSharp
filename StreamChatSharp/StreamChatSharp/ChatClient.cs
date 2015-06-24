@@ -51,6 +51,9 @@ namespace Tphx.StreamChatSharp
         private ConcurrentDictionary<string, ChatChannel> channels = new ConcurrentDictionary<string, ChatChannel>();
         private bool connectionTimedOut = false;
         private bool disposed = false;
+        private bool tagsCapEnabled = false;
+        private bool membershipCapEnabled = false;
+        private bool commandsCapEnabled = false;
 
         /// <summary>
         /// Disposes of everything and disconnects from the chat server.
@@ -66,11 +69,31 @@ namespace Tphx.StreamChatSharp
         /// <param name="connectionData">Data to connect with.</param>
         public void ConnectToChat(ConnectionData connectionData)
         {
-            this.chatConnection = new Connection(connectionData);
-            this.chatConnection.RawMessageReceived += OnRawMessageReceived;
-            this.chatConnection.ChatMessageReceived += OnChatMessageReceived;
-            this.chatConnection.Disconnected += OnDisconnected;
-            this.chatConnection.RegisteredWithServer += OnRegisteredWithServer;
+            if (!this.Connected)
+            {
+                this.chatConnection = new Connection();
+                this.chatConnection.RawMessageReceived += OnRawMessageReceived;
+                this.chatConnection.ChatMessageReceived += OnChatMessageReceived;
+                this.chatConnection.Disconnected += OnDisconnected;
+                this.chatConnection.RegisteredWithServer += OnRegisteredWithServer;
+                this.chatConnection.ConnectToServer(connectionData);
+            }
+        }
+
+        /// <summary>
+        /// Connects to the Twitch IRC server using the connection data and enables IRCv3 capabilities.
+        /// </summary>
+        /// <param name="connectionData">Data to connect with.</param>
+        /// <param name="enableTagsCap">Whether or not to enable the tags capability.</param>
+        /// <param name="enableMembershipCap">Whether or not to enable the membership capability.</param>
+        /// <param name="enableCommandsCap">Whether or not to enable the commands capability.</param>
+        public void ConnectToChat(ConnectionData connectionData, bool enableTagsCap, bool enableMembershipCap,
+            bool enableCommandsCap)
+        {
+            ConnectToChat(connectionData);
+            this.tagsCapEnabled = enableTagsCap;
+            this.membershipCapEnabled = enableMembershipCap;
+            this.commandsCapEnabled = enableCommandsCap;
         }
 
         /// <summary>
@@ -186,7 +209,7 @@ namespace Tphx.StreamChatSharp
         {
             get
             {
-                return this.chatConnection.Connected;
+                return (this.chatConnection != null && this.chatConnection.Connected);
             }
         }
 
@@ -284,6 +307,21 @@ namespace Tphx.StreamChatSharp
 
         private void OnRegisteredWithServer(object sender, EventArgs e)
         {
+            if(this.tagsCapEnabled)
+            {
+                SendRawMessage("CAP REQ :twitch.tv/tags", true);
+            }
+
+            if(this.membershipCapEnabled)
+            {
+                SendRawMessage("CAP REQ :twitch.tv/membership", true);
+            }
+
+            if(this.commandsCapEnabled)
+            {
+                SendRawMessage("CAP REQ :twitch.tv/commands", true);
+            }
+
             // If we are connecting after a timeout we need to rejoin all of the channels we are supposed to be in.
             if (connectionTimedOut)
             {
@@ -318,10 +356,14 @@ namespace Tphx.StreamChatSharp
                 switch (chatMessage.Command)
                 {
                     case "JOIN":
-                        JoinReceived(chatMessage);
-                        break;
                     case "PART":
-                        PartReceived(chatMessage);
+                    case "PRIVMSG":
+                        this.channels[chatMessage.ChannelName].SetUserState(chatMessage);
+                        break;
+                    case "USERSTATE":
+                        // The source of USERSTATE is tmi but it describes us so we need to change it.
+                        chatMessage.Source = this.ConnectionData.Nickname;
+                        this.channels[chatMessage.ChannelName].SetUserState(chatMessage);
                         break;
                     case "353":
                         NamesListReceived(chatMessage);
@@ -329,13 +371,11 @@ namespace Tphx.StreamChatSharp
                     case "MODE":
                         ModeReceived(chatMessage);
                         break;
+                    case "ROOMSTATE":
+                        this.channels[chatMessage.ChannelName].SetRoomState(chatMessage);
+                        break;
                 }
             }
-        }
-
-        private void JoinReceived(ChatMessage chatMessage)
-        {
-            this.channels[chatMessage.ChannelName].AddChatUser(chatMessage.Source);
         }
 
         private void NamesListReceived(ChatMessage chatMessage)
@@ -345,32 +385,36 @@ namespace Tphx.StreamChatSharp
             // Names list is basically a compact list of JOINs for people who are already in the channel when we join.
             for (int a = 0; a < userNames.Length; a++)
             {
-                JoinReceived(
+                this.channels[chatMessage.ChannelName].SetUserState(
                     new ChatMessage()
                     {
                         Command = "JOIN",
-                        ChannelName = chatMessage.ChannelName,
                         Source = userNames[a]
                     });
             }
         }
 
-        private void PartReceived(ChatMessage chatMessage)
-        {
-            this.channels[chatMessage.ChannelName].RemoveChatUser(chatMessage.Source);
-        }
-
         private void ModeReceived(ChatMessage chatMessage)
         {
-            if (chatMessage.Message == "+o")
+            if(string.Equals(chatMessage.Message, "+o"))
             {
-                this.channels[chatMessage.ChannelName].ToggleSpecialUserType(chatMessage.Target,
-                    ChatUser.SpecialUserType.Moderator, true);
+                this.channels[chatMessage.ChannelName].SetUserState(
+                    new ChatMessage()
+                    {
+                        Command = "MODE",
+                        Source = chatMessage.Target,
+                        Tags = "user-type=mod"
+                    });
             }
-            else if (chatMessage.Message == "-o")
+            else if(string.Equals(chatMessage.Message, "-o"))
             {
-                this.channels[chatMessage.ChannelName].ToggleSpecialUserType(chatMessage.Target,
-                    ChatUser.SpecialUserType.Moderator, false);
+                this.channels[chatMessage.ChannelName].SetUserState(
+                    new ChatMessage()
+                    {
+                        Command = "MODE",
+                        Source = chatMessage.Target,
+                        Tags = "user-type="
+                    });
             }
         }
     }

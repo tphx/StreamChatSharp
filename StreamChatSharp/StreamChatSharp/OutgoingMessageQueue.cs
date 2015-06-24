@@ -131,6 +131,16 @@ namespace Tphx.StreamChatSharp
             }
         }
 
+        /// <summary>
+        /// Clears all of the messages in queue.
+        /// </summary>
+        public void ClearMessages()
+        {
+            this.highPriorityMessages = new ConcurrentQueue<ChatMessage>();
+            this.normalPriorityMessages = new ConcurrentQueue<ChatMessage>();
+            this.sendMessageTimer.Stop();
+        }
+
         private void Dispose(bool disposing)
         {
             if(!this.disposed)
