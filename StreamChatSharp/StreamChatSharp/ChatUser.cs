@@ -119,7 +119,7 @@ namespace Tphx.StreamChatSharp
         internal void SetUserState(ChatMessage userStateMessage)
         {
             // The user states contain various states delimited by semicolons.
-            // color=#FF0000;display-name=ChesterTheTester;emote-sets=0;subscriber=0;turbo=0;user-type=
+            // color=#FF0000;display-name=username;emote-sets=0;subscriber=0;turbo=0;user-type=
             string[] states = userStateMessage.Tags.Split(';');
 
             for (int a = 0; a < states.Length; a++)
