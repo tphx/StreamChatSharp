@@ -27,13 +27,17 @@
             </summary>
             <param name="userName">Name of the user to remove.</param>
         </member>
-        <member name="M:Tphx.StreamChatSharp.ChatChannel.ToggleSpecialUserType(System.String,Tphx.StreamChatSharp.ChatUser.SpecialUserType,System.Boolean)">
+        <member name="M:Tphx.StreamChatSharp.ChatChannel.SetUserState(Tphx.StreamChatSharp.ChatMessage)">
             <summary>
-            Toggles the special user type for a user in the channel.
+            Sets the user state based on the chat message.
             </summary>
-            <param name="userName">Name of the user to toggle the special user type for.</param>
-            <param name="specialUserType">Special user type to toggle.</param>
-            <param name="enabled">Whether or not the special user type is enabled.</param>
+            <param name="userStateMessage">Message containing the user states. </param>
+        </member>
+        <member name="M:Tphx.StreamChatSharp.ChatChannel.SetRoomState(Tphx.StreamChatSharp.ChatMessage)">
+            <summary>
+            Sets the room states for the channel.
+            </summary>
+            <param name="roomStateMessage">Message containing the room states.</param>
         </member>
         <member name="P:Tphx.StreamChatSharp.ChatChannel.ChannelName">
             <summary>
@@ -43,6 +47,31 @@
         <member name="P:Tphx.StreamChatSharp.ChatChannel.ChatUsers">
             <summary>
             Users that are currently in the channel.
+            </summary>
+        </member>
+        <member name="P:Tphx.StreamChatSharp.ChatChannel.BroadcasterLanguage">
+            <summary>
+            Language spoken by the broadcaster.
+            </summary>
+        </member>
+        <member name="P:Tphx.StreamChatSharp.ChatChannel.R9KModeEnabled">
+            <summary>
+            Whether or not R9K mode is enabled in the channel.
+            </summary>
+        </member>
+        <member name="P:Tphx.StreamChatSharp.ChatChannel.SlowModeEnabled">
+            <summary>
+            Whether or not slow mode is enabled on the channel.
+            </summary>
+        </member>
+        <member name="P:Tphx.StreamChatSharp.ChatChannel.SlowModeInterval">
+            <summary>
+            Interval (seconds) a user must wait beteen sending messages.
+            </summary>
+        </member>
+        <member name="P:Tphx.StreamChatSharp.ChatChannel.SubscribersOnlyModeEnabled">
+            <summary>
+            Whether or not the channel is in subscribers only mode.
             </summary>
         </member>
         <member name="T:Tphx.StreamChatSharp.ChatClient">
@@ -353,12 +382,16 @@
             </summary>
             <param name="userName">Name of the user.</param>
         </member>
-        <member name="M:Tphx.StreamChatSharp.ChatUser.ToggleSpecialUserType(Tphx.StreamChatSharp.ChatUser.SpecialUserType,System.Boolean)">
+        <member name="M:Tphx.StreamChatSharp.ChatUser.SetUserState(Tphx.StreamChatSharp.ChatMessage)">
             <summary>
-            Toggles the special user type.
+            Sets the user state based on the chat message.
             </summary>
-            <param name="specialUserType">Special user type to toggle.</param>
-            <param name="enabled">Whether or not the special user type is enabled.</param>
+            <param name="userStateMessage">Message containing the user states. </param>
+        </member>
+        <member name="M:Tphx.StreamChatSharp.ChatUser.PromoteToOwner">
+            <summary>
+            Promotes the user to channel owner.
+            </summary>
         </member>
         <member name="P:Tphx.StreamChatSharp.ChatUser.UserName">
             <summary>
@@ -400,44 +433,14 @@
             Whether or not the user is a the owner of the channel.
             </summary>
         </member>
-        <member name="T:Tphx.StreamChatSharp.ChatUser.SpecialUserType">
+        <member name="P:Tphx.StreamChatSharp.ChatUser.Color">
             <summary>
-            The various types of special users.
+            Color the user has selected for their name to appear in chat.
             </summary>
         </member>
-        <member name="F:Tphx.StreamChatSharp.ChatUser.SpecialUserType.Moderator">
+        <member name="P:Tphx.StreamChatSharp.ChatUser.EmoteSets">
             <summary>
-            Chat moderator.
-            </summary>
-        </member>
-        <member name="F:Tphx.StreamChatSharp.ChatUser.SpecialUserType.Subscriber">
-            <summary>
-            Channel subscriber.
-            </summary>
-        </member>
-        <member name="F:Tphx.StreamChatSharp.ChatUser.SpecialUserType.Turbo">
-            <summary>
-            Twitch Turbo user.
-            </summary>
-        </member>
-        <member name="F:Tphx.StreamChatSharp.ChatUser.SpecialUserType.GlobalModerator">
-            <summary>
-            Twitch global moderator.
-            </summary>
-        </member>
-        <member name="F:Tphx.StreamChatSharp.ChatUser.SpecialUserType.Staff">
-            <summary>
-            Twitch staff.
-            </summary>
-        </member>
-        <member name="F:Tphx.StreamChatSharp.ChatUser.SpecialUserType.Admin">
-            <summary>
-            Twitch administrator.
-            </summary>
-        </member>
-        <member name="F:Tphx.StreamChatSharp.ChatUser.SpecialUserType.ChannelOwner">
-            <summary>
-            Owner of the channel.
+            Emote sets the user has access to.
             </summary>
         </member>
         <member name="T:Tphx.StreamChatSharp.Connection">
