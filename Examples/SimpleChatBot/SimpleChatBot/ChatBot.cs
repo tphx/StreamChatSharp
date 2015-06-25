@@ -32,7 +32,7 @@ namespace SimpleChatBot
         // This is our chat client. It will be used to connect to and communicate with the chat.
         private ChatClient chatClient = new ChatClient();
 
-        private List<string> channelsToJoin = new List<string>();
+        private List<string> channelsToJoin;
         private bool showRawMessages = false;
         private bool disposed = false;
 
