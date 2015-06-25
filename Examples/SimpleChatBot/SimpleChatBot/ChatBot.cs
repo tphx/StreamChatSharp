@@ -29,88 +29,71 @@ namespace SimpleChatBot
     /// </summary>
     class ChatBot : IDisposable
     {
-        // This is our chat client. It will be used to connect to and communciate with the chat.
+        // This is our chat client. It will be used to connect to and communicate with the chat.
         private ChatClient chatClient = new ChatClient();
 
-        string chatChannel; 
-
+        private List<string> channelsToJoin = new List<string>();
+        private bool showRawMessages = false;
         private bool disposed = false;
 
-        public ChatBot()
+        /// <summary>
+        /// Run the chat bot.
+        /// </summary>
+        public void RunChatBot()
         {
-            // In order to receive messages and know when the client disconnects we need to subscribe to the client's
-            // events.
+            // To get started we need to create a new instance of the chat client and subscribe to it's events so we can
+            // be notified when something happens.
+            this.chatClient = new ChatClient();
+
+            // This event lets us know when we have successfully connected to the server. We should wait until this 
+            // event is fired before we join any channels or send any messages.
+            this.chatClient.RegisteredWithServer += OnRegisteredWithServer;
+
+            // This event lets us know that we have received a new chat message. The message can contain various
+            // information such as the command, source, and name of the channel the message is meant for.
             this.chatClient.ChatMessageReceived += OnChatMessageReceived;
+
+            // This event lets us know we have received a new raw message. This will show us every message we receive in 
+            // its raw form. We mainly use OnChatMessageReceived for receiving messages but this event is useful for
+            // debugging and troubleshooting purposes or if messages need to parsed in a certain way.
+            this.chatClient.RawMessageReceived += OnRawMessageReceived;
+
+            // This event lets us know the client has been disconnected from the server. It informs us of the reason we
+            // were disconnected and whether or not the client is going to try to automatically reconnect.
             this.chatClient.Disconnected += OnDisconnected;
+
+            // To connect to the IRC server all we have to do is use the chat client to connect to chat with our
+            // connection data. When connecting we can choose whether or not we want to enable various IRCv3 
+            // capabilities.
+            this.chatClient.ConnectToChat(GetConnectionData(), true, true, true);
+
+            // Keep the console open while the chatbot is running and check for input.
+            while (true)
+            {
+                switch(Console.ReadLine())
+                {
+                    case "1":
+                        showRawMessages = showRawMessages ? false : true;
+                        break;
+                    case "2":
+                        ShowChannelStats();
+                        break;
+                    case "3":
+                        ShowUserStats();
+                        break;
+                    case "x": // quit the program.
+                        return;
+                  
+                }
+            }
         }
 
         /// <summary>
-        /// Disposes of everything.
+        /// Dispose of everything.
         /// </summary>
         public void Dispose()
         {
             Dispose(true);
-        }
-
-        /// <summary>
-        /// Connects the chatbot to the chat server and joins a chat channel.
-        /// </summary>
-        public void ConnectToChat()
-        {
-            this.chatClient.ConnectToChat(GetConnectionData());
-            this.chatClient.JoinChannel(this.chatChannel);
-        }
-
-        /// <summary>
-        /// Sends a private message to the chat channel the client is currently conected to.
-        /// </summary>
-        public void SendMessageToChat(string message)
-        {
-            // We should only send messages if we're connected to avoid problems.
-            if(this.chatClient.Connected)
-            {
-                // Send the private message to the server. 
-                this.chatClient.SendPrivateMessage(message, chatChannel, true);
-
-                Console.WriteLine("> {0} ", message);
-            }
-            else
-            {
-                Console.WriteLine("The chat client cannot send messages because it is not currently connected.");
-            }
-        }
-
-        /// <summary>
-        /// Disconnects the chat client.
-        /// </summary>
-        public void Disconnect()
-        {
-            this.chatClient.Disconnect();
-        }
-
-        /// <summary>
-        /// Displays a count of the users in a channel.
-        /// </summary>
-        /// <param name="channelName">Name of the channel to disply the users for.</param>
-        public void CountUsers(string channelName)
-        {
-            // We can see the users in a channel by checking the Channel property for the channel.
-            ChatChannel channel = this.chatClient.Channels.First(c => (c.ChannelName == channelName));
-
-            Console.WriteLine(string.Format("{0} users in {1}.", channel.ChatUsers.Count, channel.ChannelName));
-            Console.WriteLine(string.Format("{0} are moderators.", channel.ChatUsers.Count(u => u.IsModerator)));
-        }
-
-        /// <summary>
-        /// Displays the chat channels the bot is currently in.
-        /// </summary>
-        public void ShowConnectedChannels()
-        {
-            // We can see information about a channel we are connected to via the Channels property.
-            List<string> channelNames = this.chatClient.Channels.Select(c => c.ChannelName).ToList();
-
-            Console.WriteLine(string.Format("Currently chatting in the following channels: {0}.", 
-                string.Join(", ", channelNames)));
         }
 
         private void Dispose(bool disposing)
@@ -119,119 +102,179 @@ namespace SimpleChatBot
             {
                 if(disposing)
                 {
-                    chatClient.Dispose();
+                    if (this.chatClient != null)
+                    {
+                        this.chatClient.Dispose();
+                    }
                 }
-
-                this.disposed = true;
             }
         }
 
         private ConnectionData GetConnectionData()
         {
-            // In order to connect to the chat we need to define the connection data to connect with. This defines
-            // the server and port to connect to as well as the credentials (nickname and OAuth) needed to connect to
-            // the chat.
-            string nick;
-            string oAuth;
+            Console.WriteLine("Enter the username to connect with:");
+            string nickName = Console.ReadLine();
+            Console.WriteLine("Enter the oauth to connect with:");
+            string oauth = Console.ReadLine();
+            Console.WriteLine("Enter the server address to connect to:");
+            string serverAddress = Console.ReadLine();
 
-            Console.WriteLine("Enter the Nickname to connect with:");
-            nick = Console.ReadLine();
-            Console.WriteLine("Enter the OAuth to connect with:");
-            oAuth = Console.ReadLine();
+            int port;
+            while (true)
+            {
+                Console.WriteLine("Enter the port to connect to:");
 
-            // Now we can join a chat channel. We could join as many channels as we want to but we only need one for
-            // this example.
-            Console.WriteLine("Enter the name of the channel to join (ex. #channelname):");
-            this.chatChannel = Console.ReadLine();
+                if (int.TryParse(Console.ReadLine(), out port))
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("The port must be numeric.");
+                }
+            }
 
-            return new ConnectionData(nick, oAuth, "irc.twitch.tv", 6667);
+            // We shouldn't actually join the channels until our connection has been registered but this is a good place
+            // to get them so we will store them until the register event is fired.
+            Console.WriteLine("Enter the channels to connect to separated by commas (ex. #channelname1, " +
+                "#channelname2):");
+            this.channelsToJoin = Console.ReadLine().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(c => c.Trim()).ToList();
+
+            return new ConnectionData(nickName, oauth, serverAddress, port);
+        }
+
+        private void OnRegisteredWithServer(object sender, EventArgs e)
+        {
+            Console.WriteLine("Connection registered.");
+
+            // Once we are registered, we can join the channels we want. After we join the channels we should start
+            // receiving messages for those channels.
+            this.chatClient.JoinChannel(this.channelsToJoin);
         }
 
         private void OnChatMessageReceived(object sender, ChatMessageEventArgs e)
         {
-            // We can handle messages based on their command.
             switch(e.ChatMessage.Command)
             {
-                case "RAW":
-                    Console.WriteLine("RAW - {0}", e.ChatMessage.Message);
-                    break;
-                case "PRIVMSG":
-                    Console.WriteLine("{0}: {1}", e.ChatMessage.Source, e.ChatMessage.Message);
-                    CheckMessageForBotCommand(e.ChatMessage);
+                case "353":
+                    Console.WriteLine("Current chatters: {0}", e.ChatMessage.Message);
                     break;
                 case "JOIN":
-                    Console.WriteLine("{0} joined.", e.ChatMessage.Source);
+                    Console.WriteLine(string.Format("{0} joined {1}.", e.ChatMessage.Source, 
+                        e.ChatMessage.ChannelName));
                     break;
                 case "PART":
-                    Console.WriteLine("{0} left.", e.ChatMessage.Source);
-                    break;
-                case "353":
-                    Console.WriteLine("Names list: {0}.", string.Join(", ", e.ChatMessage.Message.Split(' ')));
-                    break;
-                case "366":
-                    Console.WriteLine("End of names for {0}.", e.ChatMessage.ChannelName);
+                    Console.WriteLine(string.Format("{0} left {1}.", e.ChatMessage.Source, e.ChatMessage.ChannelName));
                     break;
                 case "MODE":
-                    Console.WriteLine("Set mode {0} for {1}", e.ChatMessage.Message, e.ChatMessage.Target);
+                    ModeReceived(e.ChatMessage);
                     break;
-                case "PING":
-                    // The pong reply is automatically sent by the client.
-                    Console.WriteLine("Ping? Pong!");
+                case "PRIVMSG":
+                    Console.WriteLine("{0} - {1}: {2}", e.ChatMessage.ChannelName, e.ChatMessage.Source, 
+                        e.ChatMessage.Message);
+                    CheckForChatCommand(e.ChatMessage);
                     break;
-                case "PONG":
-                    Console.WriteLine("Pong!");
-                    break;
-                case "421":
-                    Console.WriteLine(e.ChatMessage.Message);
+                case "366":
+                case "ROOMSTATE":
+                case "USERSTATE":
+                    // We can ignore these.
                     break;
                 default:
-                    Console.WriteLine("{0} --- {1}", e.ChatMessage.Command, e.ChatMessage.Message);
+                    Console.WriteLine("{0} - {1} - {2} - {3} - {4}", e.ChatMessage.ChannelName, e.ChatMessage.Command,
+                        e.ChatMessage.Target, e.ChatMessage.Source, e.ChatMessage.Message);
                     break;
+            }
+        }
+
+        private void OnRawMessageReceived(object sender, RawMessageEventArgs e)
+        {
+            if(this.showRawMessages)
+            {
+                Console.WriteLine(e.RawMessage);
             }
         }
 
         private void OnDisconnected(object sender, DisconnectedEventArgs e)
         {
-            // When we disconnected the reason will tell us what caused the disconnect to occur. The reasons can be
-            // the client disconnecting on its own (calling the disconnect method), timing out, or the connection
-            // getting disposed somehow. If the connection times out, it will automatically keep trying to reconnect.
-            Console.WriteLine("Disconnected: {0}", e.Reason.ToString());
+            Console.WriteLine(string.Format("Disconnected from chat. Reason: {0} {1}", e.Reason, 
+                (e.AttemptingAutoReconnect ? "Attempting to reconnect." : "")));
         }
 
-        private void CheckMessageForBotCommand(ChatMessage chatMessage)
+        private void CheckForChatCommand(ChatMessage chatMessage)
         {
-            string reply;
-
-            chatMessage.Message = chatMessage.Message.ToLower().Trim();
-
-            // If the message contains a bot command, send a reply.
-            if(chatMessage.Message.StartsWith("!hi"))
+            // If the message contains a chat command we can send a reply using the information in the chat message. To
+            // send the reply we can either create the private message ourselves using a ChatMessage and send it using 
+            // ChatClient.SendChatMessage or we can use the ChatClient.SendPrivateMessage method and the ChatMessage 
+            // will be made for us by the chat client. If the reply is important, setting the isHighPriority parameter 
+            // to true in either method will make it send before any normal priority messages.
+            if (chatMessage.Message.StartsWith("!hello", StringComparison.OrdinalIgnoreCase))
             {
-                reply = string.Format("Hello {0}.", chatMessage.Source);
-
-                // In addition to using the ChatClient.SendPrivateMessage method we can manually make the chat message 
-                // ourselves and send it. This has the same effect as the ChatClient.SendPrivateMessage method.
-                ChatMessage replyMessage = new ChatMessage()
-                {
-                    Command = "PRIVMSG",
-                    ChannelName = chatChannel,
-                    Message = reply
-                };
-                this.chatClient.SendChatMessage(replyMessage, false);
-                
-                Console.WriteLine("> {0}", reply);
+                string reply = string.Format("Hello {0}.", chatMessage.Source);
+                this.chatClient.SendChatMessage(new ChatMessage("PRIVMSG", reply, chatMessage.ChannelName), false);
+                Console.WriteLine(string.Format("{0} > {1}", chatMessage.ChannelName, reply));
             }
-            else if(chatMessage.Message.StartsWith("!time"))
+            else if(chatMessage.Message.StartsWith("!time", StringComparison.OrdinalIgnoreCase))
             {
-                reply = string.Format("Current time: {0}.", System.DateTime.Now.TimeOfDay);
-                
-                // We can also send raw messages to the server. We can do this by creating a ChatMessage, setting 
-                // the command property to "RAW" and then sending the Message property to the raw message. Likewise, 
-                // we can use the ChatClient.SendRawMessage method as seen below. The raw private message will have 
-                // the same effect as the ChatClient.SendPrivateMessage method.
-                this.chatClient.SendRawMessage(string.Format("PRIVMSG {0} :{1}", chatChannel, reply), false);
-                
-                Console.WriteLine("> {0}", reply);
+                string reply = string.Format("{0} - The current time is {1}.", chatMessage.Source, 
+                    DateTime.Now.ToShortTimeString());
+                this.chatClient.SendPrivateMessage(reply, chatMessage.ChannelName, false);
+                Console.WriteLine(string.Format("{0} > {1}", chatMessage.ChannelName, reply));
+            }
+        }
+
+        private void ModeReceived(ChatMessage chatMessage)
+        {
+            if (String.Equals(chatMessage.Message, "+o"))
+            {
+                Console.WriteLine(string.Format("Added moderator to {0} on {1}.", chatMessage.Target,
+                    chatMessage.ChannelName));
+            }
+            else if (String.Equals(chatMessage.Message, "-o"))
+            {
+                Console.WriteLine(string.Format("Removed moderator from {0} on {1}.", chatMessage.Target,
+                    chatMessage.ChannelName));
+            }
+        }
+
+        private void ShowUserStats()
+        {
+            int totalUsers = 0;
+            Console.WriteLine("----------------------------------------------");
+            foreach (ChatChannel channel in this.chatClient.Channels)
+            {
+                Console.WriteLine(channel.ChannelName);
+                Console.WriteLine("Total users: " + channel.ChatUsers.Count);
+                Console.WriteLine("Moderators: " + channel.ChatUsers.Where(u => u.IsModerator).ToList().Count);
+                Console.WriteLine("Global moderators: " + channel.ChatUsers.Where(u => u.IsGlobalModerator).ToList()
+                    .Count);
+                Console.WriteLine("Staff: " + channel.ChatUsers.Where(u => u.IsStaff).ToList().Count);
+                Console.WriteLine("Admins: " + channel.ChatUsers.Where(u => u.IsAdmin).ToList().Count);
+                Console.WriteLine("Subscribers: " + channel.ChatUsers.Where(u => u.IsSubscriber).ToList().Count);
+                Console.WriteLine("Turbo users: " + channel.ChatUsers.Where(u => u.IsTurbo).ToList().Count);
+                Console.WriteLine("Channel owners: " + channel.ChatUsers.Where(u => u.IsChannelOwner).ToList().Count);
+                Console.WriteLine("----------------------------------------------");
+                totalUsers += channel.ChatUsers.Count;
+            }
+            Console.WriteLine("Total channels: " + this.chatClient.Channels.Count);
+            Console.WriteLine("Total users: " + totalUsers);
+            Console.WriteLine("----------------------------------------------");
+        }
+
+        private void ShowChannelStats()
+        {
+            Console.WriteLine("********************************");
+            foreach (ChatChannel channel in this.chatClient.Channels)
+            {
+                Console.WriteLine(channel.ChannelName);
+                Console.WriteLine("Subscribers only mode: " + channel.SubscribersOnlyModeEnabled);
+                Console.WriteLine("R9K mode: " + channel.R9KModeEnabled);
+                Console.WriteLine("Slow mode: " + channel.SlowModeEnabled);
+                Console.WriteLine("Slow interval: " + channel.SlowModeInterval);
+                Console.WriteLine("Language: " + channel.BroadcasterLanguage);
+                Console.WriteLine("********************************");
+                Console.WriteLine("Total channels: " + this.chatClient.Channels.Count);
+                Console.WriteLine("********************************");
             }
         }
     }
