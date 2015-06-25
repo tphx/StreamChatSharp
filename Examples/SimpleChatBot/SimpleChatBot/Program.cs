@@ -27,36 +27,9 @@ namespace SimpleChatBot
     {
         static void Main(string[] args)
         {
-            string input = "";
-
-            using (ChatBot chatBot = new ChatBot())
+            using(ChatBot chatBot = new ChatBot())
             {
-                chatBot.ConnectToChat();
-
-                while(input != "QUIT")
-                {
-                    input = Console.ReadLine();
-
-                    if(!string.IsNullOrEmpty(input) && input != "QUIT")
-                    {
-                        // Type COUNT <channel name> to see the count of users in the chat.
-                        if (input.StartsWith("COUNT"))
-                        {
-                            chatBot.CountUsers(input.Split(' ')[1]);
-                        }
-                        // Type CHANNELS to see the channels the bot is currently in.
-                        else if (input == "CHANNELS")
-                        {
-                            chatBot.ShowConnectedChannels();
-                        }
-                        else
-                        {
-                            chatBot.SendMessageToChat(input);
-                        }
-                    }
-                }
-
-                chatBot.Disconnect();
+                chatBot.RunChatBot();
             }
         }
     }
