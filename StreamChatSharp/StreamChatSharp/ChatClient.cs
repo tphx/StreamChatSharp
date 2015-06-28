@@ -191,14 +191,14 @@ namespace Tphx.StreamChatSharp
         }
 
         /// <summary>
-        /// Gets a collection of the chat channels the client is currently in.
+        /// Gets a dictionary of the chat channels the client is currently in.
         /// </summary>
         /// <returns>Collection of current chat channels.</returns>
-        public ReadOnlyCollection<ChatChannel> Channels
+        public ReadOnlyDictionary<string, ChatChannel> Channels
         {
             get
             {
-                return new ReadOnlyCollection<ChatChannel>(this.channels.Values.ToList());
+                return new ReadOnlyDictionary<string, ChatChannel>(this.channels);
             }
         }
 
