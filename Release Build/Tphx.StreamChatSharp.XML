@@ -173,7 +173,7 @@
         </member>
         <member name="P:Tphx.StreamChatSharp.ChatClient.Channels">
             <summary>
-            Gets a collection of the chat channels the client is currently in.
+            Gets a dictionary of the chat channels the client is currently in.
             </summary>
             <returns>Collection of current chat channels.</returns>
         </member>
