@@ -245,15 +245,17 @@ namespace SimpleChatBot
             {
                 Console.WriteLine(channel.Value.ChannelName);
                 Console.WriteLine("Total users: " + channel.Value.ChatUsers.Count);
-                Console.WriteLine("Moderators: " + channel.Value.ChatUsers.Where(u => u.IsModerator).ToList().Count);
-                Console.WriteLine("Global moderators: " + channel.Value.ChatUsers.Where(u => u.IsGlobalModerator)
-                    .ToList().Count);
-                Console.WriteLine("Staff: " + channel.Value.ChatUsers.Where(u => u.IsStaff).ToList().Count);
-                Console.WriteLine("Admins: " + channel.Value.ChatUsers.Where(u => u.IsAdmin).ToList().Count);
-                Console.WriteLine("Subscribers: " + channel.Value.ChatUsers.Where(u => u.IsSubscriber).ToList().Count);
-                Console.WriteLine("Turbo users: " + channel.Value.ChatUsers.Where(u => u.IsTurbo).ToList().Count);
-                Console.WriteLine("Channel owners: " + channel.Value.ChatUsers.Where(u => u.IsChannelOwner).ToList()
+                Console.WriteLine("Moderators: " + channel.Value.ChatUsers.Where(u => u.Value.IsModerator).ToList()
                     .Count);
+                Console.WriteLine("Global moderators: " + channel.Value.ChatUsers.Where(u => u.Value.IsGlobalModerator)
+                    .ToList().Count);
+                Console.WriteLine("Staff: " + channel.Value.ChatUsers.Where(u => u.Value.IsStaff).ToList().Count);
+                Console.WriteLine("Admins: " + channel.Value.ChatUsers.Where(u => u.Value.IsAdmin).ToList().Count);
+                Console.WriteLine("Subscribers: " + channel.Value.ChatUsers.Where(u => u.Value.IsSubscriber).ToList()
+                    .Count);
+                Console.WriteLine("Turbo users: " + channel.Value.ChatUsers.Where(u => u.Value.IsTurbo).ToList().Count);
+                Console.WriteLine("Channel owners: " + channel.Value.ChatUsers.Where(u => u.Value.IsChannelOwner)
+                    .ToList().Count);
                 Console.WriteLine("----------------------------------------------");
                 totalUsers += channel.Value.ChatUsers.Count;
             }
