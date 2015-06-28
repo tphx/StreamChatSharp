@@ -241,20 +241,21 @@ namespace SimpleChatBot
         {
             int totalUsers = 0;
             Console.WriteLine("----------------------------------------------");
-            foreach (ChatChannel channel in this.chatClient.Channels)
+            foreach (KeyValuePair<string, ChatChannel> channel in this.chatClient.Channels)
             {
-                Console.WriteLine(channel.ChannelName);
-                Console.WriteLine("Total users: " + channel.ChatUsers.Count);
-                Console.WriteLine("Moderators: " + channel.ChatUsers.Where(u => u.IsModerator).ToList().Count);
-                Console.WriteLine("Global moderators: " + channel.ChatUsers.Where(u => u.IsGlobalModerator).ToList()
+                Console.WriteLine(channel.Value.ChannelName);
+                Console.WriteLine("Total users: " + channel.Value.ChatUsers.Count);
+                Console.WriteLine("Moderators: " + channel.Value.ChatUsers.Where(u => u.IsModerator).ToList().Count);
+                Console.WriteLine("Global moderators: " + channel.Value.ChatUsers.Where(u => u.IsGlobalModerator)
+                    .ToList().Count);
+                Console.WriteLine("Staff: " + channel.Value.ChatUsers.Where(u => u.IsStaff).ToList().Count);
+                Console.WriteLine("Admins: " + channel.Value.ChatUsers.Where(u => u.IsAdmin).ToList().Count);
+                Console.WriteLine("Subscribers: " + channel.Value.ChatUsers.Where(u => u.IsSubscriber).ToList().Count);
+                Console.WriteLine("Turbo users: " + channel.Value.ChatUsers.Where(u => u.IsTurbo).ToList().Count);
+                Console.WriteLine("Channel owners: " + channel.Value.ChatUsers.Where(u => u.IsChannelOwner).ToList()
                     .Count);
-                Console.WriteLine("Staff: " + channel.ChatUsers.Where(u => u.IsStaff).ToList().Count);
-                Console.WriteLine("Admins: " + channel.ChatUsers.Where(u => u.IsAdmin).ToList().Count);
-                Console.WriteLine("Subscribers: " + channel.ChatUsers.Where(u => u.IsSubscriber).ToList().Count);
-                Console.WriteLine("Turbo users: " + channel.ChatUsers.Where(u => u.IsTurbo).ToList().Count);
-                Console.WriteLine("Channel owners: " + channel.ChatUsers.Where(u => u.IsChannelOwner).ToList().Count);
                 Console.WriteLine("----------------------------------------------");
-                totalUsers += channel.ChatUsers.Count;
+                totalUsers += channel.Value.ChatUsers.Count;
             }
             Console.WriteLine("Total channels: " + this.chatClient.Channels.Count);
             Console.WriteLine("Total users: " + totalUsers);
@@ -264,14 +265,14 @@ namespace SimpleChatBot
         private void ShowChannelStats()
         {
             Console.WriteLine("********************************");
-            foreach (ChatChannel channel in this.chatClient.Channels)
+            foreach (KeyValuePair<string, ChatChannel> channel in this.chatClient.Channels)
             {
-                Console.WriteLine(channel.ChannelName);
-                Console.WriteLine("Subscribers only mode: " + channel.SubscribersOnlyModeEnabled);
-                Console.WriteLine("R9K mode: " + channel.R9KModeEnabled);
-                Console.WriteLine("Slow mode: " + channel.SlowModeEnabled);
-                Console.WriteLine("Slow interval: " + channel.SlowModeInterval);
-                Console.WriteLine("Language: " + channel.BroadcasterLanguage);
+                Console.WriteLine(channel.Value.ChannelName);
+                Console.WriteLine("Subscribers only mode: " + channel.Value.SubscribersOnlyModeEnabled);
+                Console.WriteLine("R9K mode: " + channel.Value.R9KModeEnabled);
+                Console.WriteLine("Slow mode: " + channel.Value.SlowModeEnabled);
+                Console.WriteLine("Slow interval: " + channel.Value.SlowModeInterval);
+                Console.WriteLine("Language: " + channel.Value.BroadcasterLanguage);
                 Console.WriteLine("********************************");
                 Console.WriteLine("Total channels: " + this.chatClient.Channels.Count);
                 Console.WriteLine("********************************");
