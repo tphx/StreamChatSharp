@@ -134,7 +134,10 @@ namespace Tphx.StreamChatSharp
                             ColorTranslator.FromHtml(state[1]);
                         break;
                     case "display-name":
-                        this.UserName = state[1];
+                        if (!String.IsNullOrEmpty(state[1]))
+                        {
+                            this.UserName = state[1];
+                        }
                         break;
                     case "emote-sets":
                         this.EmoteSets = state[1];
