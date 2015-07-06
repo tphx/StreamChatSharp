@@ -68,7 +68,7 @@ Command = PRIVMSG,
 ChannelName = #channelname,
 Message = This is the private message.
 Source = messagesendername,
-Tags = color=#FF0000;display-name=ChesterTheTester;emote-sets=0;subscriber=0;turbo=0;user-type=
+Tags = color=#FF0000;display-name=MessageSenderName;emote-sets=0;subscriber=0;turbo=0;user-type=
 ```
 * <b>RAW</b> - Indicates the Message property contains a raw IRC message. If a ChatMesage containing this command is received it means the ChatClient could not recognize the command that was issued. If this command is used in an outgoing message, the Message property will be sent as a RAW message.
 ```
