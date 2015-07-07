@@ -69,7 +69,8 @@ namespace Tphx.StreamChatSharp
             // same as the username.
             if(string.Equals(userName, this.ChannelName.Remove(0, 1), StringComparison.OrdinalIgnoreCase))
             {
-                this.chatUsers[userName].PromoteToOwner();
+                this.chatUsers[userName].IsChannelOwner = true;
+                this.chatUsers[userName].IsModerator = true;
             }
         }
 
@@ -93,7 +94,7 @@ namespace Tphx.StreamChatSharp
                 return this.broadcasterLanguage ?? "English";
             }
 
-            private set
+            set
             {
                 this.broadcasterLanguage = value;
             }
@@ -102,7 +103,7 @@ namespace Tphx.StreamChatSharp
         /// <summary>
         /// Whether or not R9K mode is enabled in the channel.
         /// </summary>
-        public bool R9KModeEnabled { get; private set; }
+        public bool R9KModeEnabled { get; set; }
 
         /// <summary>
         /// Whether or not slow mode is enabled on the channel.
@@ -118,12 +119,12 @@ namespace Tphx.StreamChatSharp
         /// <summary>
         /// Interval (seconds) a user must wait beteen sending messages.
         /// </summary>
-        public int SlowModeInterval { get; private set; }
+        public int SlowModeInterval { get; set; }
 
         /// <summary>
         /// Whether or not the channel is in subscribers only mode.
         /// </summary>
-        public bool SubscribersOnlyModeEnabled { get; private set; }
+        public bool SubscribersOnlyModeEnabled { get; set; }
 
         /// <summary>
         /// Sets the user state based on the chat message.
