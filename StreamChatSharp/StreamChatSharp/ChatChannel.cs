@@ -49,11 +49,11 @@ namespace Tphx.StreamChatSharp
         /// <summary>
         /// Users that are currently in the channel.
         /// </summary>
-        public ReadOnlyDictionary<string, ChatUser> ChatUsers
+        public ConcurrentDictionary<string, ChatUser> ChatUsers
         {
             get
             {
-                return new ReadOnlyDictionary<string, ChatUser>(this.chatUsers);
+                return this.chatUsers;
             }
         }
 

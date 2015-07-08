@@ -194,11 +194,11 @@ namespace Tphx.StreamChatSharp
         /// Gets a dictionary of the chat channels the client is currently in.
         /// </summary>
         /// <returns>Collection of current chat channels.</returns>
-        public ReadOnlyDictionary<string, ChatChannel> Channels
+        public ConcurrentDictionary<string, ChatChannel> Channels
         {
             get
             {
-                return new ReadOnlyDictionary<string, ChatChannel>(this.channels);
+                return this.channels;
             }
         }
 
