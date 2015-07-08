@@ -388,11 +388,6 @@
             </summary>
             <param name="userStateMessage">Message containing the user states. </param>
         </member>
-        <member name="M:Tphx.StreamChatSharp.ChatUser.PromoteToOwner">
-            <summary>
-            Promotes the user to channel owner.
-            </summary>
-        </member>
         <member name="P:Tphx.StreamChatSharp.ChatUser.UserName">
             <summary>
             Name of the user.
