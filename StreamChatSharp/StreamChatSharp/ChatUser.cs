@@ -43,42 +43,42 @@ namespace Tphx.StreamChatSharp
         /// <summary>
         /// Name of the user.
         /// </summary>
-        public string UserName { get; private set; }
+        public string UserName { get; set; }
 
         /// <summary>
         /// Whether or not the user is a moderator.
         /// </summary>
-        public bool IsModerator { get; private set; }
+        public bool IsModerator { get; set; }
 
         /// <summary>
         /// Whether or not the user a subscriber.
         /// </summary>
-        public bool IsSubscriber { get; private set; }
+        public bool IsSubscriber { get; set; }
 
         /// <summary>
         /// Whether or not the user is a Twitch Turbo user.
         /// </summary>
-        public bool IsTurbo { get; private set; }
+        public bool IsTurbo { get; set; }
 
         /// <summary>
         /// Whether or not the user is a Twitch global moderator.
         /// </summary>
-        public bool IsGlobalModerator { get; private set; }
+        public bool IsGlobalModerator { get; set; }
 
         /// <summary>
         /// Whether or not the user is a member of Twitch staff.
         /// </summary>
-        public bool IsStaff { get; private set; }
+        public bool IsStaff { get; set; }
 
         /// <summary>
         /// Whether or not the user is a Twitch administrator.
         /// </summary>
-        public bool IsAdmin { get; private set; }
+        public bool IsAdmin { get; set; }
 
         /// <summary>
         /// Whether or not the user is a the owner of the channel.
         /// </summary>
-        public bool IsChannelOwner { get; private set; }
+        public bool IsChannelOwner { get; set; }
 
         /// <summary>
         /// Color the user has selected for their name to appear in chat.
@@ -90,7 +90,7 @@ namespace Tphx.StreamChatSharp
                 return this.color.IsEmpty ? ColorTranslator.FromHtml("#000000") : this.color;
             }
 
-            private set
+            set
             {
                 this.color = value;
             }
@@ -106,7 +106,7 @@ namespace Tphx.StreamChatSharp
                 return this.emoteSets ?? "0";
             }
 
-            private set
+            set
             {
                 this.emoteSets = value;
             }
@@ -153,15 +153,6 @@ namespace Tphx.StreamChatSharp
                         break;
                 }
             }
-        }
-
-        /// <summary>
-        /// Promotes the user to channel owner.
-        /// </summary>
-        internal void PromoteToOwner()
-        {
-            this.IsChannelOwner = true;
-            this.IsModerator = true;
         }
 
         private void SetUserType(string userType)
