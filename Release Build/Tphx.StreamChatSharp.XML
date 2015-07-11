@@ -336,6 +336,11 @@
             Threaded message sender used to send messages on a stream.
             </summary>
         </member>
+        <member name="M:Tphx.StreamChatSharp.ChatMessageSender.#ctor">
+            <summary>
+            Constructs a new chat message sender.
+            </summary>
+        </member>
         <member name="M:Tphx.StreamChatSharp.ChatMessageSender.Dispose">
             <summary>
             Disposes of everything.
@@ -664,6 +669,11 @@
         <member name="P:Tphx.StreamChatSharp.RawMessageEventArgs.RawMessage">
             <summary>
             Raw IRC message.
+            </summary>
+        </member>
+        <member name="T:Tphx.StreamChatSharp.RawMessageParser">
+            <summary>
+            Parses raw IRC messages.
             </summary>
         </member>
         <member name="M:Tphx.StreamChatSharp.RawMessageParser.ReceivedRawMessageToChatMessage(System.String)">
