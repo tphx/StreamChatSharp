@@ -18,8 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tphx.StreamChatSharp;
 
 namespace SimpleChatBot
@@ -73,7 +71,7 @@ namespace SimpleChatBot
                 switch(Console.ReadLine())
                 {
                     case "1":
-                        showRawMessages = showRawMessages ? false : true;
+                        showRawMessages = !showRawMessages;
                         break;
                     case "2":
                         ShowChannelStats();
@@ -83,7 +81,6 @@ namespace SimpleChatBot
                         break;
                     case "x": // quit the program.
                         return;
-                  
                 }
             }
         }
@@ -161,11 +158,10 @@ namespace SimpleChatBot
                     Console.WriteLine("Current chatters: {0}", e.ChatMessage.Message);
                     break;
                 case "JOIN":
-                    Console.WriteLine(string.Format("{0} joined {1}.", e.ChatMessage.Source, 
-                        e.ChatMessage.ChannelName));
+                    Console.WriteLine("{0} joined {1}.", e.ChatMessage.Source, e.ChatMessage.ChannelName);
                     break;
                 case "PART":
-                    Console.WriteLine(string.Format("{0} left {1}.", e.ChatMessage.Source, e.ChatMessage.ChannelName));
+                    Console.WriteLine("{0} left {1}.", e.ChatMessage.Source, e.ChatMessage.ChannelName);
                     break;
                 case "MODE":
                     ModeReceived(e.ChatMessage);
@@ -197,8 +193,8 @@ namespace SimpleChatBot
 
         private void OnDisconnected(object sender, DisconnectedEventArgs e)
         {
-            Console.WriteLine(string.Format("Disconnected from chat. Reason: {0} {1}", e.Reason, 
-                (e.AttemptingAutoReconnect ? "Attempting to reconnect." : "")));
+            Console.WriteLine("Disconnected from chat. Reason: {0} {1}", e.Reason, 
+                (e.AttemptingAutoReconnect ? "Attempting to reconnect." : ""));
         }
 
         private void CheckForChatCommand(ChatMessage chatMessage)
@@ -210,16 +206,16 @@ namespace SimpleChatBot
             // to true in either method will make it send before any normal priority messages.
             if (chatMessage.Message.StartsWith("!hello", StringComparison.OrdinalIgnoreCase))
             {
-                string reply = string.Format("Hello {0}.", chatMessage.Source);
+                string reply = String.Format("Hello {0}.", chatMessage.Source);
                 this.chatClient.SendChatMessage(new ChatMessage("PRIVMSG", reply, chatMessage.ChannelName), false);
-                Console.WriteLine(string.Format("{0} > {1}", chatMessage.ChannelName, reply));
+                Console.WriteLine("{0} > {1}", chatMessage.ChannelName, reply);
             }
             else if(chatMessage.Message.StartsWith("!time", StringComparison.OrdinalIgnoreCase))
             {
-                string reply = string.Format("{0} - The current time is {1}.", chatMessage.Source, 
+                string reply = String.Format("{0} - The current time is {1}.", chatMessage.Source,
                     DateTime.Now.ToShortTimeString());
                 this.chatClient.SendPrivateMessage(reply, chatMessage.ChannelName, false);
-                Console.WriteLine(string.Format("{0} > {1}", chatMessage.ChannelName, reply));
+                Console.WriteLine("{0} > {1}", chatMessage.ChannelName, reply);
             }
         }
 
@@ -227,13 +223,11 @@ namespace SimpleChatBot
         {
             if (String.Equals(chatMessage.Message, "+o"))
             {
-                Console.WriteLine(string.Format("Added moderator to {0} on {1}.", chatMessage.Target,
-                    chatMessage.ChannelName));
+                Console.WriteLine("Added moderator to {0} on {1}.", chatMessage.Target, chatMessage.ChannelName);
             }
             else if (String.Equals(chatMessage.Message, "-o"))
             {
-                Console.WriteLine(string.Format("Removed moderator from {0} on {1}.", chatMessage.Target,
-                    chatMessage.ChannelName));
+                Console.WriteLine("Removed moderator from {0} on {1}.", chatMessage.Target, chatMessage.ChannelName);
             }
         }
 
@@ -244,23 +238,21 @@ namespace SimpleChatBot
             foreach (KeyValuePair<string, ChatChannel> channel in this.chatClient.Channels)
             {
                 Console.WriteLine(channel.Value.ChannelName);
-                Console.WriteLine("Total users: " + channel.Value.ChatUsers.Count);
-                Console.WriteLine("Moderators: " + channel.Value.ChatUsers.Where(u => u.Value.IsModerator).ToList()
-                    .Count);
-                Console.WriteLine("Global moderators: " + channel.Value.ChatUsers.Where(u => u.Value.IsGlobalModerator)
-                    .ToList().Count);
-                Console.WriteLine("Staff: " + channel.Value.ChatUsers.Where(u => u.Value.IsStaff).ToList().Count);
-                Console.WriteLine("Admins: " + channel.Value.ChatUsers.Where(u => u.Value.IsAdmin).ToList().Count);
-                Console.WriteLine("Subscribers: " + channel.Value.ChatUsers.Where(u => u.Value.IsSubscriber).ToList()
-                    .Count);
-                Console.WriteLine("Turbo users: " + channel.Value.ChatUsers.Where(u => u.Value.IsTurbo).ToList().Count);
-                Console.WriteLine("Channel owners: " + channel.Value.ChatUsers.Where(u => u.Value.IsChannelOwner)
-                    .ToList().Count);
+                Console.WriteLine("Total users: {0}", channel.Value.ChatUsers.Count);
+                Console.WriteLine("Moderators: {0}", channel.Value.ChatUsers.Where(u => u.Value.IsModerator).Count());
+                Console.WriteLine("Global moderators: {0}", 
+                    channel.Value.ChatUsers.Where(u => u.Value.IsGlobalModerator).Count());
+                Console.WriteLine("Staff: {0}", channel.Value.ChatUsers.Where(u => u.Value.IsStaff).Count());
+                Console.WriteLine("Admins: {0}", channel.Value.ChatUsers.Where(u => u.Value.IsAdmin).Count());
+                Console.WriteLine("Subscribers: {0}", channel.Value.ChatUsers.Where(u => u.Value.IsSubscriber).Count());
+                Console.WriteLine("Turbo users: {0}", channel.Value.ChatUsers.Where(u => u.Value.IsTurbo).Count());
+                Console.WriteLine("Channel owners: {0}", 
+                    channel.Value.ChatUsers.Where(u => u.Value.IsChannelOwner).Count());
                 Console.WriteLine("----------------------------------------------");
                 totalUsers += channel.Value.ChatUsers.Count;
             }
-            Console.WriteLine("Total channels: " + this.chatClient.Channels.Count);
-            Console.WriteLine("Total users: " + totalUsers);
+            Console.WriteLine("Total channels: {0}", this.chatClient.Channels.Count);
+            Console.WriteLine("Total users: {0}", totalUsers);
             Console.WriteLine("----------------------------------------------");
         }
 
@@ -270,13 +262,13 @@ namespace SimpleChatBot
             foreach (KeyValuePair<string, ChatChannel> channel in this.chatClient.Channels)
             {
                 Console.WriteLine(channel.Value.ChannelName);
-                Console.WriteLine("Subscribers only mode: " + channel.Value.SubscribersOnlyModeEnabled);
-                Console.WriteLine("R9K mode: " + channel.Value.R9KModeEnabled);
-                Console.WriteLine("Slow mode: " + channel.Value.SlowModeEnabled);
-                Console.WriteLine("Slow interval: " + channel.Value.SlowModeInterval);
-                Console.WriteLine("Language: " + channel.Value.BroadcasterLanguage);
+                Console.WriteLine("Subscribers only mode: {0}", channel.Value.SubscribersOnlyModeEnabled);
+                Console.WriteLine("R9K mode: {0}", channel.Value.R9KModeEnabled);
+                Console.WriteLine("Slow mode: {0}", channel.Value.SlowModeEnabled);
+                Console.WriteLine("Slow interval: {0}", channel.Value.SlowModeInterval);
+                Console.WriteLine("Language: {0}", channel.Value.BroadcasterLanguage);
                 Console.WriteLine("********************************");
-                Console.WriteLine("Total channels: " + this.chatClient.Channels.Count);
+                Console.WriteLine("Total channels: {0}", this.chatClient.Channels.Count);
                 Console.WriteLine("********************************");
             }
         }
