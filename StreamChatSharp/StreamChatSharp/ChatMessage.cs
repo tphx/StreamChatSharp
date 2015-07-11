@@ -21,7 +21,6 @@ namespace Tphx.StreamChatSharp
     /// </summary>
     public class ChatMessage
     {
-
         private string source;
         private string target;
         private string channelName;
@@ -34,7 +33,6 @@ namespace Tphx.StreamChatSharp
         /// </summary>
         public ChatMessage()
         {
-
         }
 
         /// <summary>
@@ -105,7 +103,6 @@ namespace Tphx.StreamChatSharp
             get
             {
                 return this.source ?? "";
-
             }
             set
             {
@@ -121,7 +118,6 @@ namespace Tphx.StreamChatSharp
             get
             {
                 return this.target ?? "";
-
             }
             set
             {
@@ -137,7 +133,6 @@ namespace Tphx.StreamChatSharp
             get
             {
                 return this.channelName ?? "";
-
             }
             set
             {
@@ -153,7 +148,6 @@ namespace Tphx.StreamChatSharp
             get
             {
                 return this.command ?? "";
-
             }
             set
             {
@@ -169,7 +163,6 @@ namespace Tphx.StreamChatSharp
             get
             {
                 return this.message ?? "";
-
             }
             set
             {

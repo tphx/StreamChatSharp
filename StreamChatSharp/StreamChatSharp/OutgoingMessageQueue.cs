@@ -16,7 +16,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Timers;
 
 namespace Tphx.StreamChatSharp
@@ -33,11 +32,8 @@ namespace Tphx.StreamChatSharp
 
         private ConcurrentQueue<ChatMessage> highPriorityMessages = new ConcurrentQueue<ChatMessage>();
         private ConcurrentQueue<ChatMessage> normalPriorityMessages = new ConcurrentQueue<ChatMessage>();
-
         private Timer sendMessageTimer = new Timer(1600); // 1.6 seconds.
-
         private bool stoppedManually = false;
-
         private bool disposed = false;
 
         public OutgoingMessageQueue()
@@ -156,13 +152,13 @@ namespace Tphx.StreamChatSharp
 
         private void OnSendMessageTimerElapsed(object sender, ElapsedEventArgs e)
         {
-            if(this.highPriorityMessages.Count > 0)
+            if (this.highPriorityMessages.Count > 0)
             {
                 ChatMessage message;
                 this.highPriorityMessages.TryDequeue(out message);
                 SendMessage(message);
             }
-            else if(this.normalPriorityMessages.Count > 0)
+            else if (this.normalPriorityMessages.Count > 0)
             {
                 ChatMessage message;
                 this.highPriorityMessages.TryDequeue(out message);

@@ -34,11 +34,13 @@ namespace Tphx.StreamChatSharp
         private OutgoingMessageQueue outgoingMessageQueue = new OutgoingMessageQueue();
         private StreamWriter writer;
         private Thread thread;
-
-        private bool disposed = false;
         private bool running;
         private bool connected;
+        private bool disposed = false;
 
+        /// <summary>
+        /// Constructs a new chat message sender.
+        /// </summary>
         public ChatMessageSender()
         {
             this.outgoingMessageQueue.MessageReady += OnOutgoingMessageReady;
@@ -59,7 +61,7 @@ namespace Tphx.StreamChatSharp
         /// /// <param name="highPriorityMessage">Whether or not the message is a high priority message.</param>
         public void SendMessage(ChatMessage chatMessage, bool highPriorityMessage)
         {
-            if (this.running && !string.IsNullOrWhiteSpace(chatMessage.Command))
+            if (this.running && !String.IsNullOrWhiteSpace(chatMessage.Command))
             {
                 this.outgoingMessageQueue.AddMessage(chatMessage, highPriorityMessage);
             }
@@ -137,7 +139,7 @@ namespace Tphx.StreamChatSharp
         {
             string rawMessage = RawMessageParser.ChatMessageToRawMessage(e.ChatMessage);
 
-            if (!string.IsNullOrWhiteSpace(rawMessage) && this.running)
+            if (!String.IsNullOrWhiteSpace(rawMessage) && this.running)
             {
                 try
                 {

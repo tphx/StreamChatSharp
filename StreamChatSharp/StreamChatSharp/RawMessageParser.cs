@@ -15,12 +15,14 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace Tphx.StreamChatSharp
 {
+    /// <summary>
+    /// Parses raw IRC messages.
+    /// </summary>
     static class RawMessageParser
     {
         private enum RawMessagePart
@@ -57,6 +59,7 @@ namespace Tphx.StreamChatSharp
         {
             List<string> rawMessageParts = rawMessage.Split(' ').ToList();
             ChatMessage chatMessage = new ChatMessage();
+
             try 
             {
                 // Message tags are prepended to the begining of the raw message and are identified by the prefix '@'.
@@ -71,8 +74,10 @@ namespace Tphx.StreamChatSharp
 
                 // Ping and pong commands are sent and received slightly differently than other commands; therefore, 
                 // they must be checked separately.
-                if ((rawMessageParts[(int)RawMessagePart.PingPong] == "PING") ||
-                    (rawMessageParts[(int)RawMessagePart.PingPong] == "PONG"))
+                if (String.Equals(rawMessageParts[(int)RawMessagePart.PingPong],"PING", 
+                    StringComparison.OrdinalIgnoreCase) ||
+                    String.Equals(rawMessageParts[(int)RawMessagePart.PingPong], "PONG",
+                    StringComparison.OrdinalIgnoreCase))
                 {
                     chatMessage.Command = rawMessageParts[(int)RawMessagePart.PingPong];
                 }
@@ -117,7 +122,7 @@ namespace Tphx.StreamChatSharp
                             // Invalid command.
                             // :tmi.twitch.tv 421 nickname BADCOMMAND :Unknown command.
                             chatMessage.Command = rawMessageParts[(int)RawMessagePart.Command];
-                            chatMessage.Message = string.Format("{0}: {1}", GetMessageFromRawMessage(rawMessageParts,
+                            chatMessage.Message = String.Format("{0}: {1}", GetMessageFromRawMessage(rawMessageParts,
                                     (int)RawMessagePart.InvalidCommandMessageStart),
                                     rawMessageParts[(int)RawMessagePart.InvalidCommand]);
                             chatMessage.ChannelName = rawMessageParts[(int)RawMessagePart.MessageChannel];
@@ -138,7 +143,7 @@ namespace Tphx.StreamChatSharp
                         case "CAP":
                             // :tmi.twitch.tv CAP * ACK :twitch.tv/tags
                             chatMessage.Command = rawMessageParts[(int)RawMessagePart.Command];
-                            chatMessage.Message = string.Format("{0} {1}", 
+                            chatMessage.Message = String.Format("{0} {1}", 
                                 rawMessageParts[(int)RawMessagePart.CapStatus], 
                                 GetMessageFromRawMessage(rawMessageParts, (int)RawMessagePart.CapType));
                             chatMessage.ChannelName = rawMessageParts[(int)RawMessagePart.MessageChannel];
@@ -182,14 +187,14 @@ namespace Tphx.StreamChatSharp
         /// <returns>Raw message string from ChatMessage.</returns>
         public static string ChatMessageToRawMessage(ChatMessage chatMessage)
         {
-            if (chatMessage.Command.ToUpper() == "RAW")
+            if (String.Equals(chatMessage.Command.ToUpper(), "RAW", StringComparison.OrdinalIgnoreCase))
             {
-                return (!string.IsNullOrEmpty(chatMessage.Message) ? chatMessage.Message : "");
+                return (!String.IsNullOrEmpty(chatMessage.Message) ? chatMessage.Message : "");
             }
             else
             {
-                return string.Format("{0} {1} {2}", chatMessage.Command, chatMessage.ChannelName, 
-                    string.Format(":{0}", chatMessage.Message)).Trim();
+                return String.Format("{0} {1} {2}", chatMessage.Command, chatMessage.ChannelName, 
+                    String.Format(":{0}", chatMessage.Message)).Trim();
             }
         }
 
@@ -206,7 +211,7 @@ namespace Tphx.StreamChatSharp
         {
             // IRC prefixes most messages with ':' to indicate the message may contain spaces. It's not actually part of
             // the message and should be removed.
-            return (messageStartIndex < rawMessage.Count) ? string.Join(" ", rawMessage.ToArray(), messageStartIndex, 
+            return (messageStartIndex < rawMessage.Count) ? String.Join(" ", rawMessage.ToArray(), messageStartIndex, 
                 (rawMessage.Count - messageStartIndex)).Trim().Remove(0, 1) : "";
         }
     }

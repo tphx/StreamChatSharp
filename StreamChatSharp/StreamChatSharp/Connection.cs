@@ -74,11 +74,12 @@ namespace Tphx.StreamChatSharp
             this.messageSender.ConnectionLost += OnConnectionLost;
 
             this.messageReceiver.ConnectionLost += OnConnectionLost;
+
             this.messageReceiver.RawMessageReceived += OnRawMessageReceived;
             this.messageReceiver.ChatMessageReceived += OnChatMessageReceived;
-
             this.timeoutTimer.Elapsed += OnTimeoutTimerElapsed;
         }
+
 
         /// <summary>
         /// Disposes of eveything.
@@ -103,7 +104,7 @@ namespace Tphx.StreamChatSharp
         {
             get
             {
-                return  (this.tcpClient != null && this.tcpClient.Connected);
+                return (this.tcpClient != null && this.tcpClient.Connected);
             }
         }
 
@@ -210,6 +211,51 @@ namespace Tphx.StreamChatSharp
             }
         }
 
+        private void OnRawMessageReceived(object sender, RawMessageEventArgs e)
+        {
+            // We could also set the interval in OnChatMessageReceived, but it is called at the same time this is so 
+            // we only need to set it once here.
+            this.timeoutTimer.Interval = noMessageReceivedTimeoutInterval;
+
+            if (this.RawMessageReceived != null)
+            {
+                this.RawMessageReceived(sender, e);
+            }
+        }
+
+        private void OnChatMessageReceived(object sender, ChatMessageEventArgs e)
+        {
+            if (String.Equals(e.ChatMessage.Command, "PING", StringComparison.OrdinalIgnoreCase))
+            {
+                SendChatMessage(new ChatMessage("RAW", "PONG"), true);
+            }
+            // 001 is the first command Twitch sends on a successful connection.
+            if (String.Equals(e.ChatMessage.Command, "001", StringComparison.OrdinalIgnoreCase))
+            {
+                RegistrationMessageReceived();
+            }
+
+            if (this.ChatMessageReceived != null)
+            {
+                this.ChatMessageReceived(sender, e);
+            }
+        }
+
+        private void OnTimeoutTimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            // If the timeout interval is set to noMessageReceivedTimeoutInterval we should have a valid connection 
+            // that hasn't received a message for some time. It may have been lost or it may be unusually quiet. A 
+            // ping should tell us whether or not we're still connected.
+            if (this.timeoutTimer.Interval == noMessageReceivedTimeoutInterval)
+            {
+                Ping();
+            }
+            else
+            {
+                ConnectionTimedOut();
+            }
+        }
+
         private void Disconnect(DisconnectedEventArgs.DisconnectReason reason, bool attemptingAutoReconnect)
         {
             SendChatMessage(new ChatMessage("RAW", "QUIT"), true);
@@ -235,54 +281,9 @@ namespace Tphx.StreamChatSharp
             }
         }
 
-        private void OnChatMessageReceived(object sender, ChatMessageEventArgs e)
-        {
-            if(e.ChatMessage.Command == "PING")
-            {
-                SendChatMessage(new ChatMessage("RAW", "PONG"), true);
-            }
-            // 001 is the first command Twitch sends on a successful connection.
-            if(e.ChatMessage.Command == "001")
-            {
-                RegistrationMessageReceived();
-            }
-
-            if(this.ChatMessageReceived != null)
-            {
-                this.ChatMessageReceived(sender, e);
-            }
-        }
-
-        private void OnRawMessageReceived(object sender, RawMessageEventArgs e)
-        {
-            // We could also set the interval in OnChatMessageReceived, but it is called at the same time this is so we
-            // only need to set it once here.
-            this.timeoutTimer.Interval = noMessageReceivedTimeoutInterval;
-            
-            if(this.RawMessageReceived != null)
-            {
-                this.RawMessageReceived(sender, e);
-            }
-        }
-
         private void OnConnectionLost(object sender, EventArgs e)
         {
             ConnectionTimedOut();
-        }
-
-        private void OnTimeoutTimerElapsed(object sender, ElapsedEventArgs e)
-        {
-            // If the timeout interval is set to noMessageReceivedTimeoutInterval we should have a valid connection 
-            // that hasn't received a message for some time. It may have been lost or it may be unusually quiet. A 
-            // ping should tell us whether or not we're still connected.
-            if (this.timeoutTimer.Interval == noMessageReceivedTimeoutInterval)
-            {
-                Ping();
-            }
-            else
-            {
-                ConnectionTimedOut();
-            }
         }
 
         private void ConnectionTimedOut()

@@ -43,11 +43,9 @@ namespace Tphx.StreamChatSharp
         
         private StreamReader reader;
         private Thread thread;
-
-        private bool disposed = false;
-
         private bool running;
         private bool connected;
+        private bool disposed = false;
 
         /// <summary>
         /// Disposes of everything.
@@ -68,6 +66,7 @@ namespace Tphx.StreamChatSharp
             this.thread = new Thread(Run);
             this.thread.IsBackground = true;
             this.thread.Start();
+
             this.running = true;
         }
         
@@ -105,7 +104,7 @@ namespace Tphx.StreamChatSharp
             {
                 rawMessage = ReadRawMessage();
 
-                if(!string.IsNullOrWhiteSpace(rawMessage))
+                if(!String.IsNullOrWhiteSpace(rawMessage))
                 {
                     MessageReceived(rawMessage);
                 }

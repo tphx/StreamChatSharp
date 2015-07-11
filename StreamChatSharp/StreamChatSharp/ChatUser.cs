@@ -15,11 +15,7 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tphx.StreamChatSharp
 {
@@ -130,7 +126,7 @@ namespace Tphx.StreamChatSharp
                 {
                     case "color":
                         // A color value will only be present if the user set one on Twitch.
-                        this.Color = string.IsNullOrEmpty(state[1]) ? ColorTranslator.FromHtml("#000000") : 
+                        this.Color = String.IsNullOrEmpty(state[1]) ? ColorTranslator.FromHtml("#000000") : 
                             ColorTranslator.FromHtml(state[1]);
                         break;
                     case "display-name":
@@ -157,7 +153,7 @@ namespace Tphx.StreamChatSharp
 
         private void SetUserType(string userType)
         {
-            if(!string.IsNullOrEmpty(userType))
+            if(!String.IsNullOrEmpty(userType))
             {
                 switch(userType)
                 {
@@ -190,6 +186,5 @@ namespace Tphx.StreamChatSharp
                 }
             }
         }
-
     }
 }

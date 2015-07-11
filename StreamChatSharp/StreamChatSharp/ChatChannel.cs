@@ -16,11 +16,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tphx.StreamChatSharp
 {
@@ -67,7 +62,7 @@ namespace Tphx.StreamChatSharp
 
             // The '#' needs to be removed from the beginning of the channel name before checking to see if it's the
             // same as the username.
-            if(string.Equals(userName, this.ChannelName.Remove(0, 1), StringComparison.OrdinalIgnoreCase))
+            if(String.Equals(userName, this.ChannelName.Remove(0, 1), StringComparison.OrdinalIgnoreCase))
             {
                 this.chatUsers[userName].IsChannelOwner = true;
                 this.chatUsers[userName].IsModerator = true;
@@ -132,14 +127,15 @@ namespace Tphx.StreamChatSharp
         /// <param name="userStateMessage">Message containing the user states. </param>
         internal void SetUserState(ChatMessage userStateMessage)
         {
-            if (string.Equals(userStateMessage.Command, "PART"))
+            if (String.Equals(userStateMessage.Command, "PART", StringComparison.OrdinalIgnoreCase))
             {
                 RemoveChatUser(userStateMessage.Source);
                 return;
             }
             // MODE is sent after the user has already parted so we need to check to see if the user is still in the
             // channel before changing their user state.
-            else if (userStateMessage.Command == "MODE" && this.chatUsers.ContainsKey(userStateMessage.Source))
+            else if (String.Equals(userStateMessage.Command, "MODE", StringComparison.OrdinalIgnoreCase) && 
+                this.chatUsers.ContainsKey(userStateMessage.Source))
             {
                 this.chatUsers[userStateMessage.Source].SetUserState(userStateMessage);
                 return;
@@ -170,14 +166,13 @@ namespace Tphx.StreamChatSharp
                 {
                     case "broadcaster-lang":
                         // If it's english, the language will be blank.
-                        this.BroadcasterLanguage = string.IsNullOrEmpty(state[1]) ? "English" : 
-                            state[1];
+                        this.BroadcasterLanguage = String.IsNullOrEmpty(state[1]) ? "English" : state[1];
                         break;
                     case "r9k":
                         this.R9KModeEnabled = Convert.ToBoolean(Convert.ToInt32(state[1]));
                         break;
                     case "slow":
-                        this.SlowModeInterval = Convert.ToInt32(state[1].ToString());
+                        this.SlowModeInterval = Convert.ToInt32(state[1]);
                         break;
                     case "subs-only":
                         this.SubscribersOnlyModeEnabled = Convert.ToBoolean(Convert.ToInt32(state[1]));

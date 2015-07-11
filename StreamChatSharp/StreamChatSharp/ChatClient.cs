@@ -17,8 +17,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace Tphx.StreamChatSharp
 {
@@ -157,7 +155,7 @@ namespace Tphx.StreamChatSharp
         /// <param name="channelName">The name of the channel to join.</param>
         public void JoinChannel(string channelName)
         {
-            if (!string.IsNullOrWhiteSpace(channelName) && !IsInChatChannel(channelName))
+            if (!String.IsNullOrWhiteSpace(channelName) && !IsInChatChannel(channelName))
             {
                 SendChatMessage(new ChatMessage("JOIN", channelName), true);
                 this.channels.AddOrUpdate(channelName, new ChatChannel(channelName), ((key, oldValue) => oldValue));
@@ -182,7 +180,7 @@ namespace Tphx.StreamChatSharp
         /// <param name="channelName">The name of the channel to leave.</param>
         public void LeaveChannel(string channelName)
         {
-            if (!string.IsNullOrWhiteSpace(channelName))
+            if (!String.IsNullOrWhiteSpace(channelName))
             {
                 SendChatMessage(new ChatMessage("PART", channelName), true);
                 ChatChannel channelToRemove;
@@ -344,7 +342,7 @@ namespace Tphx.StreamChatSharp
             // If the user joined a channel any way other than the Join method the channel may not have been added to
             // the list. The channel needs to be in the list before the message can be proccessed if the message is
             // for a channel. Channels start with a #.
-            if (!string.IsNullOrWhiteSpace(chatMessage.ChannelName) && chatMessage.ChannelName.StartsWith("#") &&
+            if (!String.IsNullOrWhiteSpace(chatMessage.ChannelName) && chatMessage.ChannelName.StartsWith("#") &&
                 !IsInChatChannel(chatMessage.ChannelName) && chatMessage.Command != "PART")
             {
                 this.channels.AddOrUpdate(chatMessage.ChannelName, new ChatChannel(chatMessage.ChannelName),
@@ -396,7 +394,7 @@ namespace Tphx.StreamChatSharp
 
         private void ModeReceived(ChatMessage chatMessage)
         {
-            if(string.Equals(chatMessage.Message, "+o"))
+            if(String.Equals(chatMessage.Message, "+o", StringComparison.OrdinalIgnoreCase))
             {
                 this.channels[chatMessage.ChannelName].SetUserState(
                     new ChatMessage()
@@ -406,7 +404,7 @@ namespace Tphx.StreamChatSharp
                         Tags = "user-type=mod"
                     });
             }
-            else if(string.Equals(chatMessage.Message, "-o"))
+            else if(String.Equals(chatMessage.Message, "-o", StringComparison.OrdinalIgnoreCase))
             {
                 this.channels[chatMessage.ChannelName].SetUserState(
                     new ChatMessage()
