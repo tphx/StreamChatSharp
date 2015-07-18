@@ -152,16 +152,14 @@ namespace Tphx.StreamChatSharp
 
         private void OnSendMessageTimerElapsed(object sender, ElapsedEventArgs e)
         {
-            if (this.highPriorityMessages.Count > 0)
+            ChatMessage message;
+
+            if(this.highPriorityMessages.TryDequeue(out message))
             {
-                ChatMessage message;
-                this.highPriorityMessages.TryDequeue(out message);
                 SendMessage(message);
             }
-            else if (this.normalPriorityMessages.Count > 0)
+            else if(this.normalPriorityMessages.TryDequeue(out message))
             {
-                ChatMessage message;
-                this.normalPriorityMessages.TryDequeue(out message);
                 SendMessage(message);
             }
             else
