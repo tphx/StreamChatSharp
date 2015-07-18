@@ -161,7 +161,7 @@ namespace Tphx.StreamChatSharp
             else if (this.normalPriorityMessages.Count > 0)
             {
                 ChatMessage message;
-                this.highPriorityMessages.TryDequeue(out message);
+                this.normalPriorityMessages.TryDequeue(out message);
                 SendMessage(message);
             }
             else
