@@ -34,11 +34,13 @@ namespace Tphx.StreamChatSharp
         private ConcurrentQueue<ChatMessage> normalPriorityMessages = new ConcurrentQueue<ChatMessage>();
         private Timer sendMessageTimer = new Timer(1600); // 1.6 seconds.
         private bool stoppedManually = false;
+        private bool messageSentLastCycle = false;
         private bool disposed = false;
 
         public OutgoingMessageQueue()
         {
             this.sendMessageTimer.Elapsed += OnSendMessageTimerElapsed;
+            this.sendMessageTimer.Start();
         }
 
         /// <summary>
@@ -59,10 +61,10 @@ namespace Tphx.StreamChatSharp
         {
             // If the send message timer isn't running (no message has been sent in since the last interval) we can 
             // send the message instantly.
-            if (!this.sendMessageTimer.Enabled)
+            if (!this.messageSentLastCycle)
             {
                 SendMessage(message);
-                this.sendMessageTimer.Start();
+                this.messageSentLastCycle = true;
             }
             else
             {
@@ -98,11 +100,7 @@ namespace Tphx.StreamChatSharp
         /// </summary>
         public void Start()
         {
-            if (this.highPriorityMessages.Count > 0 || this.normalPriorityMessages.Count > 0)
-            {
-                this.sendMessageTimer.Start();
-            }
-
+            this.sendMessageTimer.Start();
             this.stoppedManually = false;
         }
 
@@ -134,7 +132,6 @@ namespace Tphx.StreamChatSharp
         {
             this.highPriorityMessages = new ConcurrentQueue<ChatMessage>();
             this.normalPriorityMessages = new ConcurrentQueue<ChatMessage>();
-            this.sendMessageTimer.Stop();
         }
 
         private void Dispose(bool disposing)
@@ -157,14 +154,16 @@ namespace Tphx.StreamChatSharp
             if(this.highPriorityMessages.TryDequeue(out message))
             {
                 SendMessage(message);
+                this.messageSentLastCycle = true;
             }
             else if(this.normalPriorityMessages.TryDequeue(out message))
             {
                 SendMessage(message);
+                this.messageSentLastCycle = true;
             }
             else
             {
-                this.sendMessageTimer.Stop();
+                this.messageSentLastCycle = false;
             }
         }
 
