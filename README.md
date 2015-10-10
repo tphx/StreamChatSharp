@@ -3,9 +3,9 @@ StreamChatSharp
 
 ##About
 
-StreamChatSharp is a C# library designed specifically for use with the [Twitch.tv IRC interface](https://github.com/justintv/Twitch-API/blob/master/IRC.md). Although any IRC server can be connected to, functionality is not guaranteed. This is because Twitch IRC works slightly differently to standard IRC servers.
+StreamChatSharp is a C# library designed specifically for use with the [Twitch IRC interface](https://github.com/justintv/Twitch-API/blob/master/IRC.md). Although any IRC server can be connected to, functionality is not guaranteed. This is because Twitch IRC works slightly differently to standard IRC servers.
 
-This library was designed with the hope that it would make the creation of bots and other applications that use the [Twitch.tv IRC interface](https://github.com/justintv/Twitch-API/blob/master/IRC.md) much easier.
+This library was designed with the hope that it would make the creation of bots and other applications that use the [Twitch IRC interface](https://github.com/justintv/Twitch-API/blob/master/IRC.md) much easier.
 
 ----------
 
@@ -85,4 +85,4 @@ Target = username
 ----------
  
 *Disclaimer:
-This repository is an independent third party library. It is in no way, officially or unofficially, licensed, supported, endorsed, or even acknowledged to exist by [Twitch.tv](http://www.twitch.tv/). It is meant to interact with the publicly available IRC interface that Twitch provides.*
+This repository is an independent third party library. It is in no way, officially or unofficially, licensed, supported, endorsed, or even acknowledged to exist by [Twitch](http://www.twitch.tv/). It is meant to interact with the publicly available IRC interface that Twitch provides.*
