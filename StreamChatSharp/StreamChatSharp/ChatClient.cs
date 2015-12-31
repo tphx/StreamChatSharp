@@ -168,9 +168,12 @@ namespace Tphx.StreamChatSharp
         /// <param name="channelNames">Collection of channel names to join.</param>
         public void JoinChannel(IList<string> channelNames)
         {
-            foreach (string currentChannelName in channelNames)
+            if (channelNames != null)
             {
-                JoinChannel(currentChannelName);
+                foreach (string currentChannelName in channelNames)
+                {
+                    JoinChannel(currentChannelName);
+                }
             }
         }
 
