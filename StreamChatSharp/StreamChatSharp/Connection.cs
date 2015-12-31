@@ -47,6 +47,11 @@ namespace Tphx.StreamChatSharp
         /// </summary>
         public event EventHandler RegisteredWithServer;
 
+        /// <summary>
+        /// Triggered whenever a chat message is sent.
+        /// </summary>
+        public event EventHandler<ChatMessageEventArgs> ChatMessageSent;
+
         // Amount of time to wait before the connection is timed out when first connecting to the server.
         private const double newConnectionTimeoutInterval = 60000.00; // 1 minute.
 
@@ -116,6 +121,12 @@ namespace Tphx.StreamChatSharp
         public void SendChatMessage(ChatMessage chatMessage, bool highPriorityMessage)
         {
             this.messageSender.SendMessage(chatMessage, highPriorityMessage);
+
+            if(this.ChatMessageSent != null)
+            {
+                chatMessage.Source = connectionData.Nickname;
+                this.ChatMessageSent(this, new ChatMessageEventArgs(chatMessage));
+            }
         }
 
         /// <summary>

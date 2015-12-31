@@ -45,6 +45,11 @@ namespace Tphx.StreamChatSharp
         /// </summary>
         public event EventHandler RegisteredWithServer;
 
+        /// <summary>
+        /// Triggered whenever a chat message is sent.
+        /// </summary>
+        public event EventHandler<ChatMessageEventArgs> ChatMessageSent;
+
         private Connection chatConnection;
         private ConcurrentDictionary<string, ChatChannel> channels = new ConcurrentDictionary<string, ChatChannel>();
         private bool connectionTimedOut = false;
@@ -74,6 +79,7 @@ namespace Tphx.StreamChatSharp
                 this.chatConnection.ChatMessageReceived += OnChatMessageReceived;
                 this.chatConnection.Disconnected += OnDisconnected;
                 this.chatConnection.RegisteredWithServer += OnRegisteredWithServer;
+                this.chatConnection.ChatMessageSent += OnChatMessageSent;
                 this.chatConnection.ConnectToServer(connectionData);
             }
         }
@@ -105,6 +111,7 @@ namespace Tphx.StreamChatSharp
                 this.chatConnection.ChatMessageReceived -= OnChatMessageReceived;
                 this.chatConnection.Disconnected -= OnDisconnected;
                 this.chatConnection.RegisteredWithServer -= OnRegisteredWithServer;
+                this.chatConnection.ChatMessageSent -= OnChatMessageSent;
                 this.chatConnection.Disconnect();
                 this.chatConnection.Dispose();
 
@@ -416,6 +423,14 @@ namespace Tphx.StreamChatSharp
                         Source = chatMessage.Target,
                         Tags = "user-type="
                     });
+            }
+        }
+
+        private void OnChatMessageSent(object sender, ChatMessageEventArgs e)
+        {
+            if(this.ChatMessageSent != null)
+            {
+                this.ChatMessageSent(sender, e);
             }
         }
     }
