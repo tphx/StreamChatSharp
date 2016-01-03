@@ -31,6 +31,11 @@ namespace Tphx.StreamChatSharp
         /// </summary>
         public event EventHandler ConnectionLost;
 
+        /// <summary>
+        /// Triggered whenever a chat message is sent.
+        /// </summary>
+        public event EventHandler<ChatMessageEventArgs> ChatMessageSent;
+
         private OutgoingMessageQueue outgoingMessageQueue = new OutgoingMessageQueue();
         private StreamWriter writer;
         private Thread thread;
@@ -141,6 +146,11 @@ namespace Tphx.StreamChatSharp
 
             if (!String.IsNullOrWhiteSpace(rawMessage) && this.running)
             {
+                if (this.ChatMessageSent != null)
+                {
+                    this.ChatMessageSent(this, new ChatMessageEventArgs(e.ChatMessage));
+                }
+
                 try
                 {
                     this.writer.WriteLine(rawMessage);

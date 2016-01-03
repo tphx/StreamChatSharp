@@ -77,6 +77,7 @@ namespace Tphx.StreamChatSharp
         public Connection()
         {
             this.messageSender.ConnectionLost += OnConnectionLost;
+            this.messageSender.ChatMessageSent += OnChatMessageSent;
 
             this.messageReceiver.ConnectionLost += OnConnectionLost;
 
@@ -121,12 +122,6 @@ namespace Tphx.StreamChatSharp
         public void SendChatMessage(ChatMessage chatMessage, bool highPriorityMessage)
         {
             this.messageSender.SendMessage(chatMessage, highPriorityMessage);
-
-            if(this.ChatMessageSent != null)
-            {
-                chatMessage.Source = connectionData.Nickname;
-                this.ChatMessageSent(this, new ChatMessageEventArgs(chatMessage));
-            }
         }
 
         /// <summary>
@@ -317,6 +312,15 @@ namespace Tphx.StreamChatSharp
             if(RegisteredWithServer != null)
             {
                 RegisteredWithServer(this, new EventArgs());
+            }
+        }
+
+        private void OnChatMessageSent(object sender, ChatMessageEventArgs e)
+        {
+            if (this.ChatMessageSent != null)
+            {
+                e.ChatMessage.Source = this.ConnectionData.Nickname;
+                this.ChatMessageSent(this, e);
             }
         }
     }
