@@ -60,7 +60,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>StreamChatSharpKey2.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>StreamChatSharpKey.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
