@@ -96,7 +96,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="StreamChatSharpKey.pfx" />
-    <None Include="StreamChatSharpKey2.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
