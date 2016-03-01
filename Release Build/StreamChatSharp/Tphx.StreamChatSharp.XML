@@ -11,197 +11,99 @@
         </member>
         <member name="M:Tphx.StreamChatSharp.ChatChannel.#ctor(System.String)">
             <summary>
-            Creates a new chat channel.
+            Constructs a new chat channel.
             </summary>
-            <param name="channelName">Name of the channel.</param>
+            <param name="channelName">Name of the channel</param>
         </member>
         <member name="P:Tphx.StreamChatSharp.ChatChannel.ChannelName">
             <summary>
-            The name of the channel.
+            Name of the channel.
             </summary>
         </member>
-        <member name="P:Tphx.StreamChatSharp.ChatChannel.ChatUsers">
+        <member name="P:Tphx.StreamChatSharp.ChatChannel.Users">
             <summary>
             Users that are currently in the channel.
             </summary>
         </member>
-        <member name="M:Tphx.StreamChatSharp.ChatChannel.AddChatUser(System.String)">
-            <summary>
-            Adds a user to the list of users in the channel.
-            </summary>
-            <param name="userName">Name of the user to add.</param>
-        </member>
-        <member name="M:Tphx.StreamChatSharp.ChatChannel.RemoveChatUser(System.String)">
-            <summary>
-            Removes a user from the list of users in the channel.
-            </summary>
-            <param name="userName">Name of the user to remove.</param>
-        </member>
         <member name="P:Tphx.StreamChatSharp.ChatChannel.BroadcasterLanguage">
             <summary>
-            Language spoken by the broadcaster.
+            Lanaguage that is selected when broadcaster mode is enabled. English by default.
             </summary>
         </member>
         <member name="P:Tphx.StreamChatSharp.ChatChannel.R9KModeEnabled">
             <summary>
-            Whether or not R9K mode is enabled in the channel.
+            Whether or not R9K mode is enabled.
             </summary>
         </member>
         <member name="P:Tphx.StreamChatSharp.ChatChannel.SlowModeEnabled">
             <summary>
-            Whether or not slow mode is enabled on the channel.
+            Whether or not slow mode is enabled.
             </summary>
         </member>
         <member name="P:Tphx.StreamChatSharp.ChatChannel.SlowModeInterval">
             <summary>
-            Interval (seconds) a user must wait beteen sending messages.
+            The amount of seconds users must wait between meessages when slowmode is enabled.
             </summary>
         </member>
         <member name="P:Tphx.StreamChatSharp.ChatChannel.SubscribersOnlyModeEnabled">
             <summary>
-            Whether or not the channel is in subscribers only mode.
+            Whether or not subscribers only mode is enabled.
             </summary>
         </member>
-        <member name="M:Tphx.StreamChatSharp.ChatChannel.SetUserState(Tphx.StreamChatSharp.ChatMessage)">
+        <member name="M:Tphx.StreamChatSharp.ChatChannel.ProcessChatMessage(Tphx.StreamChatSharp.ChatMessage)">
             <summary>
-            Sets the user state based on the chat message.
+            Processes a chat message.
             </summary>
-            <param name="userStateMessage">Message containing the user states. </param>
-        </member>
-        <member name="M:Tphx.StreamChatSharp.ChatChannel.SetRoomState(Tphx.StreamChatSharp.ChatMessage)">
-            <summary>
-            Sets the room states for the channel.
-            </summary>
-            <param name="roomStateMessage">Message containing the room states.</param>
+            <param name="chatMessage">Message to process.</param>
         </member>
         <member name="T:Tphx.StreamChatSharp.ChatClient">
             <summary>
-            A client for connecting and exchanging messages with the Twitch IRC server.
+            Client used to interact with the Twitch chat.
             </summary>
         </member>
-        <member name="E:Tphx.StreamChatSharp.ChatClient.RawMessageReceived">
+        <member name="M:Tphx.StreamChatSharp.ChatClient.#ctor">
             <summary>
-            Triggered whenever a raw message is received.
+            Constructs a new chat client.
             </summary>
         </member>
-        <member name="E:Tphx.StreamChatSharp.ChatClient.ChatMessageReceived">
+        <member name="P:Tphx.StreamChatSharp.ChatClient.Connection">
             <summary>
-            Triggered whenever a chat message is received.
+            Connection to the chat server.
             </summary>
         </member>
-        <member name="E:Tphx.StreamChatSharp.ChatClient.Disconnected">
+        <member name="P:Tphx.StreamChatSharp.ChatClient.Channels">
             <summary>
-            Triggered whenever the connection is disconnected.
-            </summary>
-        </member>
-        <member name="E:Tphx.StreamChatSharp.ChatClient.RegisteredWithServer">
-            <summary>
-            Triggered when the connection has successfully registered with the server.
-            </summary>
-        </member>
-        <member name="E:Tphx.StreamChatSharp.ChatClient.ChatMessageSent">
-            <summary>
-            Triggered whenever a chat message is sent.
+            Channels the client is currently in.
             </summary>
         </member>
         <member name="M:Tphx.StreamChatSharp.ChatClient.Dispose">
             <summary>
-            Disposes of everything and disconnects from the chat server.
+            Disposes of everything.
             </summary>
-        </member>
-        <member name="M:Tphx.StreamChatSharp.ChatClient.ConnectToChat(Tphx.StreamChatSharp.ConnectionData)">
-            <summary>
-            Connects to the Twitch IRC server using the connection data.
-            </summary>
-            <param name="connectionData">Data to connect with.</param>
-        </member>
-        <member name="M:Tphx.StreamChatSharp.ChatClient.ConnectToChat(Tphx.StreamChatSharp.ConnectionData,System.Boolean,System.Boolean,System.Boolean)">
-            <summary>
-            Connects to the Twitch IRC server using the connection data and enables IRCv3 capabilities.
-            </summary>
-            <param name="connectionData">Data to connect with.</param>
-            <param name="enableTagsCap">Whether or not to enable the tags capability.</param>
-            <param name="enableMembershipCap">Whether or not to enable the membership capability.</param>
-            <param name="enableCommandsCap">Whether or not to enable the commands capability.</param>
-        </member>
-        <member name="M:Tphx.StreamChatSharp.ChatClient.Disconnect">
-            <summary>
-            Disconnects from the Twitch IRC server.
-            </summary>
-        </member>
-        <member name="M:Tphx.StreamChatSharp.ChatClient.SendChatMessage(Tphx.StreamChatSharp.ChatMessage,System.Boolean)">
-            <summary>
-            Sends a ChatMessage to the chat server.
-            </summary>
-            <param name="message">The chat message to send.</param>
-            <param name="highPriorityMessage">Whether or not the message is a high priority message.</param>
-        </member>
-        <member name="M:Tphx.StreamChatSharp.ChatClient.SendPrivateMessage(System.String,System.String,System.Boolean)">
-            <summary>
-            Sends a private message (PRIVMSG) to the chat server.
-            </summary>
-            <param name="message">The message to send.</param>
-            <param name="channelName">The channel to send the message to.</param>
-            <param name="highPriorityMessage">Whether or not the message is a high priority message.</param>
-        </member>
-        <member name="M:Tphx.StreamChatSharp.ChatClient.SendRawMessage(System.String,System.Boolean)">
-            <summary>
-            Sends a raw message to the chat server.
-            </summary>
-            <param name="rawMessage">The raw message to send to the chat server.</param>
-            <param name="highPriorityMessage">Whether or not the message is a high priority message.</param>
-        </member>
-        <member name="M:Tphx.StreamChatSharp.ChatClient.JoinChannel(System.String)">
-            <summary>
-            Joins a chat chanel.
-            </summary>
-            <param name="channelName">The name of the channel to join.</param>
         </member>
         <member name="M:Tphx.StreamChatSharp.ChatClient.JoinChannel(System.Collections.Generic.IList{System.String})">
             <summary>
-            Joins multiple chat channels.
+            Joins the specified channels.
             </summary>
-            <param name="channelNames">Collection of channel names to join.</param>
+            <param name="channelNames">Names of the channels to join.</param>
+        </member>
+        <member name="M:Tphx.StreamChatSharp.ChatClient.JoinChannel(System.String)">
+            <summary>
+            Joins the specified channel.
+            </summary>
+            <param name="channelName">Name of the channel to join.</param>
+        </member>
+        <member name="M:Tphx.StreamChatSharp.ChatClient.LeaveChannel(System.Collections.Generic.IList{System.String})">
+            <summary>
+            Leaves the channels specified.
+            </summary>
+            <param name="channelNames">Names of the channels to leave.</param>
         </member>
         <member name="M:Tphx.StreamChatSharp.ChatClient.LeaveChannel(System.String)">
             <summary>
-            Leaves a chat channel.
+            Leaves the specified channel.
             </summary>
-            <param name="channelName">The name of the channel to leave.</param>
-        </member>
-        <member name="P:Tphx.StreamChatSharp.ChatClient.Channels">
-            <summary>
-            Gets a dictionary of the chat channels the client is currently in.
-            </summary>
-            <returns>Collection of current chat channels.</returns>
-        </member>
-        <member name="P:Tphx.StreamChatSharp.ChatClient.Connected">
-            <summary>
-            Whether or not the client is connected to the IRC server.
-            </summary>
-        </member>
-        <member name="P:Tphx.StreamChatSharp.ChatClient.MessageSendInterval">
-            <summary>
-            The amount of time (in milliseconds) to wait between sent messages. By default this is set to 1.6 seconds 
-            between messages (20 messages in 32 seconds). Set it to 0 to disable it.
-            </summary>
-        </member>
-        <member name="M:Tphx.StreamChatSharp.ChatClient.IsInChatChannel(System.String)">
-            <summary>
-            Returns whether or not the client is in a chat channel.
-            </summary>
-            <param name="channelName">Name of the channel to check.</param>
-            <returns>Whether or not the client is in a chat channel.</returns>
-        </member>
-        <member name="P:Tphx.StreamChatSharp.ChatClient.ConnectionData">
-            <summary>
-            Server connection data.
-            </summary>
-        </member>
-        <member name="P:Tphx.StreamChatSharp.ChatClient.ConnectionRegistered">
-            <summary>
-            Whether or not the connection has been registered with the server.
-            </summary>
+            <param name="channelName">Name of the channel to leave.</param>
         </member>
         <member name="T:Tphx.StreamChatSharp.ChatMessage">
             <summary>
@@ -391,15 +293,16 @@
             Data for a chat user.
             </summary>
         </member>
-        <member name="M:Tphx.StreamChatSharp.ChatUser.#ctor(System.String)">
+        <member name="M:Tphx.StreamChatSharp.ChatUser.#ctor(System.String,System.String)">
             <summary>
             Creates a new chat user with the name specified.
             </summary>
             <param name="userName">Name of the user.</param>
+            <param name="channelName">Name of the channel the user is currently in.</param>
         </member>
         <member name="P:Tphx.StreamChatSharp.ChatUser.UserName">
             <summary>
-            Name of the user.
+            Name of the user. Formatted with capitals if the user has set it.
             </summary>
         </member>
         <member name="P:Tphx.StreamChatSharp.ChatUser.IsModerator">
@@ -447,11 +350,21 @@
             Emote sets the user has access to.
             </summary>
         </member>
-        <member name="M:Tphx.StreamChatSharp.ChatUser.SetUserState(Tphx.StreamChatSharp.ChatMessage)">
+        <member name="P:Tphx.StreamChatSharp.ChatUser.UserId">
             <summary>
-            Sets the user state based on the chat message.
+            User's ID.
             </summary>
-            <param name="userStateMessage">Message containing the user states. </param>
+        </member>
+        <member name="P:Tphx.StreamChatSharp.ChatUser.UserType">
+            <summary>
+            User's type.
+            </summary>
+        </member>
+        <member name="M:Tphx.StreamChatSharp.ChatUser.ProcessChatMessage(Tphx.StreamChatSharp.ChatMessage)">
+            <summary>
+            Processes a chat message.
+            </summary>
+            <param name="chatMessage">Message to process.</param>
         </member>
         <member name="T:Tphx.StreamChatSharp.Connection">
             <summary>
