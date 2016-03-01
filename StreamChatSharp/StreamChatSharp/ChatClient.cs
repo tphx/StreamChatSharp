@@ -61,8 +61,14 @@ namespace Tphx.StreamChatSharp
         /// </summary>
         /// <param name="channelName">Name of the channel to join.</param>
         public void JoinChannel(string channelName)
-        {
-            this.Connection.SendChatMessage(new ChatMessage("JOIN", channelName), true);
+        { 
+            if (!channelName.StartsWith("#"))
+            {
+                channelName.Insert(0, "#");
+            }
+
+            this.Connection.SendChatMessage(new ChatMessage("JOIN", channelName.ToLower().Trim()), true);
+            this.Channels.AddOrUpdate(channelName, new ChatChannel(channelName), (key, oldValue) => oldValue);
         }
 
         private void Dispose(bool disposing)
