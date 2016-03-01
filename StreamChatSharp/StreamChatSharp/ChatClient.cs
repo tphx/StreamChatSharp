@@ -111,8 +111,13 @@ namespace Tphx.StreamChatSharp
 
         private void OnChatMessageReceived(object sender, ChatMessageEventArgs e)
         {
+            if(String.Equals(e.ChatMessage.Source, this.Connection.ConnectionData.Nickname, StringComparison.OrdinalIgnoreCase) &&
+               String.Equals(e.ChatMessage.Command, "PART", StringComparison.OrdinalIgnoreCase))
+            {
+                LeaveChannel(e.ChatMessage.ChannelName);
+            }
             // We only want to create channels for actual channels, not if we get a message to us or anything else.
-            if (!String.IsNullOrWhiteSpace(e.ChatMessage.ChannelName) && e.ChatMessage.ChannelName.StartsWith("#"))
+            else if (!String.IsNullOrWhiteSpace(e.ChatMessage.ChannelName) && e.ChatMessage.ChannelName.StartsWith("#"))
             {
                 this.Channels.AddOrUpdate(e.ChatMessage.ChannelName, new ChatChannel(e.ChatMessage.ChannelName),
                     (key, oldValue) => oldValue);
