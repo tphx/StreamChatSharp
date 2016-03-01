@@ -64,11 +64,14 @@ namespace Tphx.StreamChatSharp
         { 
             if (!channelName.StartsWith("#"))
             {
-                channelName.Insert(0, "#");
+                channelName = channelName.Insert(0, "#");
             }
 
-            this.Connection.SendChatMessage(new ChatMessage("JOIN", channelName.ToLower().Trim()), true);
-            this.Channels.AddOrUpdate(channelName, new ChatChannel(channelName), (key, oldValue) => oldValue);
+            if (!Channels.ContainsKey(channelName))
+            {
+                this.Connection.SendChatMessage(new ChatMessage("JOIN", channelName.ToLower().Trim()), true);
+                this.Channels.AddOrUpdate(channelName, new ChatChannel(channelName), (key, oldValue) => oldValue);
+            }
         }
 
         private void Dispose(bool disposing)
