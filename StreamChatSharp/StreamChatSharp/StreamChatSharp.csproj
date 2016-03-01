@@ -74,10 +74,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChatChannel.cs" />
+    <Compile Include="ChatClient.cs" />
     <Compile Include="ChatMessage.cs" />
     <Compile Include="ChatMessageEventArgs.cs" />
     <Compile Include="ChatMessageReceiver.cs" />
     <Compile Include="ChatMessageSender.cs" />
+    <Compile Include="ChatUser.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="ConnectionData.cs" />
     <Compile Include="DisconnectedEventArgs.cs" />
