@@ -21,6 +21,8 @@ namespace Tphx.StreamChatSharp
         {
             this.Connection = new Connection();
             this.Connection.ChatMessageReceived += OnChatMessageReceived;
+            this.Connection.RegisteredWithServer += OnRegisteredWithServer;
+
             this.Channels = new ConcurrentDictionary<string, ChatChannel>();
         }
 
@@ -42,15 +44,25 @@ namespace Tphx.StreamChatSharp
             Dispose(true);
         }
 
-        private void OnChatMessageReceived(object sender, ChatMessageEventArgs e)
+        /// <summary>
+        /// Joins the specified channels.
+        /// </summary>
+        /// <param name="channelNames">Channels to join.</param>
+        public void JoinChannel(IList<string> channelNames)
         {
-            // We only want to create channels for actual channels, not if we get a message to us or anything else.
-            if(!String.IsNullOrWhiteSpace(e.ChatMessage.ChannelName) && e.ChatMessage.ChannelName.StartsWith("#"))
+            foreach(string channelName in channelNames)
             {
-                this.Channels.AddOrUpdate(e.ChatMessage.ChannelName, new ChatChannel(e.ChatMessage.ChannelName),
-                    (key, oldValue) => oldValue);
-                this.Channels[e.ChatMessage.ChannelName].ProcessChatMessage(e.ChatMessage);
+                JoinChannel(channelName);
             }
+        }
+
+        /// <summary>
+        /// Joins the specified channel.
+        /// </summary>
+        /// <param name="channelName">Name of the channel to join.</param>
+        public void JoinChannel(string channelName)
+        {
+            this.Connection.SendChatMessage(new ChatMessage("JOIN", channelName), true);
         }
 
         private void Dispose(bool disposing)
@@ -64,6 +76,24 @@ namespace Tphx.StreamChatSharp
 
                 this.disposed = true;
             }
+        }
+
+        private void OnChatMessageReceived(object sender, ChatMessageEventArgs e)
+        {
+            // We only want to create channels for actual channels, not if we get a message to us or anything else.
+            if (!String.IsNullOrWhiteSpace(e.ChatMessage.ChannelName) && e.ChatMessage.ChannelName.StartsWith("#"))
+            {
+                this.Channels.AddOrUpdate(e.ChatMessage.ChannelName, new ChatChannel(e.ChatMessage.ChannelName),
+                    (key, oldValue) => oldValue);
+                this.Channels[e.ChatMessage.ChannelName].ProcessChatMessage(e.ChatMessage);
+            }
+        }
+
+        private void OnRegisteredWithServer(object sender, EventArgs e)
+        {
+            this.Connection.SendChatMessage(new ChatMessage("CAP REQ :twitch.tv/tags"), true);
+            this.Connection.SendChatMessage(new ChatMessage("CAP REQ :twitch.tv/commands"), true);
+            this.Connection.SendChatMessage(new ChatMessage("CAP REQ :twitch.tv/membership"), true);
         }
     }
 }
