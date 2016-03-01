@@ -47,7 +47,7 @@ namespace Tphx.StreamChatSharp
         /// <summary>
         /// Joins the specified channels.
         /// </summary>
-        /// <param name="channelNames">Channels to join.</param>
+        /// <param name="channelNames">Names of the channels to join.</param>
         public void JoinChannel(IList<string> channelNames)
         {
             foreach(string channelName in channelNames)
@@ -72,6 +72,28 @@ namespace Tphx.StreamChatSharp
                 this.Connection.SendChatMessage(new ChatMessage("JOIN", channelName.ToLower().Trim()), true);
                 this.Channels.AddOrUpdate(channelName, new ChatChannel(channelName), (key, oldValue) => oldValue);
             }
+        }
+        
+        /// <summary>
+        /// Leaves the channels specified.
+        /// </summary>
+        /// <param name="channelNames">Names of the channels to leave.</param>
+        public void LeaveChannel(IList<string> channelNames)
+        {
+            foreach(string channelName in channelNames)
+            {
+                LeaveChannel(channelName);
+            }
+        }
+
+        /// <summary>
+        /// Leaves the specified channel.
+        /// </summary>
+        /// <param name="channelName">Name of the channel to leave.</param>
+        public void LeaveChannel(string channelName)
+        {
+            ChatChannel channel;
+            this.Channels.TryRemove(channelName, out channel);
         }
 
         private void Dispose(bool disposing)
