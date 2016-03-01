@@ -33,7 +33,7 @@ namespace Tphx.StreamChatSharp
         /// Channels the client is currently in.
         /// </summary>
         public ConcurrentDictionary<string, ChatChannel> Channels { get; private set; }
-        
+
         /// <summary>
         /// Disposes of everything.
         /// </summary>
@@ -44,7 +44,8 @@ namespace Tphx.StreamChatSharp
 
         private void OnChatMessageReceived(object sender, ChatMessageEventArgs e)
         {
-            if(!String.IsNullOrWhiteSpace(e.ChatMessage.ChannelName))
+            // We only want to create channels for actual channels, not if we get a message to us or anything else.
+            if(!String.IsNullOrWhiteSpace(e.ChatMessage.ChannelName) && e.ChatMessage.ChannelName.StartsWith("#"))
             {
                 this.Channels.AddOrUpdate(e.ChatMessage.ChannelName, new ChatChannel(e.ChatMessage.ChannelName),
                     (key, oldValue) => oldValue);
