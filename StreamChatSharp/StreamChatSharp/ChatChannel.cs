@@ -63,26 +63,28 @@ namespace Tphx.StreamChatSharp
         /// <param name="chatMessage">Message to process.</param>
         internal void ProcessChatMessage(ChatMessage chatMessage)
         {
-            if(String.Equals(chatMessage.Source, "tmi", StringComparison.OrdinalIgnoreCase))
+            switch(chatMessage.Source)
             {
-                switch (chatMessage.Command)
-                {
-                    case "ROOMSTATE":
-                        SetRoomState(chatMessage.Tags);
-                        break;
-                    case "MODE":
-                        this.Users.AddOrUpdate(chatMessage.Target, new ChatUser(chatMessage.Target, chatMessage.ChannelName),
-                            (key, oldValue) => oldValue);
-                        this.Users[chatMessage.Target].IsModerator = String.Equals(chatMessage.ChannelName, "+o", 
-                            StringComparison.OrdinalIgnoreCase);
-                        break;
-                }
+                case "tmi":
+                    SetRoomState(chatMessage.Tags);
+                    break;
+                case "jtv":
+                    SetUserMode(chatMessage.Target, chatMessage.Message);
+                    break;
+                default:
+                    this.Users.AddOrUpdate(chatMessage.Source, new ChatUser(chatMessage.Source, chatMessage.ChannelName),
+                        (key, oldValue) => oldValue);
+                    this.Users[chatMessage.Source].ProcessChatMessage(chatMessage);
+                    break;
             }
-            else
+        }
+
+        private void SetUserMode(string user, string mode)
+        {
+            if (!String.IsNullOrWhiteSpace(user))
             {
-                this.Users.AddOrUpdate(chatMessage.Source, new ChatUser(chatMessage.Source, chatMessage.ChannelName),
-                    (key, oldValue) => oldValue);
-                this.Users[chatMessage.Source].ProcessChatMessage(chatMessage);
+                this.Users.AddOrUpdate(user, new ChatUser(user, this.ChannelName), (key, oldValue) => oldValue);
+                this.Users[user].IsModerator = String.Equals(mode, "+o", StringComparison.OrdinalIgnoreCase);
             }
         }
 
