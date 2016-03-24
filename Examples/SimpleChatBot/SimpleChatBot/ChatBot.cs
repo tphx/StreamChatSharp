@@ -207,7 +207,7 @@ namespace SimpleChatBot
             if (chatMessage.Message.StartsWith("!hello", StringComparison.OrdinalIgnoreCase))
             {
                 string reply = String.Format("Hello {0}.", chatMessage.Source);
-                this.chatClient.SendChatMessage(new ChatMessage("PRIVMSG", reply, chatMessage.ChannelName), false);
+                this.chatClient.Connection.SendChatMessage(new ChatMessage("PRIVMSG", reply, chatMessage.ChannelName), false);
                 Console.WriteLine("{0} > {1}", chatMessage.ChannelName, reply);
             }
             else if(chatMessage.Message.StartsWith("!time", StringComparison.OrdinalIgnoreCase))
