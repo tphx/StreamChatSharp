@@ -98,6 +98,17 @@ namespace Tphx.StreamChatSharp
             this.Channels.TryRemove(channelName, out channel);
         }
 
+        /// <summary>
+        /// Sends a private message to the channel specified.
+        /// </summary>
+        /// <param name="channelName">Name of the channel to send the message to.</param>
+        /// <param name="message">Message to send.</param>
+        /// <param name="isHighPriority">Whether or not the message is a high priority message.</param>
+        public void SendMessage(string channelName, string message, bool isHighPriority)
+        {
+            this.Connection.SendChatMessage(new ChatMessage("PRIVMSG", message, channelName), isHighPriority);
+        }
+
         private void Dispose(bool disposing)
         {
             if(!this.disposed)
