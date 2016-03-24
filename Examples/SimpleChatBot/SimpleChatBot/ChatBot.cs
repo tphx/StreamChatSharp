@@ -45,25 +45,25 @@ namespace SimpleChatBot
 
             // This event lets us know when we have successfully connected to the server. We should wait until this 
             // event is fired before we join any channels or send any messages.
-            this.chatClient.RegisteredWithServer += OnRegisteredWithServer;
+            this.chatClient.Connection.RegisteredWithServer += OnRegisteredWithServer;
 
             // This event lets us know that we have received a new chat message. The message can contain various
             // information such as the command, source, and name of the channel the message is meant for.
-            this.chatClient.ChatMessageReceived += OnChatMessageReceived;
+            this.chatClient.Connection.ChatMessageReceived += OnChatMessageReceived;
 
             // This event lets us know we have received a new raw message. This will show us every message we receive in 
             // its raw form. We mainly use OnChatMessageReceived for receiving messages but this event is useful for
             // debugging and troubleshooting purposes or if messages need to parsed in a certain way.
-            this.chatClient.RawMessageReceived += OnRawMessageReceived;
+            this.chatClient.Connection.RawMessageReceived += OnRawMessageReceived;
 
             // This event lets us know the client has been disconnected from the server. It informs us of the reason we
             // were disconnected and whether or not the client is going to try to automatically reconnect.
-            this.chatClient.Disconnected += OnDisconnected;
+            this.chatClient.Connection.Disconnected += OnDisconnected;
 
             // To connect to the IRC server all we have to do is use the chat client to connect to chat with our
             // connection data. When connecting we can choose whether or not we want to enable various IRCv3 
             // capabilities.
-            this.chatClient.ConnectToChat(GetConnectionData(), true, true, true);
+            this.chatClient.Connection.ConnectToServer(GetConnectionData());
 
             // Keep the console open while the chatbot is running and check for input.
             while (true)
@@ -214,7 +214,7 @@ namespace SimpleChatBot
             {
                 string reply = String.Format("{0} - The current time is {1}.", chatMessage.Source,
                     DateTime.Now.ToShortTimeString());
-                this.chatClient.SendPrivateMessage(reply, chatMessage.ChannelName, false);
+                this.chatClient.SendMessage(chatMessage.ChannelName, reply, false);
                 Console.WriteLine("{0} > {1}", chatMessage.ChannelName, reply);
             }
         }
@@ -238,18 +238,16 @@ namespace SimpleChatBot
             foreach (KeyValuePair<string, ChatChannel> channel in this.chatClient.Channels)
             {
                 Console.WriteLine(channel.Value.ChannelName);
-                Console.WriteLine("Total users: {0}", channel.Value.ChatUsers.Count);
-                Console.WriteLine("Moderators: {0}", channel.Value.ChatUsers.Where(u => u.Value.IsModerator).Count());
-                Console.WriteLine("Global moderators: {0}", 
-                    channel.Value.ChatUsers.Where(u => u.Value.IsGlobalModerator).Count());
-                Console.WriteLine("Staff: {0}", channel.Value.ChatUsers.Where(u => u.Value.IsStaff).Count());
-                Console.WriteLine("Admins: {0}", channel.Value.ChatUsers.Where(u => u.Value.IsAdmin).Count());
-                Console.WriteLine("Subscribers: {0}", channel.Value.ChatUsers.Where(u => u.Value.IsSubscriber).Count());
-                Console.WriteLine("Turbo users: {0}", channel.Value.ChatUsers.Where(u => u.Value.IsTurbo).Count());
-                Console.WriteLine("Channel owners: {0}", 
-                    channel.Value.ChatUsers.Where(u => u.Value.IsChannelOwner).Count());
+                Console.WriteLine("Total users: {0}", channel.Value.Users.Count);
+                Console.WriteLine("Moderators: {0}", channel.Value.Users.Where(u => u.Value.IsModerator).Count());
+                Console.WriteLine("Global moderators: {0}", channel.Value.Users.Where(u => u.Value.IsGlobalModerator).Count());
+                Console.WriteLine("Staff: {0}", channel.Value.Users.Where(u => u.Value.IsStaff).Count());
+                Console.WriteLine("Admins: {0}", channel.Value.Users.Where(u => u.Value.IsAdmin).Count());
+                Console.WriteLine("Subscribers: {0}", channel.Value.Users.Where(u => u.Value.IsSubscriber).Count());
+                Console.WriteLine("Turbo users: {0}", channel.Value.Users.Where(u => u.Value.IsTurbo).Count());
+                Console.WriteLine("Channel owners: {0}", channel.Value.Users.Where(u => u.Value.IsChannelOwner).Count());
                 Console.WriteLine("----------------------------------------------");
-                totalUsers += channel.Value.ChatUsers.Count;
+                totalUsers += channel.Value.Users.Count;
             }
             Console.WriteLine("Total channels: {0}", this.chatClient.Channels.Count);
             Console.WriteLine("Total users: {0}", totalUsers);
