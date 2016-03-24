@@ -12,6 +12,7 @@ namespace Tphx.StreamChatSharp
     /// </summary>
     public class ChatClient
     {
+        private bool reconnectingToChat = false;
         private bool disposed = false;
 
         /// <summary>
@@ -22,6 +23,7 @@ namespace Tphx.StreamChatSharp
             this.Connection = new Connection();
             this.Connection.ChatMessageReceived += OnChatMessageReceived;
             this.Connection.RegisteredWithServer += OnRegisteredWithServer;
+            this.Connection.Disconnected += OnDisconnected;
 
             this.Channels = new ConcurrentDictionary<string, ChatChannel>();
         }
@@ -130,6 +132,24 @@ namespace Tphx.StreamChatSharp
             this.Connection.SendChatMessage(new ChatMessage("CAP REQ :twitch.tv/tags"), true);
             this.Connection.SendChatMessage(new ChatMessage("CAP REQ :twitch.tv/commands"), true);
             this.Connection.SendChatMessage(new ChatMessage("CAP REQ :twitch.tv/membership"), true);
+
+            if(reconnectingToChat)
+            {
+                JoinChannel(this.Channels.Keys.ToList());
+                this.reconnectingToChat = false;
+            }
+        }
+
+        private void OnDisconnected(object sender, DisconnectedEventArgs e)
+        {
+            if(e.AttemptingAutoReconnect)
+            {
+                this.reconnectingToChat = true;
+            }
+            else
+            {
+                this.Channels.Clear();
+            }
         }
     }
 }
