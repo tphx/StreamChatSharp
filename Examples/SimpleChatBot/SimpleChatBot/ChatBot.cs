@@ -61,8 +61,7 @@ namespace SimpleChatBot
             this.chatClient.Connection.Disconnected += OnDisconnected;
 
             // To connect to the IRC server all we have to do is use the chat client to connect to chat with our
-            // connection data. When connecting we can choose whether or not we want to enable various IRCv3 
-            // capabilities.
+            // connection data.
             this.chatClient.Connection.ConnectToServer(GetConnectionData());
 
             // Keep the console open while the chatbot is running and check for input.
