@@ -81,9 +81,8 @@ namespace Tphx.StreamChatSharp
 
         private void SetUserMode(string user, string mode)
         {
-            if (!String.IsNullOrWhiteSpace(user))
+            if (this.Users.ContainsKey(user))
             {
-                this.Users.AddOrUpdate(user, new ChatUser(user, this.ChannelName), (key, oldValue) => oldValue);
                 this.Users[user].IsModerator = String.Equals(mode, "+o", StringComparison.OrdinalIgnoreCase);
             }
         }
