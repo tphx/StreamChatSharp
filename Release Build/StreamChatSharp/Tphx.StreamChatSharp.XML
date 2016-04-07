@@ -105,6 +105,14 @@
             </summary>
             <param name="channelName">Name of the channel to leave.</param>
         </member>
+        <member name="M:Tphx.StreamChatSharp.ChatClient.SendMessage(System.String,System.String,System.Boolean)">
+            <summary>
+            Sends a private message to the channel specified.
+            </summary>
+            <param name="channelName">Name of the channel to send the message to.</param>
+            <param name="message">Message to send.</param>
+            <param name="isHighPriority">Whether or not the message is a high priority message.</param>
+        </member>
         <member name="T:Tphx.StreamChatSharp.ChatMessage">
             <summary>
             The data for a chat message.
