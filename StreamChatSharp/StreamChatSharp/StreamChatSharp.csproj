@@ -61,7 +61,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>StreamChatSharpKey.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>StreamChatSharp.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -95,7 +95,9 @@
     <None Include="CodeAnalysis\StreamChatSharp.ruleset">
       <SubType>Designer</SubType>
     </None>
+    <None Include="StreamChatSharp.snk" />
     <None Include="StreamChatSharpKey.pfx" />
+    <None Include="StreamChatShart.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
