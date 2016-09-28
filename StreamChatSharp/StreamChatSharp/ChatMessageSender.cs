@@ -32,7 +32,7 @@ namespace Tphx.StreamChatSharp
         /// </summary>
         public ChatMessageSender()
         {
-            this.outgoingMessageQueue.MessageReady += OnOutgoingMessageReady;
+            outgoingMessageQueue.MessageReady += OnOutgoingMessageReady;
         }
 
         /// <summary>
@@ -50,9 +50,9 @@ namespace Tphx.StreamChatSharp
         /// /// <param name="highPriorityMessage">Whether or not the message is a high priority message.</param>
         public void SendMessage(ChatMessage chatMessage, bool highPriorityMessage)
         {
-            if (this.running && !String.IsNullOrWhiteSpace(chatMessage.Command))
+            if (running && !String.IsNullOrWhiteSpace(chatMessage.Command))
             {
-                this.outgoingMessageQueue.AddMessage(chatMessage, highPriorityMessage);
+                outgoingMessageQueue.AddMessage(chatMessage, highPriorityMessage);
             }
         }
 
@@ -62,16 +62,16 @@ namespace Tphx.StreamChatSharp
         /// <param name="networkStream">The stream to send messages to.</param>
         public void Start(Stream networkStream)
         {
-            this.writer = new StreamWriter(networkStream)
+            writer = new StreamWriter(networkStream)
             {
                 AutoFlush = true
             };
 
-            this.thread = new Thread(Run);
-            this.thread.IsBackground = true;
-            this.thread.Start();
+            thread = new Thread(Run);
+            thread.IsBackground = true;
+            thread.Start();
 
-            this.running = true;
+            running = true;
         }
 
         /// <summary>
@@ -79,14 +79,14 @@ namespace Tphx.StreamChatSharp
         /// </summary>
         public void Stop()
         {
-            this.outgoingMessageQueue.ClearMessages();
+            outgoingMessageQueue.ClearMessages();
 
-            if (this.writer != null)
+            if (writer != null)
             {
-                this.writer.Dispose();
+                writer.Dispose();
             }
 
-            this.running = false;
+            running = false;
         }
 
         /// <summary>
@@ -97,25 +97,25 @@ namespace Tphx.StreamChatSharp
         {
             get
             {
-                return this.outgoingMessageQueue.MessageSendInterval;
+                return outgoingMessageQueue.MessageSendInterval;
             }
             set
             {
-                this.outgoingMessageQueue.MessageSendInterval = value;
+                outgoingMessageQueue.MessageSendInterval = value;
             }
         }
 
         private void Dispose(bool disposing)
         {
-            if(!this.disposed)
+            if(!disposed)
             {
                 if(disposing)
                 {
                     Stop();
-                    this.outgoingMessageQueue.Dispose();
+                    outgoingMessageQueue.Dispose();
                 }
 
-                this.disposed = true;
+                disposed = true;
             }
         }
 
@@ -128,22 +128,22 @@ namespace Tphx.StreamChatSharp
         {
             string rawMessage = RawMessageParser.ChatMessageToRawMessage(e.ChatMessage);
 
-            if (!String.IsNullOrWhiteSpace(rawMessage) && this.running)
+            if (!String.IsNullOrWhiteSpace(rawMessage) && running)
             {
-                if (this.ChatMessageSent != null)
+                if (ChatMessageSent != null)
                 {
-                    this.ChatMessageSent(this, new ChatMessageEventArgs(e.ChatMessage));
+                    ChatMessageSent(this, new ChatMessageEventArgs(e.ChatMessage));
                 }
 
                 try
                 {
-                    this.writer.WriteLine(rawMessage);
-                    this.connected = true;
+                    writer.WriteLine(rawMessage);
+                    connected = true;
 
                     // If the connection was lost at some point we need to restart it now that we're working again.
-                    if(this.outgoingMessageQueue.StoppedManually)
+                    if(outgoingMessageQueue.StoppedManually)
                     {
-                        this.outgoingMessageQueue.Start();
+                        outgoingMessageQueue.Start();
                     }
                 }
                 catch (IOException)
@@ -151,10 +151,10 @@ namespace Tphx.StreamChatSharp
                     // We probably lost connection to the server. Wait 5 seconds and try again. If the next try fails,
                     // stop trying and alert that the connection has been lost. If the next try succeeds everything 
                     // will continue on as normal.
-                    if (this.connected)
+                    if (connected)
                     {
-                        this.outgoingMessageQueue.Stop(); // We don't want any other messages firing while we wait.
-                        this.connected = false;
+                        outgoingMessageQueue.Stop(); // We don't want any other messages firing while we wait.
+                        connected = false;
                         Thread.Sleep(5000);
                         OnOutgoingMessageReady(sender, e);
                     }
@@ -174,9 +174,9 @@ namespace Tphx.StreamChatSharp
         {
             Stop();
 
-            if (this.ConnectionLost != null)
+            if (ConnectionLost != null)
             {
-                this.ConnectionLost(this, new EventArgs());
+                ConnectionLost(this, new EventArgs());
             }
         }
     }

@@ -13,7 +13,7 @@ namespace Tphx.StreamChatSharp
         /// <param name="rawMessage">Raw message.</param>
         public RawMessageEventArgs(string rawMessage)
         {
-            this.RawMessage = rawMessage;
+            RawMessage = rawMessage;
         }
 
         /// <summary>

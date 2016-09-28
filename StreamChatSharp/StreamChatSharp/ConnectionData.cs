@@ -14,10 +14,10 @@
         /// <param name="port">Port to connect on.</param>
         public ConnectionData(string nickname, string password, string serverAddress, int port)
         {
-            this.Nickname = nickname;
-            this.Password = password;
-            this.ServerAddress = serverAddress;
-            this.Port = port;
+            Nickname = nickname;
+            Password = password;
+            ServerAddress = serverAddress;
+            Port = port;
         }
         
         /// <summary>

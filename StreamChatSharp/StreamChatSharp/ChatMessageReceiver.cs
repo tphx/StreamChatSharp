@@ -45,13 +45,13 @@ namespace Tphx.StreamChatSharp
         /// <param name="networkStream">The stream to receive messages from.</param>
         public void Start(Stream networkStream)
         {
-            this.reader = new StreamReader(networkStream);
+            reader = new StreamReader(networkStream);
 
-            this.thread = new Thread(Run);
-            this.thread.IsBackground = true;
-            this.thread.Start();
+            thread = new Thread(Run);
+            thread.IsBackground = true;
+            thread.Start();
 
-            this.running = true;
+            running = true;
         }
         
         /// <summary>
@@ -59,24 +59,24 @@ namespace Tphx.StreamChatSharp
         /// </summary>
         public void Stop()
         {
-            if (this.reader != null)
+            if (reader != null)
             {
-                this.reader.Dispose();
+                reader.Dispose();
             }
 
-            this.running = false;
+            running = false;
         }
 
         private void Dispose(bool disposing)
         {
-            if(!this.disposed)
+            if(!disposed)
             {
                 if(disposing)
                 {
                     Stop();
                 }
 
-                this.disposed = true;
+                disposed = true;
             }
         }
 
@@ -84,7 +84,7 @@ namespace Tphx.StreamChatSharp
         {
             string rawMessage;
 
-            while(this.running)
+            while(running)
             {
                 rawMessage = ReadRawMessage();
 
@@ -99,7 +99,7 @@ namespace Tphx.StreamChatSharp
                 else
                 {
                     // We read a blank line. The connection still exists but there is nothing going on.
-                    this.connected = true;
+                    connected = true;
                 }
             }
         }
@@ -108,7 +108,7 @@ namespace Tphx.StreamChatSharp
         {
             try
             {
-                return this.reader.ReadLine();
+                return reader.ReadLine();
             }
             catch (IOException)
             {
@@ -119,18 +119,18 @@ namespace Tphx.StreamChatSharp
 
         private void MessageReceived(string rawMessage)
         {
-            if (this.RawMessageReceived != null)
+            if (RawMessageReceived != null)
             {
-                this.RawMessageReceived(this, new RawMessageEventArgs(rawMessage));
+                RawMessageReceived(this, new RawMessageEventArgs(rawMessage));
             }
 
-            if (this.ChatMessageReceived != null)
+            if (ChatMessageReceived != null)
             {
-                this.ChatMessageReceived(this,
+                ChatMessageReceived(this,
                     new ChatMessageEventArgs(RawMessageParser.ReceivedRawMessageToChatMessage(rawMessage)));
             }
 
-            this.connected = true;
+            connected = true;
         }
 
         private void LostConection()
@@ -138,18 +138,18 @@ namespace Tphx.StreamChatSharp
             // Set the connected flag to false and wait 5 seconds before trying to read again just to be sure the
             // conection is actually lost. If the next read fails, the connection is actually lost, otherwise everything
             // should continue on as normal.
-            if (this.connected)
+            if (connected)
             {
-                this.connected = false;
+                connected = false;
                 Thread.Sleep(5000);
             }
             else
             {
                 Stop();
 
-                if (this.ConnectionLost != null)
+                if (ConnectionLost != null)
                 {
-                    this.ConnectionLost(this, new EventArgs());
+                    ConnectionLost(this, new EventArgs());
                 }
             }
         }

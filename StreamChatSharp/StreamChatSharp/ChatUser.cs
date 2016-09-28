@@ -17,13 +17,13 @@ namespace Tphx.StreamChatSharp
         /// <param name="channelName">Name of the channel the user is currently in.</param>
         public ChatUser(string userName, string channelName)
         {
-            this.UserName = userName;
+            UserName = userName;
             
             //We need to remove the # from the beginning of the channel name.
-            if(String.Equals(this.UserName, channelName.Remove(0, 1), StringComparison.OrdinalIgnoreCase))
+            if(String.Equals(UserName, channelName.Remove(0, 1), StringComparison.OrdinalIgnoreCase))
             {
-                this.IsChannelOwner = true;
-                this.IsModerator = true;
+                IsChannelOwner = true;
+                IsModerator = true;
             }
         }
 
@@ -74,12 +74,12 @@ namespace Tphx.StreamChatSharp
         {
             get
             {
-                return this.color.IsEmpty ? ColorTranslator.FromHtml("#000000") : this.color;
+                return color.IsEmpty ? ColorTranslator.FromHtml("#000000") : color;
             }
 
             set
             {
-                this.color = value;
+                color = value;
             }
         }
 
@@ -115,28 +115,28 @@ namespace Tphx.StreamChatSharp
                 switch (state[0])
                 {
                     case "color":
-                        this.Color = String.IsNullOrEmpty(state[1]) ? Color.Empty : ColorTranslator.FromHtml(state[1]);
+                        Color = String.IsNullOrEmpty(state[1]) ? Color.Empty : ColorTranslator.FromHtml(state[1]);
                         break;
                     case "display-name":
                         if (!String.IsNullOrEmpty(state[1]))
                         {
-                            this.UserName = state[1];
+                            UserName = state[1];
                         }
                         break;
                     case "emote-sets":
-                        this.EmoteSets = state[1];
+                        EmoteSets = state[1];
                         break;
                     case "mod":
-                        this.IsModerator = Convert.ToBoolean(Convert.ToInt32(state[1]));
+                        IsModerator = Convert.ToBoolean(Convert.ToInt32(state[1]));
                         break;
                     case "subscriber":
-                        this.IsSubscriber = Convert.ToBoolean(Convert.ToInt32(state[1]));
+                        IsSubscriber = Convert.ToBoolean(Convert.ToInt32(state[1]));
                         break;
                     case "turbo":
-                        this.IsTurbo = Convert.ToBoolean(Convert.ToInt32(state[1]));
+                        IsTurbo = Convert.ToBoolean(Convert.ToInt32(state[1]));
                         break;
                     case "user-id":
-                        this.UserId = state[1];
+                        UserId = state[1];
                         break;
                     case "user-type":
                         SetUserType(state[1]);
@@ -152,18 +152,18 @@ namespace Tphx.StreamChatSharp
                 switch (userType)
                 {
                     case "mod":
-                        this.IsModerator = true;
+                        IsModerator = true;
                         break;
                     case "global_mod":
-                        this.IsGlobalModerator = true;
-                        this.IsModerator = true;
+                        IsGlobalModerator = true;
+                        IsModerator = true;
                         break;
                     case "admin":
-                        this.IsAdmin = true;
-                        this.IsModerator = true;
+                        IsAdmin = true;
+                        IsModerator = true;
                         break;
                     case "staff":
-                        this.IsStaff = true;
+                        IsStaff = true;
                         break;
                 }
             }

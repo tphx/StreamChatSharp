@@ -18,12 +18,12 @@ namespace Tphx.StreamChatSharp
         /// </summary>
         public ChatClient()
         {
-            this.Connection = new Connection();
-            this.Connection.ChatMessageReceived += OnChatMessageReceived;
-            this.Connection.RegisteredWithServer += OnRegisteredWithServer;
-            this.Connection.Disconnected += OnDisconnected;
+            Connection = new Connection();
+            Connection.ChatMessageReceived += OnChatMessageReceived;
+            Connection.RegisteredWithServer += OnRegisteredWithServer;
+            Connection.Disconnected += OnDisconnected;
 
-            this.Channels = new ConcurrentDictionary<string, ChatChannel>();
+            Channels = new ConcurrentDictionary<string, ChatChannel>();
         }
 
         /// <summary>
@@ -69,8 +69,8 @@ namespace Tphx.StreamChatSharp
 
             if (!Channels.ContainsKey(channelName))
             {
-                this.Connection.SendChatMessage(new ChatMessage("JOIN", channelName.ToLower().Trim()), true);
-                this.Channels.AddOrUpdate(channelName, new ChatChannel(channelName), (key, oldValue) => oldValue);
+                Connection.SendChatMessage(new ChatMessage("JOIN", channelName.ToLower().Trim()), true);
+                Channels.AddOrUpdate(channelName, new ChatChannel(channelName), (key, oldValue) => oldValue);
             }
         }
         
@@ -93,7 +93,7 @@ namespace Tphx.StreamChatSharp
         public void LeaveChannel(string channelName)
         {
             ChatChannel channel;
-            this.Channels.TryRemove(channelName, out channel);
+            Channels.TryRemove(channelName, out channel);
         }
 
         /// <summary>
@@ -104,25 +104,25 @@ namespace Tphx.StreamChatSharp
         /// <param name="isHighPriority">Whether or not the message is a high priority message.</param>
         public void SendMessage(string channelName, string message, bool isHighPriority)
         {
-            this.Connection.SendChatMessage(new ChatMessage("PRIVMSG", message, channelName), isHighPriority);
+            Connection.SendChatMessage(new ChatMessage("PRIVMSG", message, channelName), isHighPriority);
         }
 
         private void Dispose(bool disposing)
         {
-            if(!this.disposed)
+            if(!disposed)
             {
                 if(disposing)
                 {
-                    this.Connection.Dispose();
+                    Connection.Dispose();
                 }
 
-                this.disposed = true;
+                disposed = true;
             }
         }
 
         private void OnChatMessageReceived(object sender, ChatMessageEventArgs e)
         {
-            if(String.Equals(e.ChatMessage.Source, this.Connection.ConnectionData.Nickname, StringComparison.OrdinalIgnoreCase) &&
+            if(String.Equals(e.ChatMessage.Source, Connection.ConnectionData.Nickname, StringComparison.OrdinalIgnoreCase) &&
                String.Equals(e.ChatMessage.Command, "PART", StringComparison.OrdinalIgnoreCase))
             {
                 LeaveChannel(e.ChatMessage.ChannelName);
@@ -130,22 +130,22 @@ namespace Tphx.StreamChatSharp
             // We only want to create channels for actual channels, not if we get a message to us or anything else.
             else if (!String.IsNullOrWhiteSpace(e.ChatMessage.ChannelName) && e.ChatMessage.ChannelName.StartsWith("#"))
             {
-                this.Channels.AddOrUpdate(e.ChatMessage.ChannelName, new ChatChannel(e.ChatMessage.ChannelName),
+                Channels.AddOrUpdate(e.ChatMessage.ChannelName, new ChatChannel(e.ChatMessage.ChannelName),
                     (key, oldValue) => oldValue);
-                this.Channels[e.ChatMessage.ChannelName].ProcessChatMessage(e.ChatMessage);
+                Channels[e.ChatMessage.ChannelName].ProcessChatMessage(e.ChatMessage);
             }
         }
 
         private void OnRegisteredWithServer(object sender, EventArgs e)
         {
-            this.Connection.SendChatMessage(new ChatMessage("CAP REQ :twitch.tv/tags"), true);
-            this.Connection.SendChatMessage(new ChatMessage("CAP REQ :twitch.tv/commands"), true);
-            this.Connection.SendChatMessage(new ChatMessage("CAP REQ :twitch.tv/membership"), true);
+            Connection.SendChatMessage(new ChatMessage("CAP REQ :twitch.tv/tags"), true);
+            Connection.SendChatMessage(new ChatMessage("CAP REQ :twitch.tv/commands"), true);
+            Connection.SendChatMessage(new ChatMessage("CAP REQ :twitch.tv/membership"), true);
 
             if(reconnectingToChat)
             {
-                JoinChannel(this.Channels.Keys.ToList());
-                this.reconnectingToChat = false;
+                JoinChannel(Channels.Keys.ToList());
+                reconnectingToChat = false;
             }
         }
 
@@ -153,11 +153,11 @@ namespace Tphx.StreamChatSharp
         {
             if(e.AttemptingAutoReconnect)
             {
-                this.reconnectingToChat = true;
+                reconnectingToChat = true;
             }
             else
             {
-                this.Channels.Clear();
+                Channels.Clear();
             }
         }
     }

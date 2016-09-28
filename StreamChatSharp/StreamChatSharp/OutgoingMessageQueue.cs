@@ -23,8 +23,8 @@ namespace Tphx.StreamChatSharp
 
         public OutgoingMessageQueue()
         {
-            this.sendMessageTimer.Elapsed += OnSendMessageTimerElapsed;
-            this.sendMessageTimer.Start();
+            sendMessageTimer.Elapsed += OnSendMessageTimerElapsed;
+            sendMessageTimer.Start();
         }
 
         /// <summary>
@@ -45,20 +45,20 @@ namespace Tphx.StreamChatSharp
         {
             // If the send message timer isn't running (no message has been sent in since the last interval) we can 
             // send the message instantly.
-            if (!this.messageSentLastCycle)
+            if (!messageSentLastCycle)
             {
                 SendMessage(message);
-                this.messageSentLastCycle = true;
+                messageSentLastCycle = true;
             }
             else
             {
                 if (isHighPriorityMessage)
                 {
-                    this.highPriorityMessages.Enqueue(message);
+                    highPriorityMessages.Enqueue(message);
                 }
                 else
                 {
-                    this.normalPriorityMessages.Enqueue(message);
+                    normalPriorityMessages.Enqueue(message);
                 }
             }
         }
@@ -71,11 +71,11 @@ namespace Tphx.StreamChatSharp
         {
             get
             {
-                return this.sendMessageTimer.Interval;
+                return sendMessageTimer.Interval;
             }
             set
             {
-                this.sendMessageTimer.Interval = value;
+                sendMessageTimer.Interval = value;
             }
         }
 
@@ -84,8 +84,8 @@ namespace Tphx.StreamChatSharp
         /// </summary>
         public void Start()
         {
-            this.sendMessageTimer.Start();
-            this.stoppedManually = false;
+            sendMessageTimer.Start();
+            stoppedManually = false;
         }
 
         /// <summary>
@@ -94,8 +94,8 @@ namespace Tphx.StreamChatSharp
         /// </summary>
         public void Stop()
         {
-            this.sendMessageTimer.Stop();
-            this.stoppedManually = true;
+            sendMessageTimer.Stop();
+            stoppedManually = true;
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace Tphx.StreamChatSharp
         {
             get
             {
-                return this.stoppedManually;
+                return stoppedManually;
             }
         }
 
@@ -114,20 +114,20 @@ namespace Tphx.StreamChatSharp
         /// </summary>
         public void ClearMessages()
         {
-            this.highPriorityMessages = new ConcurrentQueue<ChatMessage>();
-            this.normalPriorityMessages = new ConcurrentQueue<ChatMessage>();
+            highPriorityMessages = new ConcurrentQueue<ChatMessage>();
+            normalPriorityMessages = new ConcurrentQueue<ChatMessage>();
         }
 
         private void Dispose(bool disposing)
         {
-            if(!this.disposed)
+            if(!disposed)
             {
                 if(disposing)
                 {
-                    this.sendMessageTimer.Dispose();
+                    sendMessageTimer.Dispose();
                 }
 
-                this.disposed = true;
+                disposed = true;
             }
         }
 
@@ -135,27 +135,27 @@ namespace Tphx.StreamChatSharp
         {
             ChatMessage message;
 
-            if(this.highPriorityMessages.TryDequeue(out message))
+            if(highPriorityMessages.TryDequeue(out message))
             {
                 SendMessage(message);
-                this.messageSentLastCycle = true;
+                messageSentLastCycle = true;
             }
-            else if(this.normalPriorityMessages.TryDequeue(out message))
+            else if(normalPriorityMessages.TryDequeue(out message))
             {
                 SendMessage(message);
-                this.messageSentLastCycle = true;
+                messageSentLastCycle = true;
             }
             else
             {
-                this.messageSentLastCycle = false;
+                messageSentLastCycle = false;
             }
         }
 
         private void SendMessage(ChatMessage message)
         {
-            if(this.MessageReady != null)
+            if(MessageReady != null)
             {
-                this.MessageReady(this, new ChatMessageEventArgs(message));
+                MessageReady(this, new ChatMessageEventArgs(message));
             }
         }
     }

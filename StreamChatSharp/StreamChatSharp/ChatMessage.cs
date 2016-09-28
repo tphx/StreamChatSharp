@@ -86,11 +86,11 @@
         {
             get
             {
-                return this.source ?? "";
+                return source ?? "";
             }
             set
             {
-                this.source = value;
+                source = value;
             }
         }
 
@@ -101,11 +101,11 @@
         {
             get
             {
-                return this.target ?? "";
+                return target ?? "";
             }
             set
             {
-                this.target = value;
+                target = value;
             }
         }
 
@@ -116,11 +116,11 @@
         {
             get
             {
-                return this.channelName ?? "";
+                return channelName ?? "";
             }
             set
             {
-                this.channelName = value;
+                channelName = value;
             }
         }
 
@@ -131,11 +131,11 @@
         {
             get
             {
-                return this.command ?? "";
+                return command ?? "";
             }
             set
             {
-                this.command = value;
+                command = value;
             }
         }
 
@@ -146,11 +146,11 @@
         {
             get
             {
-                return this.message ?? "";
+                return message ?? "";
             }
             set
             {
-                this.message = value;
+                message = value;
             }
         }
 
@@ -161,11 +161,11 @@
         {
             get
             {
-                return this.tags ?? "";
+                return tags ?? "";
             }
             set
             {
-                this.tags = value;
+                tags = value;
             }
         }
     }

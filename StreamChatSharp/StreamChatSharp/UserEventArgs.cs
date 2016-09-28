@@ -13,7 +13,7 @@ namespace Tphx.StreamChatSharp
         /// <param name="userName">Name of the user.</param>
         public UserEventArgs(string userName)
         {
-            this.UserName = userName;
+            UserName = userName;
         }
         
         /// <summary>

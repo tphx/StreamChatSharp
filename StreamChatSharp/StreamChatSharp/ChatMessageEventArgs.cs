@@ -13,7 +13,7 @@ namespace Tphx.StreamChatSharp
         /// <param name="chatMessage">ChatMessage.</param>
         public ChatMessageEventArgs(ChatMessage chatMessage)
         {
-            this.ChatMessage = chatMessage;
+            ChatMessage = chatMessage;
         }
 
         /// <summary>

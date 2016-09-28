@@ -14,8 +14,8 @@ namespace Tphx.StreamChatSharp
         /// <param name="channelName">Name of the channel</param>
         public ChatChannel(string channelName)
         { 
-            this.Users = new ConcurrentDictionary<string, ChatUser>();
-            this.ChannelName = channelName;
+            Users = new ConcurrentDictionary<string, ChatUser>();
+            ChannelName = channelName;
         }
 
         /// <summary>
@@ -68,18 +68,18 @@ namespace Tphx.StreamChatSharp
                     SetUserMode(chatMessage.Target, chatMessage.Message);
                     break;
                 default:
-                    this.Users.AddOrUpdate(chatMessage.Source, new ChatUser(chatMessage.Source, chatMessage.ChannelName),
+                    Users.AddOrUpdate(chatMessage.Source, new ChatUser(chatMessage.Source, chatMessage.ChannelName),
                         (key, oldValue) => oldValue);
-                    this.Users[chatMessage.Source].ProcessChatMessage(chatMessage);
+                    Users[chatMessage.Source].ProcessChatMessage(chatMessage);
                     break;
             }
         }
 
         private void SetUserMode(string user, string mode)
         {
-            if (this.Users.ContainsKey(user))
+            if (Users.ContainsKey(user))
             {
-                this.Users[user].IsModerator = String.Equals(mode, "+o", StringComparison.OrdinalIgnoreCase);
+                Users[user].IsModerator = String.Equals(mode, "+o", StringComparison.OrdinalIgnoreCase);
             }
         }
 
@@ -96,17 +96,17 @@ namespace Tphx.StreamChatSharp
                 switch (state[0])
                 {
                     case "broadcaster-lang":
-                        this.BroadcasterLanguage = state[1];
+                        BroadcasterLanguage = state[1];
                         break;
                     case "r9k":
-                        this.R9KModeEnabled = Convert.ToBoolean(Convert.ToInt32(state[1]));
+                        R9KModeEnabled = Convert.ToBoolean(Convert.ToInt32(state[1]));
                         break;
                     case "slow":
-                        this.SlowModeInterval = Convert.ToInt32(state[1]);
-                        this.SlowModeEnabled = (SlowModeInterval > 0);
+                        SlowModeInterval = Convert.ToInt32(state[1]);
+                        SlowModeEnabled = (SlowModeInterval > 0);
                         break;
                     case "subs-only":
-                        this.SubscribersOnlyModeEnabled = Convert.ToBoolean(Convert.ToInt32(state[1]));
+                        SubscribersOnlyModeEnabled = Convert.ToBoolean(Convert.ToInt32(state[1]));
                         break;
                 }
             }

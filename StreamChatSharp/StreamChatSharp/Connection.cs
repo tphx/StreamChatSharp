@@ -59,14 +59,14 @@ namespace Tphx.StreamChatSharp
         /// </summary>
         public Connection()
         {
-            this.messageSender.ConnectionLost += OnConnectionLost;
-            this.messageSender.ChatMessageSent += OnChatMessageSent;
+            messageSender.ConnectionLost += OnConnectionLost;
+            messageSender.ChatMessageSent += OnChatMessageSent;
 
-            this.messageReceiver.ConnectionLost += OnConnectionLost;
+            messageReceiver.ConnectionLost += OnConnectionLost;
 
-            this.messageReceiver.RawMessageReceived += OnRawMessageReceived;
-            this.messageReceiver.ChatMessageReceived += OnChatMessageReceived;
-            this.timeoutTimer.Elapsed += OnTimeoutTimerElapsed;
+            messageReceiver.RawMessageReceived += OnRawMessageReceived;
+            messageReceiver.ChatMessageReceived += OnChatMessageReceived;
+            timeoutTimer.Elapsed += OnTimeoutTimerElapsed;
         }
 
 
@@ -93,7 +93,7 @@ namespace Tphx.StreamChatSharp
         {
             get
             {
-                return (this.tcpClient != null && this.tcpClient.Connected);
+                return (tcpClient != null && tcpClient.Connected);
             }
         }
 
@@ -104,7 +104,7 @@ namespace Tphx.StreamChatSharp
         /// /// <param name="highPriorityMessage">Whether or not the message is a high priority message.</param>
         public void SendChatMessage(ChatMessage chatMessage, bool highPriorityMessage)
         {
-            this.messageSender.SendMessage(chatMessage, highPriorityMessage);
+            messageSender.SendMessage(chatMessage, highPriorityMessage);
         }
 
         /// <summary>
@@ -115,11 +115,11 @@ namespace Tphx.StreamChatSharp
         {
             get
             {
-                return this.messageSender.MessageSendInterval;
+                return messageSender.MessageSendInterval;
             }
             set
             {
-                this.messageSender.MessageSendInterval = value;
+                messageSender.MessageSendInterval = value;
             }
         }
 
@@ -141,7 +141,7 @@ namespace Tphx.StreamChatSharp
         {
             get
             {
-                return this.connectionRegistered;
+                return connectionRegistered;
             }
         }
 
@@ -156,14 +156,14 @@ namespace Tphx.StreamChatSharp
                 throw new ArgumentNullException("serverConnectionData");
             }
 
-            if (this.tcpClient == null || !this.tcpClient.Connected)
+            if (tcpClient == null || !tcpClient.Connected)
             {
-                this.connectionData = serverConnectionData;
+                connectionData = serverConnectionData;
 
                 try
                 {
-                    this.tcpClient = new TcpClient(this.connectionData.ServerAddress,
-                        this.connectionData.Port);
+                    tcpClient = new TcpClient(connectionData.ServerAddress,
+                        connectionData.Port);
                 }
                 catch (SocketException)
                 {
@@ -171,32 +171,32 @@ namespace Tphx.StreamChatSharp
                     return;
                 }
 
-                this.networkStream = this.tcpClient.GetStream();
-                this.messageSender.Start(networkStream);
-                this.messageReceiver.Start(networkStream);
-                this.connectionRegistered = false;
+                networkStream = tcpClient.GetStream();
+                messageSender.Start(networkStream);
+                messageReceiver.Start(networkStream);
+                connectionRegistered = false;
 
-                this.timeoutTimer.Interval = newConnectionTimeoutInterval;
-                this.timeoutTimer.Start();
+                timeoutTimer.Interval = newConnectionTimeoutInterval;
+                timeoutTimer.Start();
 
-                SendChatMessage(new ChatMessage("PASS", this.connectionData.Password), true);
-                SendChatMessage(new ChatMessage("NICK", this.connectionData.Nickname), true);
+                SendChatMessage(new ChatMessage("PASS", connectionData.Password), true);
+                SendChatMessage(new ChatMessage("NICK", connectionData.Nickname), true);
             }
         }
         
         private void Dispose(bool disposing)
         {
-            if(!this.disposed)
+            if(!disposed)
             {
                 if(disposing)
                 {
-                    this.Disconnect(DisconnectedEventArgs.DisconnectReason.Disposed, false);
-                    this.messageSender.Dispose();
-                    this.messageReceiver.Dispose();
-                    this.timeoutTimer.Dispose();
+                    Disconnect(DisconnectedEventArgs.DisconnectReason.Disposed, false);
+                    messageSender.Dispose();
+                    messageReceiver.Dispose();
+                    timeoutTimer.Dispose();
                 }
 
-                this.disposed = true;
+                disposed = true;
             }
         }
 
@@ -204,11 +204,11 @@ namespace Tphx.StreamChatSharp
         {
             // We could also set the interval in OnChatMessageReceived, but it is called at the same time this is so 
             // we only need to set it once here.
-            this.timeoutTimer.Interval = noMessageReceivedTimeoutInterval;
+            timeoutTimer.Interval = noMessageReceivedTimeoutInterval;
 
-            if (this.RawMessageReceived != null)
+            if (RawMessageReceived != null)
             {
-                this.RawMessageReceived(sender, e);
+                RawMessageReceived(sender, e);
             }
         }
 
@@ -224,9 +224,9 @@ namespace Tphx.StreamChatSharp
                 RegistrationMessageReceived();
             }
 
-            if (this.ChatMessageReceived != null)
+            if (ChatMessageReceived != null)
             {
-                this.ChatMessageReceived(sender, e);
+                ChatMessageReceived(sender, e);
             }
         }
 
@@ -235,7 +235,7 @@ namespace Tphx.StreamChatSharp
             // If the timeout interval is set to noMessageReceivedTimeoutInterval we should have a valid connection 
             // that hasn't received a message for some time. It may have been lost or it may be unusually quiet. A 
             // ping should tell us whether or not we're still connected.
-            if (this.timeoutTimer.Interval == noMessageReceivedTimeoutInterval)
+            if (timeoutTimer.Interval == noMessageReceivedTimeoutInterval)
             {
                 Ping();
             }
@@ -249,24 +249,24 @@ namespace Tphx.StreamChatSharp
         {
             SendChatMessage(new ChatMessage("RAW", "QUIT"), true);
 
-            this.timeoutTimer.Stop();
-            this.messageReceiver.Stop();
-            this.messageSender.Stop();
-            this.connectionRegistered = false;
+            timeoutTimer.Stop();
+            messageReceiver.Stop();
+            messageSender.Stop();
+            connectionRegistered = false;
 
             if (tcpClient != null)
             {
-                this.tcpClient.Close();
+                tcpClient.Close();
             }
 
             if (networkStream != null)
             {
-                this.networkStream.Dispose();
+                networkStream.Dispose();
             }
 
-            if (this.Disconnected != null)
+            if (Disconnected != null)
             {
-                this.Disconnected(this, new DisconnectedEventArgs(reason, attemptingAutoReconnect));
+                Disconnected(this, new DisconnectedEventArgs(reason, attemptingAutoReconnect));
             }
         }
 
@@ -278,19 +278,19 @@ namespace Tphx.StreamChatSharp
         private void ConnectionTimedOut()
         {
             Disconnect(DisconnectedEventArgs.DisconnectReason.TimedOut, true);
-            ConnectToServer(this.connectionData);
+            ConnectToServer(connectionData);
         }
 
         private void Ping()
         {
             SendChatMessage(new ChatMessage("RAW", "PING"), true);
 
-            this.timeoutTimer.Interval = pingTimeoutInterval;
+            timeoutTimer.Interval = pingTimeoutInterval;
         }
 
         private void RegistrationMessageReceived()
         {
-            this.connectionRegistered = true;
+            connectionRegistered = true;
 
             if(RegisteredWithServer != null)
             {
@@ -300,10 +300,10 @@ namespace Tphx.StreamChatSharp
 
         private void OnChatMessageSent(object sender, ChatMessageEventArgs e)
         {
-            if (this.ChatMessageSent != null)
+            if (ChatMessageSent != null)
             {
-                e.ChatMessage.Source = this.ConnectionData.Nickname;
-                this.ChatMessageSent(this, e);
+                e.ChatMessage.Source = ConnectionData.Nickname;
+                ChatMessageSent(this, e);
             }
         }
     }
