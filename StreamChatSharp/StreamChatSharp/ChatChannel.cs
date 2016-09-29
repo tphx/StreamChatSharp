@@ -54,6 +54,11 @@ namespace Tphx.StreamChatSharp
         public bool SubscribersOnlyModeEnabled { get; set; }
 
         /// <summary>
+        /// Whether or not emote only mode is enabled.
+        /// </summary>
+        public bool EmoteOnlyModeEnabled { get; set; }
+
+        /// <summary>
         /// Processes a chat message.
         /// </summary>
         /// <param name="chatMessage">Message to process.</param>
@@ -107,6 +112,9 @@ namespace Tphx.StreamChatSharp
                         break;
                     case "subs-only":
                         SubscribersOnlyModeEnabled = Convert.ToBoolean(Convert.ToInt32(state[1]));
+                        break;
+                    case "emote-only":
+                        EmoteOnlyModeEnabled = Convert.ToBoolean(Convert.ToInt32(state[1]));
                         break;
                 }
             }
