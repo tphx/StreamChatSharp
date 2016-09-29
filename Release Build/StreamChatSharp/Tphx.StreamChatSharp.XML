@@ -50,6 +50,11 @@
             Whether or not subscribers only mode is enabled.
             </summary>
         </member>
+        <member name="P:Tphx.StreamChatSharp.ChatChannel.EmoteOnlyModeEnabled">
+            <summary>
+            Whether or not emote only mode is enabled.
+            </summary>
+        </member>
         <member name="M:Tphx.StreamChatSharp.ChatChannel.ProcessChatMessage(Tphx.StreamChatSharp.ChatMessage)">
             <summary>
             Processes a chat message.
@@ -366,6 +371,33 @@
         <member name="P:Tphx.StreamChatSharp.ChatUser.UserType">
             <summary>
             User's type.
+            </summary>
+        </member>
+        <member name="P:Tphx.StreamChatSharp.ChatUser.IsBanned">
+            <summary>
+            Whether or not the user is banned.
+            </summary>
+        </member>
+        <member name="P:Tphx.StreamChatSharp.ChatUser.BanDuration">
+            <summary>
+            How long the user was banned for. -1 is permanent.
+            </summary>
+        </member>
+        <member name="P:Tphx.StreamChatSharp.ChatUser.BanReason">
+            <summary>
+            The reason the user was banned.
+            </summary>
+        </member>
+        <member name="M:Tphx.StreamChatSharp.ChatUser.BanUser(System.Int32,System.String)">
+            <summary>
+            Bans the user. -1 means the user is permanently banned.
+            </summary>
+            <param name="banDuration">Amount of time the user has been banned for. -1 for permanent.</param>
+            <param name="reason"></param>
+        </member>
+        <member name="M:Tphx.StreamChatSharp.ChatUser.UnbanUser">
+            <summary>
+            Unbans the user.
             </summary>
         </member>
         <member name="M:Tphx.StreamChatSharp.ChatUser.ProcessChatMessage(Tphx.StreamChatSharp.ChatMessage)">
