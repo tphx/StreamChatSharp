@@ -67,7 +67,7 @@ namespace Tphx.StreamChatSharp
             switch(chatMessage.Source)
             {
                 case "tmi":
-                    SetRoomState(chatMessage.Tags);
+                    ProcessTmiMessage(chatMessage);
                     break;
                 case "jtv":
                     SetUserMode(chatMessage.Target, chatMessage.Message);
@@ -77,6 +77,52 @@ namespace Tphx.StreamChatSharp
                         (key, oldValue) => oldValue);
                     Users[chatMessage.Source].ProcessChatMessage(chatMessage);
                     break;
+            }
+        }
+
+        private void ProcessTmiMessage(ChatMessage chatMessage)
+        {
+            switch (chatMessage.Command)
+            {
+                case "ROOMSTATE":
+                    SetRoomState(chatMessage.Tags);
+                    break;
+                case "CLEARCHAT":
+                    ClearChatReceived(chatMessage.Tags, chatMessage.Message);
+                    break;
+                case "NOTICE":
+                    break;
+            }
+        }
+
+        private void ClearChatReceived(string tags, string message)
+        {
+            if (!String.IsNullOrEmpty(message) && Users.ContainsKey(message))
+            {
+                int banDuration = -1;
+                string banReason = null;
+
+                // Ban message looks like the following:
+                // ban-duration=600;ban-reason=
+                // ban-duration will not be present when the user is permanently banned.
+                string[] splitTags = tags.Split(';');
+
+                for(int a = 0; a < splitTags.Length; a++)
+                {
+                    string[] tagParts = splitTags[a].Split('=');
+
+                    switch(tagParts[0])
+                    {
+                        case "ban-duration":
+                            banDuration = Convert.ToInt32(tagParts[1]);
+                            break;
+                        case "ban-reason":
+                            banReason = String.IsNullOrEmpty(tagParts[1]) ? "" : tagParts[1];
+                            break;
+                    }
+                }
+
+                Users[message].BanUser(banDuration, banReason);
             }
         }
 

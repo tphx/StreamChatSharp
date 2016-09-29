@@ -99,14 +99,63 @@ namespace Tphx.StreamChatSharp
         public string UserType { get; set; }
 
         /// <summary>
+        /// Whether or not the user is banned.
+        /// </summary>
+        public bool IsBanned { get; set; }
+
+        /// <summary>
+        /// How long the user was banned for. -1 is permanent.
+        /// </summary>
+        public int BanDuration { get; set; }
+
+        /// <summary>
+        /// The reason the user was banned.
+        /// </summary>
+        public string BanReason { get; set; }
+
+        /// <summary>
+        /// Bans the user. -1 means the user is permanently banned.
+        /// </summary>
+        /// <param name="banDuration">Amount of time the user has been banned for. -1 for permanent.</param>
+        /// <param name="reason"></param>
+        public void BanUser(int banDuration, string reason)
+        {
+            IsBanned = true;
+            BanDuration = banDuration;
+            BanReason = reason;
+        }
+
+        /// <summary>
+        /// Unbans the user.
+        /// </summary>
+        public void UnbanUser()
+        {
+            BanReason = "";
+            BanDuration = 0;
+            IsBanned = false;
+        }
+
+        /// <summary>
         /// Processes a chat message.
         /// </summary>
         /// <param name="chatMessage">Message to process.</param>
         internal void ProcessChatMessage(ChatMessage chatMessage)
         {
+            // If we are receiving messages from the user they are unbanned.
+            if(IsBanned)
+            {
+                UnbanUser();
+            }
+
+            ProccessMessageTags(chatMessage.Tags);
+        }
+
+
+        private void ProccessMessageTags(string tags)
+        {
             // The user states contain various states delimited by semicolons.
             // color=#FF0000;display-name=username;emote-sets=0;subscriber=0;turbo=0;user-type=
-            string[] states = chatMessage.Tags.Split(';');
+            string[] states = tags.Split(';');
 
             for (int a = 0; a < states.Length; a++)
             {
