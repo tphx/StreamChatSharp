@@ -1,7 +1,12 @@
+Warning:
+This library is old and has not been updated / tested for a while. While it worked well in the past, it may not work or be fully compatible with Twitch IRC chat in current or future updates. 
+
+
 StreamChatSharp
 ===============
 
-##About
+About
+===============
 
 StreamChatSharp is a C# library designed specifically for use with the [Twitch IRC interface](https://github.com/justintv/Twitch-API/blob/master/IRC.md). Although any IRC server can be connected to, functionality is not guaranteed. This is because Twitch IRC works slightly differently to standard IRC servers.
 
@@ -9,13 +14,15 @@ This library was designed with the hope that it would make the creation of bots 
 
 ----------
 
-##Requirements
+Requirements
+===============
 
  * [.NET Framework 4.5](http://www.microsoft.com/en-us/download/details.aspx?id=30653)
 
 ----------
 
-##How to use
+How to use
+===============
 
 Checkout this [simple chat bot](https://github.com/tphx/StreamChatSharp/blob/master/Examples/SimpleChatBot/SimpleChatBot/ChatBot.cs) to see an example of how to use the [ChatClient](https://github.com/tphx/StreamChatSharp/blob/master/StreamChatSharp/StreamChatSharp/ChatClient.cs) class to connect to a chat room.
 
@@ -23,11 +30,13 @@ Alternatively, if you just want to create a bare bones connection without the ex
 
 ----------
 
-##ChatMessages
+ChatMessages
+===============
 
 Messages are exchanged with the ChatClient class via ChatMessages. Chat messages can contain a variety of information based on the command that they contain. At a minimum, each incoming ChatMessage should contain a command. When sending messages to the chat it is sometimes necessary to send the message in raw format. To send a raw message to the server, either use the SendRawMessage method in the ChatClient class, or create a ChatMessage and set the Command property to "RAW".
 
-#####ChatMessage Layout:
+ChatMessage Layout:
+===============
 * <b>Command</b> - The command (ex. PRIVMSG) that describes the purpose of the message.
 * <b>Message</b> - The actual message portion of the ChatMessage. When the ChatMessage is for the MODE command, this property will contain the mode to set on the target (ex. +o). When used with the NAMES command, this message will contain the list of names delimited by spaces.
 * <b>ChannelName</b> - The name of the chat channel the message pertains to.
@@ -35,7 +44,8 @@ Messages are exchanged with the ChatClient class via ChatMessages. Chat messages
 * <b>Target</b> - The target of the message. This is mostly used for MODE commands where the target is the user who is having their MODE set.
 * <b>Tags</b> - IRCv3 capability tags. These are not sent by default and must be requested ([ChatClient](https://github.com/tphx/StreamChatSharp/blob/master/StreamChatSharp/StreamChatSharp/ChatClient.cs) includes the option to register for these when connecting).
 
-#####Common ChatMessage Commands:
+Common ChatMessage Commands:
+===============
 * <b>421</b> - An invalid command (identified in the Message property) has been sent to the IRC server.
 ```
 Command = 421,
